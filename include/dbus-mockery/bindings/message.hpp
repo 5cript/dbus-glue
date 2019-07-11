@@ -50,18 +50,54 @@ namespace DBusMock::Bindings
          */
         type_descriptor type() const;
 
+        template <typename T, typename Specializer = void>
+        struct append_proxy{};
+
+        template <typename T>
+        void append(T const& value)
+        {
+            append_proxy<T>::write(*this, value);
+        }
+
         /**
          *	A helper for reading various types. Based on template specialization, not overloading.
          */
         template <typename T, typename Specializer = void>
         struct read_proxy{};
 
+        /**
+         *  @brief Reads a value of known type from the message stack.
+         */
         template <typename T>
-        void read(T& value)
+        int read(T& value)
         {
-            unpack_variant([this, &value](){
-                read_proxy<T>::read(*this, value);
+            int result = 0;
+            unpack_variant([this, &value, &result](){
+                result = read_proxy<T>::read(*this, value);
             }, type().contained);
+            return result;
+        }
+
+        /**
+         * @brief read_variant Reads a variant where the variant type is unknown
+         * @param resolvable A variant
+         * @return
+         */
+        int read_variant(resolvable_variant& resolvable)
+        {
+            int result = 0;
+            unpack_variant([this, &resolvable, &result](){
+                //result = read_proxy<T>::read(*this, value);
+                auto descr = type();
+                resolvable.descriptor = descr;
+                for_signature_do(descr, [this, &resolvable, &result](auto dummy){
+                    using value_type = std::decay_t<decltype(dummy)>;
+                    value_type val;
+                    result = read_proxy <value_type>::read(*this, val);
+                    resolvable.value = val;
+                });
+            }, type().contained);
+            return result;
         }
 
     private:
@@ -90,10 +126,14 @@ namespace DBusMock::Bindings
         sd_bus_message* msg;
     };
 
+    //-----------------------------------------------------------------------------------------------------------------
+    // read_proxy
+    //-----------------------------------------------------------------------------------------------------------------
+
     template <template <typename, typename...> typename ContainerT, typename ValueT, typename... ContainerTemplParams>
     struct message::read_proxy <ContainerT <ValueT, ContainerTemplParams...>, void>
     {
-        static void read(message& msg, ContainerT <ValueT, ContainerTemplParams...>& container)
+        static int read(message& msg, ContainerT <ValueT, ContainerTemplParams...>& container)
         {
             sd_bus_message* smsg = static_cast <sd_bus_message*> (msg);
 
@@ -109,37 +149,29 @@ namespace DBusMock::Bindings
             r = 1;
             while (r > 0)
             {
-                if constexpr (std::is_fundamental_v <ValueT>)
-                {
-                    ValueT value;
-                    r = sd_bus_message_read_basic(smsg, type_detect <ValueT>::value[0], &value);
-                    if (r > 0)
-                        container.push_back(value);
-                }
-                else if constexpr (std::is_same_v <ValueT, std::string>)
-                {
-                    char const* value;
-                    r = sd_bus_message_read_basic(smsg, 's', &value);
-                    if (r > 0)
-                        container.push_back(value);
-                }
+                ValueT v;
+                r = msg.read(v);
                 if (r < 0)
                 {
                     sd_bus_message_exit_container(smsg);
-                    throw std::runtime_error("Coud not read from array: "s + strerror(-r));
+                    throw std::runtime_error("could not read from array: "s + strerror(-r));
                 }
+                else if (r > 0)
+                    container.push_back(v);
             }
 
             r = sd_bus_message_exit_container(smsg);
             if (r < 0)
                 throw std::runtime_error("could not exit array: "s + strerror(-r));
+
+            return r;
         }
     };
 
     template <>
     struct message::read_proxy <std::string, void>
     {
-        static void read(message& msg, std::string& str)
+        static int read(message& msg, std::string& str)
         {
             using namespace std::string_literals;
             sd_bus_message* smsg = static_cast <sd_bus_message*> (msg);
@@ -147,16 +179,17 @@ namespace DBusMock::Bindings
             char const* value;
             auto r = sd_bus_message_read_basic(smsg, 's', &value);
             if (r < 0)
-                throw std::runtime_error("Could not read string from message: "s + strerror(-r));
+                throw std::runtime_error("could not read string from message: "s + strerror(-r));
 
             str = value;
+            return r;
         }
     };
 
     template <typename T>
     struct message::read_proxy <T, std::enable_if_t <std::is_fundamental_v <T>>>
     {
-        static void read(message& msg, T& value)
+        static int read(message& msg, T& value)
         {
             using namespace std::string_literals;
             sd_bus_message* smsg = static_cast <sd_bus_message*> (msg);
@@ -172,25 +205,149 @@ namespace DBusMock::Bindings
                 r = sd_bus_message_read_basic(smsg, type_detect <T>::value[0], &value);
 
             if (r < 0)
-                throw std::runtime_error("Could not read string from message: "s + strerror(-r));
+                throw std::runtime_error("could not read string from message: "s + strerror(-r));
+
+            return r;
         }
     };
 
-    template <template <typename...> MapT>
-    struct message::read_proxy <variant_dictionary <MapT>>
+    template <template <typename...> typename MapT, typename... Remain>
+    struct message::read_proxy <variant_dictionary <MapT, Remain...>>
     {
-        static void read(message& msg, variant_dictionary <MapT>& value)
+        static int read(message& msg, variant_dictionary <MapT, Remain...>& dict)
         {
             using namespace std::string_literals;
             sd_bus_message* smsg = static_cast <sd_bus_message*> (msg);
 
-            auto r = sd_bus_message_open_container(smsg, SD_BUS_TYPE_DICT_ENTRY, "sv");
+            auto r = sd_bus_message_enter_container(smsg, SD_BUS_TYPE_ARRAY, msg.type().contained.data());
             if (r < 0)
-                throw std::runtime_error("could not open dictionary: "s + strerror(-r));
+                throw std::runtime_error("could not open array for dictionary: "s + strerror(-r));
+            dict.clear();
+            r = 1;
+            while (r > 0)
+            {
+                r = sd_bus_message_enter_container(smsg, SD_BUS_TYPE_DICT_ENTRY, msg.type().contained.data());
+                if (r < 0)
+                    throw std::runtime_error("could not open array of dictionary: "s + strerror(-r));
+
+                if (r == 0)
+                    break;
+
+                char const* name;
+                r = sd_bus_message_read_basic(smsg, 's', &name);
+                if (r < 0)
+                    throw std::runtime_error("could not read name in dictionary: "s + strerror(-r));
+
+                resolvable_variant resolvable;
+                r = msg.read_variant(resolvable);
+
+                dict.emplace(name, resolvable);
+
+                r = sd_bus_message_exit_container(smsg);
+                if (r < 0)
+                    throw std::runtime_error("could not close array for dictionary: "s + strerror(-r));
+            }
+
+            r = sd_bus_message_exit_container(smsg);
+            if (r < 0)
+                throw std::runtime_error("could not exit dictionary: "s + strerror(-r));
+
+            return r;
+        }
+    };
+
+    //-----------------------------------------------------------------------------------------------------------------
+    // append_proxy
+    //-----------------------------------------------------------------------------------------------------------------
+
+    template <>
+    struct message::append_proxy <std::string, void>
+    {
+        static int write(message& msg, std::string const& value)
+        {
+            using namespace std::string_literals;
+            sd_bus_message* smsg = static_cast <sd_bus_message*> (msg);
+
+            auto r = sd_bus_message_append_basic(smsg, 's', value.c_str());
+
+            if (r < 0)
+                throw std::runtime_error("could not append value: "s + strerror(-r));
+
+            return r;
+        }
+    };
+
+    template <typename T>
+    struct message::append_proxy <T, std::enable_if_t <std::is_fundamental_v <T>>>
+    {
+        static int write(message& msg, T const& value)
+        {
+            using namespace std::string_literals;
+            sd_bus_message* smsg = static_cast <sd_bus_message*> (msg);
+
+            int r = 0;
+            if constexpr(std::is_same_v <T, bool>)
+            {
+                int lval = type_converter<T>::convert(value);
+                r = sd_bus_message_append_basic(
+                    smsg,
+                    type_detect <T>::value[0],
+                    &lval
+                );
+            }
+            else
+            {
+                auto lval = type_converter<T>::convert(value);
+                r = sd_bus_message_append_basic(
+                    smsg,
+                    type_detect <T>::value[0],
+                    &lval
+                );
+            }
+
+            if (r < 0)
+                throw std::runtime_error("could not append value: "s + strerror(-r));
+
+            return r;
+        }
+    };
+
+    template <>
+    struct message::append_proxy <char const*, void>
+    {
+        static int write(message& msg, char const* value)
+        {
+            using namespace std::string_literals;
+            sd_bus_message* smsg = static_cast <sd_bus_message*> (msg);
+
+            auto r = sd_bus_message_append_basic(smsg, 's', value);
+
+            if (r < 0)
+                throw std::runtime_error("could not append value: "s + strerror(-r));
+            return r;
+        }
+    };
+
+    template <>
+    struct message::append_proxy <resolvable_variant, void>
+    {
+        static int write(message& msg, resolvable_variant const& value)
+        {
+            using namespace std::string_literals;
+            sd_bus_message* smsg = static_cast <sd_bus_message*> (msg);
+
+            auto r = sd_bus_message_open_container(smsg, SD_BUS_TYPE_VARIANT, value.descriptor.contained.data());
+            if (r < 0)
+                throw std::runtime_error("could not open variant: "s + strerror(-r));
+
+            value.resolve([&msg](auto const& val){
+                msg.append(val);
+            });
 
             r = sd_bus_message_close_container(smsg);
             if (r < 0)
-                throw std::runtime_error("Could not close dictionary: "s + strerror(-r));
+                throw std::runtime_error("could not close variant: "s + strerror(-r));
+            return r;
         }
     };
 }

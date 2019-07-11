@@ -1,9 +1,14 @@
 #pragma once
 
+#include "sdbus_core.hpp"
+
 #include <string>
 #include <string_view>
 #include <cstdint>
 #include <any>
+#include <stdexcept>
+#include <utility>
+#include <type_traits>
 
 // https://dbus.freedesktop.org/doc/dbus-specification.html#type-system
 
@@ -15,32 +20,75 @@ namespace DBusMock::Bindings
     template <typename T>
     struct type_detect{};
 
+    template <typename T, typename SFINAE = void>
+    struct type_converter
+    {
+    };
+
     struct type_descriptor
     {
         char type;
         std::string_view contained;
     };
 
+    template <typename FunctionT>
+    void for_signature_do (type_descriptor descr, FunctionT func)
+    {
+        switch (descr.type)
+        {
+            case('y'): return func(uint8_t{});
+            case('b'): return func(bool{});
+            case('n'): return func(int16_t{});
+            case('q'): return func(uint16_t{});
+            case('i'): return func(int32_t{});
+            case('u'): return func(uint32_t{});
+            case('x'): return func(int64_t{});
+            case('t'): return func(uint64_t{});
+            case('d'): return func(double{});
+            case('s'): return func(std::string{});
+            default:
+                throw std::domain_error("for now unimplemented type");
+        }
+    }
+
     struct resolvable_variant
     {
-        char contained;
+        type_descriptor descriptor;
         std::any value;
 
+        /**
+         *  Use if you know the type without looking at the descriptor
+         */
         template <typename T>
-        T resolve()
+        T resolve() const
         {
             return std::any_cast <T> (value);
         }
 
+        /**
+         *  Use if you know the type without looking at the descriptor
+         */
         template <typename T>
-        void resolve(T& value)
+        void resolve(T& value) const
         {
             value = std::any_cast <T> (value);
         }
+
+        /**
+         *  Use if you dont know the type.
+         */
+        template <typename FunctionT>
+        void resolve(FunctionT func) const
+        {
+            for_signature_do(descriptor, [this, &func](auto dummy){
+                using value_type = std::decay_t<decltype(dummy)>;
+                func(std::any_cast <value_type> (value));
+            });
+        }
     };
 
-    template <template <typename...> MapT>
-    using variant_dictionary = MapT <std::string, resolvable_variant>
+    template <template <typename...> typename MapT, typename... Remain>
+    using variant_dictionary = MapT <std::string, resolvable_variant, Remain...>;
 
     /**
      *	Creates a type string for the given type list
@@ -139,5 +187,33 @@ namespace DBusMock::Bindings
     struct type_detect <char const*>
     {
         constexpr static char const* value = "s";
+    };
+
+    template <typename T>
+    struct type_converter <T, std::enable_if_t <std::is_fundamental_v <T>>>
+    {
+        template <typename U>
+        static T convert(U orig)
+        {
+            return orig;
+        }
+    };
+
+    template <>
+    struct type_converter <std::string, void>
+    {
+        static char const* convert(std::string const& orig)
+        {
+            return orig.c_str();
+        }
+    };
+
+    template <>
+    struct type_converter <char const*, void>
+    {
+        static char const* convert(char const* orig)
+        {
+            return orig;
+        }
     };
 }

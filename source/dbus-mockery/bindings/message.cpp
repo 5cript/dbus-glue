@@ -50,10 +50,13 @@ namespace DBusMock::Bindings
     type_descriptor message::type() const
     {
         char typeSig;
-        const char* contentsSig;
+        const char* contentsSig = nullptr;
         auto r = sd_bus_message_peek_type(msg, &typeSig, &contentsSig);
         if (r < 0)
             std::runtime_error("Failed to peek message type: "s + strerror(-r));
+
+        if (contentsSig == nullptr)
+            contentsSig = "";
 
         return {typeSig, contentsSig};
     }

@@ -113,6 +113,55 @@ namespace DBusMock::Bindings
             message.read(prop);
         }
 
+        template <typename T>
+        void write_property(
+            std::string_view service,
+            std::string_view path,
+            std::string_view interface,
+            std::string_view property_name,
+            T const& prop
+        )
+        {
+            using namespace std::string_literals;
+
+            sd_bus_message* m{};
+            auto r = sd_bus_message_new_method_call(
+                bus,
+                &m,
+                service.data(),
+                path.data(),
+                "org.freedesktop.DBus.Properties",
+                "Set"
+            );
+            if (r < 0)
+                throw std::runtime_error("could not create message call on bus: "s + strerror(-r));
+
+            message msg{m};
+            msg.append(interface.data());
+            msg.append(property_name.data());
+            msg.append(prop);
+
+            auto error = SD_BUS_ERROR_NULL;
+            sd_bus_message* reply{};
+
+            // frees handle on scope exit
+            make_basic_message_handle(reply);
+
+            r = sd_bus_message_set_expect_reply(m, 1);
+            if (r < 0)
+                throw std::runtime_error("could not set message reply expectation: "s + strerror(-r));
+
+            r = sd_bus_call(bus, m, 0, &error, &reply);
+
+            if (sd_bus_error_is_set(&error))
+                throw std::runtime_error(error.message);
+
+             sd_bus_error_free(&error);
+
+            if (r < 0)
+                throw std::runtime_error("could not send message on bus: "s + strerror(-r));
+        }
+
         /**
          * @brief call_method Uses a variadic template paramter list of concrete types for that.
          * @param service The service name.
@@ -121,12 +170,12 @@ namespace DBusMock::Bindings
          * @param prop The name of the property to read
          * @return nothing
          */
-        template <template <typename...> MapType>
+        template <template <typename...> typename MapType, typename... Remain>
         void read_properties(
             std::string_view service,
             std::string_view path,
             std::string_view interface,
-            variant_dictionary <MayType> dict
+            variant_dictionary <MapType, Remain...>& dict
         )
         {
             auto message = call_method(
