@@ -25,30 +25,21 @@ using face = declare_interface<
 
 int main()
 {
-    using namespace DBusMock;
-
     auto bus = Bindings::open_system_bus();
 
-    /* Issue the method call and store the respons message in m */
-    bus.write_property(
-        "org.bluez",
-        "/org/bluez/hci0",
-        "org.bluez.Adapter1",
-        "Discoverable",
-        Bindings::resolvable_variant{{'b', "b"}, true}
-    );
-
-    bool discov;
+    std::map<std::string, std::string> metadata;
     bus.read_property(
-        "org.bluez",
-        "/org/bluez/hci0",
-        "org.bluez.Adapter1",
-        "Discoverable",
-        discov
+        "org.freedesktop.ColorManager",
+        "org/freedesktop/ColorManager/profiles/icc_7f88bf8e67e4785ac16bb15544c97086",
+        "org.freedesktop.ColorManager.Profile",
+        "Metadata",
+        metadata
     );
 
-    std::cout << discov << "\n";
-    std::cout.flush();
+    for (auto const& [key, value] : metadata)
+    {
+        std::cout << key << "=" << value << "\n";
+    }
 
     return 0;
 }

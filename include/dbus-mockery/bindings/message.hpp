@@ -256,6 +256,51 @@ namespace DBusMock::Bindings
         }
     };
 
+    template <template <typename, typename...> typename MapT, typename ValueT, typename KeyT, typename... Remain>
+    struct message::read_proxy <MapT <KeyT, ValueT, Remain...>, void>
+    {
+        static int read(message& msg, MapT <KeyT, ValueT, Remain...>& dict)
+        {
+            using namespace std::string_literals;
+            sd_bus_message* smsg = static_cast <sd_bus_message*> (msg);
+
+            auto r = sd_bus_message_enter_container(smsg, SD_BUS_TYPE_ARRAY, msg.type().contained.data());
+            if (r < 0)
+                throw std::runtime_error("could not open array for dictionary: "s + strerror(-r));
+            dict.clear();
+            r = 1;
+            while (r > 0)
+            {
+                r = sd_bus_message_enter_container(smsg, SD_BUS_TYPE_DICT_ENTRY, msg.type().contained.data());
+                if (r < 0)
+                    throw std::runtime_error("could not open array of dictionary: "s + strerror(-r));
+
+                if (r == 0)
+                    break;
+
+                char const* name;
+                r = sd_bus_message_read_basic(smsg, 's', &name);
+                if (r < 0)
+                    throw std::runtime_error("could not read name in dictionary: "s + strerror(-r));
+
+                ValueT value;
+                msg.read(value);
+
+                dict.emplace(name, value);
+
+                r = sd_bus_message_exit_container(smsg);
+                if (r < 0)
+                    throw std::runtime_error("could not close array for dictionary: "s + strerror(-r));
+            }
+
+            r = sd_bus_message_exit_container(smsg);
+            if (r < 0)
+                throw std::runtime_error("could not exit dictionary: "s + strerror(-r));
+
+            return r;
+        }
+    };
+
     //-----------------------------------------------------------------------------------------------------------------
     // append_proxy
     //-----------------------------------------------------------------------------------------------------------------
