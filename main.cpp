@@ -26,21 +26,12 @@ int main()
 {
     auto bus = Bindings::open_system_bus();
 
-    /* Issue the method call and store the respons message in m */
-    auto response = bus.call_method(
+    bus.read_properties(
         "org.freedesktop.timedate1",
         "/org/freedesktop/timedate1",
-        "org.freedesktop.timedate1",
-        "ListTimezones"
+        "org.freedesktop.timedate1"
     );
 
-    std::cout << response.comprehensible_type() << "\n";
-
-    std::vector <std::string> vec;
-    response.read(vec);
-
-    for (auto const& s : vec)
-        std::cout << s << "\n";
 
     return 0;
 }
