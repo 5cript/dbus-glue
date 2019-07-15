@@ -39,6 +39,7 @@ namespace DBusMock::Bindings
          */
         friend Bus open_system_bus_machine(std::string const& machine);
 
+
         /**
          * @brief call_method Calls a specific method
          * @param service The service name.
@@ -49,6 +50,65 @@ namespace DBusMock::Bindings
          */
         template <typename... ParametersT>
         message call_method(
+            std::string_view service,
+            std::string_view path,
+            std::string_view interface,
+            std::string_view method_name,
+            ParametersT const&... parameters // TODO: improvable for const char* and fundamentals
+        )
+        {
+            using namespace std::string_literals;
+
+            sd_bus_message* raw_handle{};
+            auto r = sd_bus_message_new_method_call(
+                bus,
+                &raw_handle,
+                service.data(),
+                path.data(),
+                interface.data(),
+                method_name.data()
+            );
+            if (r < 0)
+                throw std::runtime_error("could not create message call on bus: "s + strerror(-r));
+
+            message sendable{raw_handle};
+
+            // Append parameters
+            (sendable.append(parameters), ...);
+
+            // sd_bus_call passables
+            auto error = SD_BUS_ERROR_NULL;
+            sd_bus_message* reply_handle;
+
+            // set expect reply (always, since it can error out)
+            r = sd_bus_message_set_expect_reply(sendable.handle(), 1);
+            if (r < 0)
+                throw std::runtime_error("could not set message reply expectation: "s + strerror(-r));
+
+            // call method
+            r = sd_bus_call(bus, sendable.handle(), 0, &error, &reply_handle);
+
+            // convert error into throwable if set.
+            if (sd_bus_error_is_set(&error))
+                throw std::runtime_error(error.message);
+             sd_bus_error_free(&error);
+
+            if (r < 0)
+                throw std::runtime_error("could not send message on bus: "s + strerror(-r));
+
+            return message{reply_handle};
+        }
+
+        /**
+         * @brief call_method Calls a specific method
+         * @param service The service name.
+         * @param path The path in the service.
+         * @param interface The interface name under the path.
+         * @param method_name The method name of the interface.
+         * @return A method call result
+         */
+        template <typename... ParametersT>
+        [[deprecated]] message call_method_simple(
             std::string_view service,
             std::string_view path,
             std::string_view interface,
@@ -101,7 +161,7 @@ namespace DBusMock::Bindings
             T& prop
         )
         {
-            auto message = call_method(
+            auto message = call_method_simple(
                 service,
                 path,
                 "org.freedesktop.DBus.Properties",

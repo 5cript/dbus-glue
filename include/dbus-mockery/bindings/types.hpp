@@ -1,6 +1,7 @@
 #pragma once
 
 #include "sdbus_core.hpp"
+#include "object_path.hpp"
 
 #include <string>
 #include <string_view>
@@ -175,6 +176,12 @@ namespace DBusMock::Bindings
     struct type_detect <double>
     {
         constexpr static char const* value = "d";
+    };
+
+    template <>
+    struct type_detect <object_path>
+    {
+        constexpr static char const* value = "o";
     };
 
     template <>

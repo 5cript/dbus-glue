@@ -28,18 +28,38 @@ int main()
     auto bus = Bindings::open_system_bus();
 
     std::map<std::string, std::string> metadata;
-    bus.read_property(
-        "org.freedesktop.ColorManager",
-        "org/freedesktop/ColorManager/profiles/icc_7f88bf8e67e4785ac16bb15544c97086",
-        "org.freedesktop.ColorManager.Profile",
-        "Metadata",
-        metadata
-    );
+
+    try {
+        //auto response = bus.call_method("org.freedesktop.ColorManager", "/org/freedesktop/ColorManager", "org.freedesktop.ColorManager", "GetDevices");
+        auto response = bus.call_method("org.freedesktop.hostname1", "/org/freedesktop/hostname1", "org.freedesktop.hostname1", "GetProductUUID", true);
+        /*
+        auto response = bus.call_method(
+            "org.freedesktop.timedate1",
+            "/org/freedesktop/timedate1",
+            "org.freedesktop.timedate1",
+            "ListTimezones"
+        );
+        */
+
+        std::cout << response.comprehensible_type() << "\n";
+
+        std::vector <uint8_t> vop;
+        response.read(vop);
+
+        for (auto const& path : vop)
+        {
+            std::cout << path << "\n";
+        }
+    } catch (std::exception const& exc) {
+        std::cout << exc.what() << "\n";
+    }
 
     for (auto const& [key, value] : metadata)
     {
         std::cout << key << "=" << value << "\n";
     }
+
+    std::cout << std::flush;
 
     return 0;
 }

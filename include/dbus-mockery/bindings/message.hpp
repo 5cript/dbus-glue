@@ -2,6 +2,7 @@
 
 #include "sdbus_core.hpp"
 #include "types.hpp"
+#include "object_path.hpp"
 
 #include <memory>
 #include <string>
@@ -17,7 +18,7 @@ namespace DBusMock::Bindings
          * @brief message Creates a message object. Must be passed a valid sdbus message.
          * @param messagePointer A valid sdbus message.
          */
-        message(sd_bus_message* messagePointer);
+        explicit message(sd_bus_message* messagePointer);
 
         /**
          *	Frees the sdbus message.
@@ -26,9 +27,9 @@ namespace DBusMock::Bindings
 
         // This class manages resources, dont copy
         message& operator=(message const&) = delete;
-        message& operator=(message&&) = delete;
         message(message const&) = delete;
-        message(message&&) = delete;
+        message& operator=(message&&);
+        message(message&&);
 
         /**
          * @brief operator sd_bus_message* The message is directly convertible to the handle.
@@ -36,6 +37,12 @@ namespace DBusMock::Bindings
          *				   can be used by when functionality is missing.
          */
         explicit operator sd_bus_message*();
+
+        /**
+         * @brief release Releases the ownership of the handle and sets the held handle to nullptr
+         * @return The handle.
+         */
+        sd_bus_message* release();
 
         /**
          * @brief comprehensible_type Returns a human readable representation of the contained type.
@@ -98,6 +105,15 @@ namespace DBusMock::Bindings
                 });
             }, type().contained);
             return result;
+        }
+
+        /**
+         * @brief handle Returns the handle directly. Do not close obviously.
+         * @return The held handle.
+         */
+        sd_bus_message* handle()
+        {
+            return msg;
         }
 
     private:
@@ -186,6 +202,24 @@ namespace DBusMock::Bindings
         }
     };
 
+    template <>
+    struct message::read_proxy <object_path, void>
+    {
+        static int read(message& msg, object_path& opath)
+        {
+            using namespace std::string_literals;
+            sd_bus_message* smsg = static_cast <sd_bus_message*> (msg);
+
+            char const* value;
+            auto r = sd_bus_message_read_basic(smsg, 'o', &value);
+            if (r < 0)
+                throw std::runtime_error("could not read object path from message: "s + strerror(-r));
+
+            opath = object_path{value};
+            return r;
+        }
+    };
+
     template <typename T>
     struct message::read_proxy <T, std::enable_if_t <std::is_fundamental_v <T>>>
     {
@@ -256,10 +290,11 @@ namespace DBusMock::Bindings
         }
     };
 
-    template <template <typename, typename...> typename MapT, typename ValueT, typename KeyT, typename... Remain>
-    struct message::read_proxy <MapT <KeyT, ValueT, Remain...>, void>
+    template <template <typename, typename...> typename MapT, typename ValueT, typename KeyT, typename CompareOrHash, typename AllocatorOrKeyEqual, typename... MaybeAllocator>
+    struct message::read_proxy <MapT <KeyT, ValueT, CompareOrHash, AllocatorOrKeyEqual, MaybeAllocator...>, void>
     {
-        static int read(message& msg, MapT <KeyT, ValueT, Remain...>& dict)
+        using map_type = MapT <KeyT, ValueT, CompareOrHash, AllocatorOrKeyEqual, MaybeAllocator...>;
+        static int read(message& msg, map_type& dict)
         {
             using namespace std::string_literals;
             sd_bus_message* smsg = static_cast <sd_bus_message*> (msg);
@@ -359,6 +394,23 @@ namespace DBusMock::Bindings
 
     template <>
     struct message::append_proxy <char const*, void>
+    {
+        static int write(message& msg, char const* value)
+        {
+            using namespace std::string_literals;
+            sd_bus_message* smsg = static_cast <sd_bus_message*> (msg);
+
+            auto r = sd_bus_message_append_basic(smsg, 's', value);
+
+            if (r < 0)
+                throw std::runtime_error("could not append value: "s + strerror(-r));
+            return r;
+        }
+    };
+
+
+    template <int S>
+    struct message::append_proxy <char[S], void>
     {
         static int write(message& msg, char const* value)
         {
