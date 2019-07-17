@@ -1,4 +1,4 @@
-#include <dbus-mockery/declare_interface.hpp>
+#include <dbus-mockery/dbus_interface.hpp>
 #include <dbus-mockery/bindings/sdbus_core.hpp>
 #include <dbus-mockery/bindings/message.hpp>
 #include <dbus-mockery/bindings/bus.hpp>
@@ -12,47 +12,56 @@
 
 using namespace DBusMock;
 
-struct User
+class IAccounts
 {
-    uint32_t id;
-    std::string name;
-    object_path dbusProfile;
+public:
+    virtual ~IAccounts() = default;
+
+    virtual auto CacheUser(std::string const& name) const -> object_path = 0;
+    virtual auto CreateUser(std::string const& name, std::string const& fullname, int32_t accountType) -> object_path = 0;
+    virtual auto DeleteUser(int64_t id, bool removeFiles) -> void = 0;
+    virtual auto FindUserById(int64_t id) -> object_path = 0;
+    virtual auto ListCachedUsers() -> std::vector <object_path> = 0;
+    virtual auto UncacheUser(std::string const& user) -> void = 0;
+
+public: // Properties
+    readable <std::vector <object_path>> AutomaticLoginUsers;
+    readable <bool> HasMultipleUsers;
+    readable <bool> HasNoUsers;
+    readable <std::string> DaemonVersion;
+
+public: // signals
+    using UserAdded = void(object_path);
+    using UserDeleted = void(object_path);
 };
 
-struct Session
-{
-    std::string name;
-    object_path op;
-};
+//----------------------------------------------------------------------------------------
 
-MAKE_DBUS_STRUCT(User, id, name, dbusProfile)
-MAKE_DBUS_STRUCT(Session, name, op)
+DBUS_MOCK
+(
+    IAccounts,
+    DBUS_MOCK_METHODS(CacheUser, CreateUser, DeleteUser, FindUserById, ListCachedUsers, UncacheUser),
+    DBUS_MOCK_PROPERTIES(AutomaticLoginUsers, HasMultipleUsers, HasNoUsers, DaemonVersion),
+    DBUS_MOCK_SIGNALS(UserAdded, UserDeleted)
+)
+
+//----------------------------------------------------------------------------------------
 
 int main()
 {
     auto bus = Bindings::open_system_bus();
 
-    std::map<std::string, std::string> metadata;
-
-    try {
-        auto response = bus.call_method("org.freedesktop.login1", "/org/freedesktop/login1", "org.freedesktop.login1.Manager", "ListUsers");
-
-        std::cout << response.type().type << "" << response.type().contained << "\n";
-
-        std::vector <User> users;
-        response.read(users);
-
-        for (auto const& u: users)
-        {
-            std::cout << u.id << ", " << u.name << ", " << u.dbusProfile << "\n";
-        }
-    } catch (std::exception const& exc) {
-        std::cout << exc.what() << "\n";
-    }
-
-    for (auto const& [key, value] : metadata)
+    try
     {
-        std::cout << key << "=" << value << "\n";
+        //auto accounts = create_interface <IAccounts> ();
+        //accounts.CreateUser("DBUS_USER", "DBUS_USER", 0);
+
+        DBusMock::Mocks::interface_mock <IAccounts> a{bus, "org.freedesktop.Accounts", "/org/freedesktop/Accounts", "org.freedesktop.Accounts"};
+        a.CreateUser("hello", "hello", 0);
+    }
+    catch (std::exception const& exc)
+    {
+        std::cout << exc.what() << "\n";
     }
 
     std::cout << std::flush;

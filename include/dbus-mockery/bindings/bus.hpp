@@ -252,9 +252,9 @@ namespace DBusMock::Bindings
         ~Bus();
 
         Bus(Bus const&) = delete;
-        Bus(Bus&&) = delete;
-        Bus& operator=(Bus&&) = delete;
         Bus& operator=(Bus const&) = delete;
+        Bus(Bus&&) = default;
+        Bus& operator=(Bus&&) = default;
 
     private:
         /**

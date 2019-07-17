@@ -21,8 +21,6 @@ int main()
 {
     auto bus = Bindings::open_system_bus();
 
-    std::map<std::string, std::string> metadata;
-
     try {
         Session session;
         bus.read_property("org.freedesktop.login1", "/org/freedesktop/login1/seat/self", "org.freedesktop.login1.Seat", "ActiveSession", session);
@@ -30,11 +28,6 @@ int main()
         std::cout << session.name << "\n" << session.op.string() << "\n";
     } catch (std::exception const& exc) {
         std::cout << exc.what() << "\n";
-    }
-
-    for (auto const& [key, value] : metadata)
-    {
-        std::cout << key << "=" << value << "\n";
     }
 
     std::cout << std::flush;
