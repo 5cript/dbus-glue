@@ -2,6 +2,9 @@
 
 #include "sdbus_core.hpp"
 #include "object_path.hpp"
+#include "signature.hpp"
+#include "file_descriptor.hpp"
+#include "struct_adapter.hpp"
 
 #include <string>
 #include <string_view>
@@ -18,7 +21,7 @@ namespace DBusMock::Bindings
     /**
      *	Converts a C++ type int a dbus char.
      */
-    template <typename T>
+    template <typename T, typename SFINAE = void>
     struct type_detect{};
 
     template <typename T, typename SFINAE = void>
@@ -87,6 +90,8 @@ namespace DBusMock::Bindings
             });
         }
     };
+
+    using variant = resolvable_variant;
 
     template <template <typename...> typename MapT, typename... Remain>
     using variant_dictionary = MapT <std::string, resolvable_variant, Remain...>;
@@ -185,6 +190,18 @@ namespace DBusMock::Bindings
     };
 
     template <>
+    struct type_detect <signature>
+    {
+        constexpr static char const* value = "g";
+    };
+
+    template <>
+    struct type_detect <file_descriptor>
+    {
+        constexpr static char const* value = "h";
+    };
+
+    template <>
     struct type_detect <std::string>
     {
         constexpr static char const* value = "s";
@@ -194,6 +211,12 @@ namespace DBusMock::Bindings
     struct type_detect <char const*>
     {
         constexpr static char const* value = "s";
+    };
+
+    template <typename T>
+    struct type_detect <T, std::enable_if_t <std::is_class_v <T> && AdaptedStructs::struct_as_tuple <T>::is_adapted>>
+    {
+        constexpr static char const* value = "r";
     };
 
     template <typename T>

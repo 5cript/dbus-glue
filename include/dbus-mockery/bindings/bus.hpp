@@ -161,7 +161,7 @@ namespace DBusMock::Bindings
             T& prop
         )
         {
-            auto message = call_method_simple(
+            auto message = call_method(
                 service,
                 path,
                 "org.freedesktop.DBus.Properties",

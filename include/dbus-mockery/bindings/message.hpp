@@ -3,6 +3,7 @@
 #include "sdbus_core.hpp"
 #include "types.hpp"
 #include "object_path.hpp"
+#include "struct_adapter.hpp"
 
 #include <memory>
 #include <string>
@@ -26,6 +27,7 @@ namespace DBusMock::Bindings
         ~message();
 
         // This class manages resources, dont copy
+        // note: there are functions for reference counting, but i dont want shared_ptr semantics for this.
         message& operator=(message const&) = delete;
         message(message const&) = delete;
         message& operator=(message&&);
@@ -146,18 +148,20 @@ namespace DBusMock::Bindings
     // read_proxy
     //-----------------------------------------------------------------------------------------------------------------
 
-    template <template <typename, typename...> typename ContainerT, typename ValueT, typename... ContainerTemplParams>
-    struct message::read_proxy <ContainerT <ValueT, ContainerTemplParams...>, void>
+    template <template <typename, typename...> typename ContainerT, template <typename> typename AllocatorT, typename ValueT>
+    struct message::read_proxy <ContainerT <ValueT, AllocatorT <ValueT>>, void>
     {
-        static int read(message& msg, ContainerT <ValueT, ContainerTemplParams...>& container)
+        using container_type = ContainerT <ValueT, AllocatorT <ValueT>>;
+        static int read(message& msg, container_type& container)
         {
             sd_bus_message* smsg = static_cast <sd_bus_message*> (msg);
+            auto type = msg.type();
 
-            if (msg.type().type != 'a')
+            if (type.type != 'a')
                 throw std::invalid_argument("contained type is not an array");
 
             using namespace std::string_literals;
-            auto r = sd_bus_message_enter_container(smsg, SD_BUS_TYPE_ARRAY, type_detect<ValueT>::value);
+            auto r = sd_bus_message_enter_container(smsg, SD_BUS_TYPE_ARRAY, type.contained.data());
             if (r < 0)
                 throw std::runtime_error("could not enter array: "s + strerror(-r));
 
@@ -245,6 +249,43 @@ namespace DBusMock::Bindings
         }
     };
 
+    template <>
+    struct message::read_proxy <file_descriptor, void>
+    {
+        static int read(message& msg, file_descriptor& value)
+        {
+            using namespace std::string_literals;
+            sd_bus_message* smsg = static_cast <sd_bus_message*> (msg);
+
+            int fd;
+            auto r = sd_bus_message_read_basic(smsg, type_detect <file_descriptor>::value[0], &fd);
+            value = fd;
+
+            if (r < 0)
+                throw std::runtime_error("could not read string from message: "s + strerror(-r));
+
+            return r;
+        }
+    };
+
+    template <>
+    struct message::read_proxy <signature, void>
+    {
+        static int read(message& msg, signature& sign)
+        {
+            using namespace std::string_literals;
+            sd_bus_message* smsg = static_cast <sd_bus_message*> (msg);
+
+            char const* value;
+            auto r = sd_bus_message_read_basic(smsg, type_detect <signature>::value[0], &value);
+            if (r < 0)
+                throw std::runtime_error("could not read object path from message: "s + strerror(-r));
+
+            sign = signature{value};
+            return r;
+        }
+    };
+
     template <template <typename...> typename MapT, typename... Remain>
     struct message::read_proxy <variant_dictionary <MapT, Remain...>>
     {
@@ -286,6 +327,54 @@ namespace DBusMock::Bindings
             if (r < 0)
                 throw std::runtime_error("could not exit dictionary: "s + strerror(-r));
 
+            return r;
+        }
+    };
+
+    template<typename Tuple, std::size_t... Is>
+    int read_tuple_impl
+    (
+        message& msg,
+        Tuple& t,
+        std::index_sequence<Is...>
+    )
+    {
+        return (msg.read(std::get<Is>(t)) + ... + 0);
+    }
+
+    template <typename... Parameters>
+    struct message::read_proxy <std::tuple <Parameters...>, void>
+    {
+        static int read(message& msg, std::tuple <Parameters...>& tuple)
+        {
+            using namespace std::string_literals;
+            sd_bus_message* smsg = static_cast <sd_bus_message*> (msg);
+
+            auto r = sd_bus_message_enter_container(smsg, SD_BUS_TYPE_STRUCT, msg.type().contained.data());
+            if (r < 0)
+                throw std::runtime_error("could not enter struct: "s + strerror(-r));
+
+            r = read_tuple_impl(msg, tuple, std::make_index_sequence <std::tuple_size_v <std::decay_t <decltype(tuple)>>>{});
+
+            auto r_exit = sd_bus_message_exit_container(smsg);
+            if (r_exit < 0)
+                throw std::runtime_error("could not exit struct: "s + strerror(-r));
+
+            if (msg.type().type == '\0')
+                return 0;
+            return r;
+        }
+    };
+
+    template <typename T>
+    struct message::read_proxy <T, std::enable_if_t <std::is_class_v <T> && AdaptedStructs::struct_as_tuple <T>::is_adapted>>
+    {
+        static int read(message& msg, T& object)
+        {
+            using tuple_type = typename AdaptedStructs::struct_as_tuple <T>::tuple_type;
+            tuple_type tuple;
+            int r = msg.read(tuple);
+            object = AdaptedStructs::struct_as_tuple <T>::from_tuple(tuple);
             return r;
         }
     };

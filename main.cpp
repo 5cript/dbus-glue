@@ -2,6 +2,7 @@
 #include <dbus-mockery/bindings/sdbus_core.hpp>
 #include <dbus-mockery/bindings/message.hpp>
 #include <dbus-mockery/bindings/bus.hpp>
+#include <dbus-mockery/bindings/struct_adapter.hpp>
 
 #include <iostream>
 #include <utility>
@@ -11,17 +12,21 @@
 
 using namespace DBusMock;
 
-using face = declare_interface<
-    methods <
-        method <std::pair <int, int>()>
-    >,
-    properties <
+struct User
+{
+    uint32_t id;
+    std::string name;
+    object_path dbusProfile;
+};
 
-    >,
-    signals <
+struct Session
+{
+    std::string name;
+    object_path op;
+};
 
-    >
->;
+MAKE_DBUS_STRUCT(User, id, name, dbusProfile)
+MAKE_DBUS_STRUCT(Session, name, op)
 
 int main()
 {
@@ -30,25 +35,16 @@ int main()
     std::map<std::string, std::string> metadata;
 
     try {
-        //auto response = bus.call_method("org.freedesktop.ColorManager", "/org/freedesktop/ColorManager", "org.freedesktop.ColorManager", "GetDevices");
-        auto response = bus.call_method("org.freedesktop.hostname1", "/org/freedesktop/hostname1", "org.freedesktop.hostname1", "GetProductUUID", true);
-        /*
-        auto response = bus.call_method(
-            "org.freedesktop.timedate1",
-            "/org/freedesktop/timedate1",
-            "org.freedesktop.timedate1",
-            "ListTimezones"
-        );
-        */
+        auto response = bus.call_method("org.freedesktop.login1", "/org/freedesktop/login1", "org.freedesktop.login1.Manager", "ListUsers");
 
-        std::cout << response.comprehensible_type() << "\n";
+        std::cout << response.type().type << "" << response.type().contained << "\n";
 
-        std::vector <uint8_t> vop;
-        response.read(vop);
+        std::vector <User> users;
+        response.read(users);
 
-        for (auto const& path : vop)
+        for (auto const& u: users)
         {
-            std::cout << path << "\n";
+            std::cout << u.id << ", " << u.name << ", " << u.dbusProfile << "\n";
         }
     } catch (std::exception const& exc) {
         std::cout << exc.what() << "\n";
