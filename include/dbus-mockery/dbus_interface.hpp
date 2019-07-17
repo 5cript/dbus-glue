@@ -9,6 +9,7 @@
 #include <boost/preprocessor/seq/for_each_i.hpp>
 #include <boost/preprocessor/seq/enum.hpp>
 #include <boost/preprocessor/seq/transform.hpp>
+#include <boost/preprocessor/stringize.hpp>
 
 #include <tuple>
 #include <type_traits>
@@ -114,7 +115,7 @@ namespace DBusMock::Mocks
     std::decay_t <decltype(IFace::Property)> Property;
 
 #define DBUS_MOCK_PROPERTY_CTOR(r, IFace, Property) \
-    Property{this}
+    , Property{this, BOOST_PP_STRINGIZE(Property)}
 
 // Numerator => some interfaces are very large, and i will hit boost preprocessor limits there :/
 // This is why there is this numeration workaround.
@@ -139,7 +140,7 @@ namespace DBusMock::Mocks
                 std::string const& interface \
             ) \
                 : interface_mock_base{bus, std::move(service), std::move(path), std::move(interface)} \
-                , BOOST_PP_SEQ_ENUM(BOOST_PP_SEQ_TRANSFORM(DBUS_MOCK_PROPERTY_CTOR, IFace, Properties)) \
+                  BOOST_PP_SEQ_FOR_EACH(DBUS_MOCK_PROPERTY_CTOR, IFace, Properties) \
             { \
             } \
             virtual ~interface_mock_n() = default; \
@@ -193,8 +194,14 @@ namespace DBusMock::Mocks \
 namespace DBusMock
 {
     template <typename T>
-    auto create_interface()
+    auto create_interface
+    (
+        Bindings::Bus& bus,
+        std::string const& service,
+        std::string const& path,
+        std::string const& interface
+    )
     {
-        return Mocks::interface_mock <T>{};
+        return Mocks::interface_mock <T>{bus, service, path, interface};
     }
 }

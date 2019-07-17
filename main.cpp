@@ -56,8 +56,10 @@ int main()
         //auto accounts = create_interface <IAccounts> ();
         //accounts.CreateUser("DBUS_USER", "DBUS_USER", 0);
 
-        DBusMock::Mocks::interface_mock <IAccounts> a{bus, "org.freedesktop.Accounts", "/org/freedesktop/Accounts", "org.freedesktop.Accounts"};
-        a.CreateUser("hello", "hello", 0);
+        auto user_control = create_interface <IAccounts> (bus, "org.freedesktop.Accounts", "/org/freedesktop/Accounts", "org.freedesktop.Accounts");
+        user_control.CreateUser("hello", "hello", 0);
+
+        std::cout << user_control.DaemonVersion << "\n";
     }
     catch (std::exception const& exc)
     {
