@@ -17,7 +17,7 @@ class IAccounts
 public:
     virtual ~IAccounts() = default;
 
-    virtual auto CacheUser(std::string const& name) const -> object_path = 0;
+    virtual auto CacheUser(std::string const& name) -> object_path = 0;
     virtual auto CreateUser(std::string const& name, std::string const& fullname, int32_t accountType) -> object_path = 0;
     virtual auto DeleteUser(int64_t id, bool removeFiles) -> void = 0;
     virtual auto FindUserById(int64_t id) -> object_path = 0;
@@ -57,7 +57,14 @@ int main()
         //accounts.CreateUser("DBUS_USER", "DBUS_USER", 0);
 
         auto user_control = create_interface <IAccounts> (bus, "org.freedesktop.Accounts", "/org/freedesktop/Accounts", "org.freedesktop.Accounts");
-        user_control.CreateUser("hello", "hello", 0);
+        //user_control.CreateUser("hello", "hello", 0);
+
+        auto cachedUsers = user_control.ListCachedUsers();
+
+        for (auto const& user : cachedUsers)
+        {
+            std::cout << user << "\n";
+        }
 
         std::cout << user_control.DaemonVersion << "\n";
     }

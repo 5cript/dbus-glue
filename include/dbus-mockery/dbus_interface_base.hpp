@@ -44,4 +44,45 @@ namespace DBusMock::Mocks
 
         virtual ~interface_mock_base() = default;
     };
+
+    class interface_method_base
+    {
+    private:
+        Bindings::Bus& bus;
+        std::string service;
+        std::string path;
+        std::string interface;
+
+    public:
+        interface_method_base
+        (
+            Bindings::Bus& bus,
+            std::string const& service,
+            std::string const& path,
+            std::string const& interface
+        )
+            : bus{bus}
+            , service{service}
+            , path{path}
+            , interface{interface}
+        {
+        }
+
+        template <typename... ParametersT>
+        void call_method_no_reply(std::string_view method_name, ParametersT const&... parameters)
+        {
+            bus.call_method(service, path, interface, method_name, parameters...);
+        }
+
+        template <typename ReturnT, typename... ParametersT>
+        ReturnT call_method(std::string_view method_name, ParametersT const&... parameters)
+        {
+            auto message = bus.call_method(service, path, interface, method_name, parameters...);
+            ReturnT retVal;
+            message.read(retVal);
+            return retVal;
+        }
+
+        virtual ~interface_method_base() = default;
+    };
 }

@@ -4,12 +4,16 @@
 #include "properties.hpp"
 #include "signals.hpp"
 
+#include <iostream>
+#include <boost/type_index.hpp>
+
 #include <boost/preprocessor/variadic/to_seq.hpp>
 #include <boost/preprocessor/seq/for_each.hpp>
 #include <boost/preprocessor/seq/for_each_i.hpp>
 #include <boost/preprocessor/seq/enum.hpp>
 #include <boost/preprocessor/seq/transform.hpp>
 #include <boost/preprocessor/stringize.hpp>
+#include <boost/preprocessor/tuple/elem.hpp>
 
 #include <tuple>
 #include <type_traits>
@@ -64,43 +68,56 @@ namespace DBusMock::Mocks
 #define DBUS_MOCK_METHOD_SINGLE(r, IFace, Method) \
     namespace DBusMock::Mocks::detail \
     { \
-        template <typename> \
+        template <typename Owner, typename> \
         struct BOOST_PP_CAT(_mock_help ## _ ## IFace ## _, Method) \
         { \
         };\
         \
-        template <typename IFace, typename... Parameters> \
-        struct BOOST_PP_CAT(_mock_help ## _ ## IFace ## _, Method) <void(IFace::*)(Parameters...)> \
+        template <typename Owner, typename IFace, typename... Parameters> \
+        struct BOOST_PP_CAT(_mock_help ## _ ## IFace ## _, Method) <Owner, void(IFace::*)(Parameters...)> \
+            : public virtual interface_method_base \
         { \
+            using interface_method_base::interface_method_base;\
+            \
             auto Method([[maybe_unused]] Parameters... params) -> void \
             { \
+                dynamic_cast <interface_method_base*> (this)->call_method_no_reply(BOOST_PP_STRINGIZE(Method), params...); \
             } \
         };\
         \
-        template <typename R, typename IFace, typename... Parameters> \
-        struct BOOST_PP_CAT(_mock_help ## _ ## IFace ## _, Method) <R(IFace::*)(Parameters...)> \
+        template <typename Owner, typename R, typename IFace, typename... Parameters> \
+        struct BOOST_PP_CAT(_mock_help ## _ ## IFace ## _, Method) <Owner, R(IFace::*)(Parameters...)> \
+            : public virtual interface_method_base \
         { \
+            using interface_method_base::interface_method_base;\
+            \
             auto Method([[maybe_unused]] Parameters... params) -> R \
             { \
-                return {}; \
+                return static_cast <interface_method_base*> (this)->call_method <R, Parameters...> (BOOST_PP_STRINGIZE(Method), params...); \
             } \
         };\
         \
-        template <typename R, typename IFace, typename... Parameters> \
-        struct BOOST_PP_CAT(_mock_help ## _ ## IFace ## _, Method) <R(IFace::*)(Parameters...) const> \
+        template <typename Owner, typename R, typename IFace, typename... Parameters> \
+        struct BOOST_PP_CAT(_mock_help ## _ ## IFace ## _, Method) <Owner, R(IFace::*)(Parameters...) const> \
+            : public virtual interface_method_base \
         { \
+            using interface_method_base::interface_method_base;\
+            \
             auto Method([[maybe_unused]] Parameters... params) const -> R \
             { \
-                return {}; \
+                return dynamic_cast <interface_method_base*> (this)->call_method <R, Parameters...> (BOOST_PP_STRINGIZE(Method), params...); \
             } \
         };\
         \
-        template <typename IFace, typename... Parameters> \
-        struct BOOST_PP_CAT(_mock_help ## _ ## IFace ## _, Method) <void(IFace::*)(Parameters...) const> \
+        template <typename Owner, typename IFace, typename... Parameters> \
+        struct BOOST_PP_CAT(_mock_help ## _ ## IFace ## _, Method) <Owner, void(IFace::*)(Parameters...) const> \
+            : public virtual interface_method_base \
         { \
+            using interface_method_base::interface_method_base;\
+            \
             auto Method([[maybe_unused]] Parameters... params) const -> void \
             { \
-                return; \
+                dynamic_cast <interface_method_base*> (this)->call_method_no_reply(BOOST_PP_STRINGIZE(Method), params...); \
             } \
         };\
     }
@@ -108,14 +125,28 @@ namespace DBusMock::Mocks
 #define DBUS_MOCK_METHOD_HELPER(IFace, Methods) \
     BOOST_PP_SEQ_FOR_EACH(DBUS_MOCK_METHOD_SINGLE, IFace, Methods)
 
-#define DBUS_MOCK_METHOD_DERIVE(r, IFace, Method) \
-    public BOOST_PP_CAT(detail::_mock_help ## _ ## IFace ## _, Method) <decltype(&IFace::Method)>
+#define DBUS_MOCK_METHOD_TYPE_FORGE(Data, Method) \
+    BOOST_PP_CAT( \
+        BOOST_PP_CAT( \
+            BOOST_PP_CAT( \
+                BOOST_PP_CAT(detail::_mock_help, _), BOOST_PP_TUPLE_ELEM(0, Data) \
+            ), _ \
+        ), Method \
+    ) \
+    <BOOST_PP_TUPLE_ELEM(1, Data), BOOST_PP_TUPLE_ELEM(2, Data), decltype(&BOOST_PP_TUPLE_ELEM(0, Data)::Method)>
+
+// Data = (IFace, OwnerPart1, OwnerPart2)
+#define DBUS_MOCK_METHOD_DERIVE(r, Data, Method) \
+    , public DBUS_MOCK_METHOD_TYPE_FORGE(Data, Method)
 
 #define DBUS_MOCK_PROPERTY_ROLL(r, IFace, Property) \
     std::decay_t <decltype(IFace::Property)> Property;
 
 #define DBUS_MOCK_PROPERTY_CTOR(r, IFace, Property) \
     , Property{this, BOOST_PP_STRINGIZE(Property)}
+
+#define DBUS_MOCK_METHOD_CTOR(r, Data, Method) \
+    , DBUS_MOCK_METHOD_TYPE_FORGE(Data, Method){bus, service, path, interface}
 
 // Numerator => some interfaces are very large, and i will hit boost preprocessor limits there :/
 // This is why there is this numeration workaround.
@@ -127,7 +158,7 @@ namespace DBusMock::Mocks
         template <> \
         struct interface_mock_n <IFace, NUMERATOR> \
             : virtual interface_mock_base \
-            , BOOST_PP_SEQ_ENUM(BOOST_PP_SEQ_TRANSFORM(DBUS_MOCK_METHOD_DERIVE, IFace, Methods)) \
+              BOOST_PP_SEQ_FOR_EACH(DBUS_MOCK_METHOD_DERIVE, (IFace, interface_mock_n <IFace, NUMERATOR>), Methods) \
         { \
         public: \
             BOOST_PP_SEQ_FOR_EACH(DBUS_MOCK_PROPERTY_ROLL, IFace, Properties) \
@@ -139,7 +170,9 @@ namespace DBusMock::Mocks
                 std::string const& path, \
                 std::string const& interface \
             ) \
-                : interface_mock_base{bus, std::move(service), std::move(path), std::move(interface)} \
+                : interface_mock_base{bus, service, path, interface} \
+                , interface_method_base{bus, service, path, interface} \
+                  BOOST_PP_SEQ_FOR_EACH(DBUS_MOCK_METHOD_CTOR, (IFace, interface_mock_n <IFace, NUMERATOR>), Methods) \
                   BOOST_PP_SEQ_FOR_EACH(DBUS_MOCK_PROPERTY_CTOR, IFace, Properties) \
             { \
             } \
@@ -172,6 +205,7 @@ namespace DBusMock::Mocks \
             std::string const& interface \
         ) \
             : interface_mock_base{bus, service, path, interface} \
+            , interface_method_base{bus, service, path, interface} \
             , BOOST_PP_SEQ_FOR_EACH(DBUS_MOCK_CTOR_ZIP_SEQ_EACH, IFace, SEQ) interface_mock_n_dummy{} \
         { \
         } \
