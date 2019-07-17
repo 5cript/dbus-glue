@@ -1,14 +1,8 @@
 #include <dbus-mockery/dbus_interface.hpp>
-#include <dbus-mockery/bindings/sdbus_core.hpp>
-#include <dbus-mockery/bindings/message.hpp>
-#include <dbus-mockery/bindings/bus.hpp>
-#include <dbus-mockery/bindings/struct_adapter.hpp>
 
 #include <iostream>
-#include <utility>
 #include <vector>
 #include <string>
-#include <map>
 
 using namespace DBusMock;
 
@@ -53,9 +47,6 @@ int main()
 
     try
     {
-        //auto accounts = create_interface <IAccounts> ();
-        //accounts.CreateUser("DBUS_USER", "DBUS_USER", 0);
-
         auto user_control = create_interface <IAccounts> (bus, "org.freedesktop.Accounts", "/org/freedesktop/Accounts", "org.freedesktop.Accounts");
         //user_control.CreateUser("hello", "hello", 0);
 
@@ -72,8 +63,6 @@ int main()
     {
         std::cout << exc.what() << "\n";
     }
-
-    std::cout << std::flush;
 
     return 0;
 }
