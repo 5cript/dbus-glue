@@ -24,6 +24,8 @@ add_executable(${PROJECT_NAME}
    "source/dbus-mockery/bindings/bus.cpp"
    "source/dbus-mockery/bindings/object_path.cpp"
    "source/dbus-mockery/bindings/signature.cpp"
+   "source/dbus-mockery/generator/generator.cpp"
+   "source/dbus-mockery/generator/introspect.cpp"
 )
 
 # Include Dirs
