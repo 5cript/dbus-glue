@@ -2,14 +2,31 @@
 
 #include "sdbus_core.hpp"
 #include "message.hpp"
+#include "slot.hpp"
 #include "property.hpp"
 
 #include <string_view>
 #include <string>
 #include <iostream>
+#include <functional>
+#include <memory>
 
 namespace DBusMock::Bindings
 {
+    extern "C" {
+        static int generic_callback(sd_bus_message *m, void *userdata, sd_bus_error *ret_error)
+        {
+            int bla;
+            auto* base = reinterpret_cast<slot_base*>(userdata);
+            message msg{m};
+            base->pass_message_to_slot<>(msg, base, base->signature());
+
+            // dont aquire ownership, the message is lend.
+            msg.release();
+            return 0;
+        }
+    }
+
     class Bus
     {
     public:
@@ -249,6 +266,61 @@ namespace DBusMock::Bindings
             message.read(dict);
         }
 
+    public:
+        /**
+         * @brief install_signal_listener Installs a listener for a signal.
+         * @param service The service name.
+         * @param path The path in the service.
+         * @param interface The interface name under the path.
+         * @param signal The name of the signal to listen to.
+         * @param release_slot: Gives the connected slot object back to the caller, who then has to manage its lifetime.
+         *        It has to be free'd with delete (means: pass it to a unique_ptr please).
+         */
+        template <typename FunctionT>
+        slot <FunctionT>* install_signal_listener
+        (
+            std::string_view service,
+            std::string_view path,
+            std::string_view interface,
+            std::string_view signal,
+            std::function <FunctionT> func,
+            bool release_slot = false
+        )
+        {
+            slot <FunctionT>* slo;
+            if (!release_slot)
+            {
+                unnamed_slots.emplace_back(
+                    new slot <FunctionT> {func}
+                );
+                slo = static_cast <slot <FunctionT>*>(unnamed_slots.rbegin()->get());
+            }
+            else
+            {
+                slo = new slot <FunctionT>(func);
+            }
+
+            sd_bus_slot* s;
+            sd_bus_match_signal
+            (
+                bus,
+                &s,
+                service.data(),
+                path.data(),
+                interface.data(),
+                signal.data(),
+                &generic_callback,
+                slo
+            );
+
+            slo->reset(s);
+
+            if (release_slot)
+                return slo;
+            else
+                return nullptr;
+        }
+
         ~Bus();
 
         Bus(Bus const&) = delete;
@@ -265,6 +337,7 @@ namespace DBusMock::Bindings
 
     private:
         sd_bus* bus;
+        std::vector <std::unique_ptr <slot_base>> unnamed_slots;
     };
 
     Bus open_system_bus();

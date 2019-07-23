@@ -26,10 +26,11 @@ add_executable(${PROJECT_NAME}
    "source/dbus-mockery/bindings/signature.cpp"
    "source/dbus-mockery/generator/generator.cpp"
    "source/dbus-mockery/generator/introspect.cpp"
+   "source/dbus-mockery/bindings/slot.cpp"
 )
 
 # Include Dirs
-target_include_directories(${PROJECT_NAME} PUBLIC "../FakeIt/single_header/standalone" "include")
+target_include_directories(${PROJECT_NAME} PUBLIC "include")
 
 include(FindPkgConfig)
 

@@ -12,11 +12,15 @@ int main()
 
     try
     {
-        interface_generator gen;
-        std::ofstream temp{"interfaces.hpp", std::ios_base::binary};
-        //gen.write_introspected_xml_to("introspected.xml", bus, "org.bluez", "/org/bluez");
-        gen.generate_interface_from(temp, bus, "org.freedesktop.Accounts", "/org/freedesktop/Accounts/User1000", "Accounts");
-        temp.flush();
+        bus.install_signal_listener <void(object_path)> (
+            "org.freedesktop.Accounts",
+            "/org/freedesktop/Accounts",
+            "org.freedesktop.Accounts",
+            "UserAdded",
+            [](object_path p) {
+                std::cout << p << "\n";
+            }
+        );
     }
     catch (std::exception const& exc)
     {
