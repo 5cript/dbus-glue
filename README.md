@@ -2,12 +2,22 @@
 
 Currently a work in Progress.
 
+## Table of Contents
+* [Summary](#Summary)
+* [Documentation](#Documentation)
+* [Roadmap](#Roadmap)
+* [Build](#Build)
+* [Examples](#Examples)
+
 ## Summary
 The DBus Mockery library wants to make interfacing with a DBus Service / Interface almost as simple as defining a C++ interface.
 The DBus protocol is almost entirely hidden from the user. 
 This library only enables interfacing with existant DBus APIs. Creating one yourself with this library is currently not planned.
 
 Example interfaces / Predefined interfaces can be found in my repository [dbus-mockery-system]("https://github.com/5cript/dbus-mockery-system").
+
+## Documentation
+!! Todo here, will be doxygen generated and served with github.
 
 ## Roadmap
 Here is a checkbox list of all the tings to come and all that are done so far.
