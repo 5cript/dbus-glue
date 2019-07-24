@@ -2,6 +2,7 @@
 
 #include <stdexcept>
 #include <string>
+#include <limits>
 
 using namespace std::string_literals;
 
@@ -48,6 +49,25 @@ namespace DBusMock::Bindings
         : bus{bus}
         , unnamed_slots{}
     {
+    }
+//---------------------------------------------------------------------------------------------------------------------
+    void Bus::busy_loop(std::atomic <bool>& running)
+    {
+        int r = 0;
+        for (;running.load();)
+        {
+            sd_bus_message* m = nullptr;
+            r = sd_bus_process(bus, &m);
+            if (r < 0)
+                throw std::runtime_error("error in bus processing: "s + strerror(-r));
+
+            if (r == 0)
+            {
+                r = sd_bus_wait(bus, 1'000'000);
+                if (r < 0)
+                    throw std::runtime_error("error in bus waiting: "s + strerror(-r));
+            }
+        }
     }
 //---------------------------------------------------------------------------------------------------------------------
     Bus::~Bus()

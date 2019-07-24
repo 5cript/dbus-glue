@@ -497,6 +497,54 @@ namespace DBusMock::Bindings
         }
     };
 
+    template <>
+    struct message::append_proxy <object_path, void>
+    {
+        static int write(message& msg, object_path const& value)
+        {
+            using namespace std::string_literals;
+            sd_bus_message* smsg = static_cast <sd_bus_message*> (msg);
+
+            auto r = sd_bus_message_append_basic(smsg, 'o', value.c_str());
+
+            if (r < 0)
+                throw std::runtime_error("could not append value: "s + strerror(-r));
+            return r;
+        }
+    };
+
+    template <>
+    struct message::append_proxy <signature, void>
+    {
+        static int write(message& msg, signature const& value)
+        {
+            using namespace std::string_literals;
+            sd_bus_message* smsg = static_cast <sd_bus_message*> (msg);
+
+            auto r = sd_bus_message_append_basic(smsg, 'g', value.c_str());
+
+            if (r < 0)
+                throw std::runtime_error("could not append value: "s + strerror(-r));
+            return r;
+        }
+    };
+
+    template <>
+    struct message::append_proxy <file_descriptor, void>
+    {
+        static int write(message& msg, file_descriptor const& value)
+        {
+            using namespace std::string_literals;
+            sd_bus_message* smsg = static_cast <sd_bus_message*> (msg);
+
+            int descr = value.descriptor();
+            auto r = sd_bus_message_append_basic(smsg, 'h', &descr);
+
+            if (r < 0)
+                throw std::runtime_error("could not append value: "s + strerror(-r));
+            return r;
+        }
+    };
 
     template <int S>
     struct message::append_proxy <char[S], void>

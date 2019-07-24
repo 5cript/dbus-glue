@@ -371,7 +371,7 @@ namespace DBusMock::Introspect
                 }
                 stream << ");\n";
             }
-            stream << "\t);\n\n";
+            stream << "\t};\n\n";
         }
         stream << "}\n";
 
@@ -393,7 +393,7 @@ namespace DBusMock::Introspect
                     ++n;
                 }
             }
-            modded_namespace.push_back(')');
+            modded_namespace += "),";
 
             auto fname = face.name;
             std::replace(fname.begin(), fname.end(), '.', '_');

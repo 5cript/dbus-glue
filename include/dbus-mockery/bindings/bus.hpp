@@ -10,16 +10,18 @@
 #include <iostream>
 #include <functional>
 #include <memory>
+#include <atomic>
 
 namespace DBusMock::Bindings
 {
     extern "C" {
         static int generic_callback(sd_bus_message *m, void *userdata, sd_bus_error *ret_error)
         {
-            int bla;
+            std::cout << "hello from callback";
             auto* base = reinterpret_cast<slot_base*>(userdata);
             message msg{m};
-            base->pass_message_to_slot<>(msg, base, base->signature());
+            //base->pass_message_to_slot<>(msg, base, base->signature());
+            base->unpack_message(msg);
 
             // dont aquire ownership, the message is lend.
             msg.release();
@@ -56,6 +58,11 @@ namespace DBusMock::Bindings
          */
         friend Bus open_system_bus_machine(std::string const& machine);
 
+        /**
+         * Enter a busy, blocking event loop, as long as "running is true".
+         * Does not set running to true by itself.
+         */
+        void busy_loop(std::atomic <bool>& running);
 
         /**
          * @brief call_method Calls a specific method

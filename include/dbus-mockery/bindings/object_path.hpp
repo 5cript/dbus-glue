@@ -49,6 +49,11 @@ namespace DBusMock
         {
             return data_;
         }
+
+        char const* c_str() const
+        {
+            return data_.c_str();
+        }
     };
 
     std::ostream& operator<<(std::ostream& stream, object_path const& opath);

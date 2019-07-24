@@ -30,7 +30,7 @@ add_executable(${PROJECT_NAME}
 )
 
 # Include Dirs
-target_include_directories(${PROJECT_NAME} PUBLIC "include")
+target_include_directories(${PROJECT_NAME} PUBLIC "include" "../dbus-mockery-system/include")
 
 include(FindPkgConfig)
 
@@ -40,6 +40,7 @@ message(STATUS "${SYSTEMD}")
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
    ${SYSTEMD_LIBRARIES}
+   -lpthread
 )
 
 # Compiler Options

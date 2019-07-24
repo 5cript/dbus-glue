@@ -16,6 +16,18 @@
 
 // https://dbus.freedesktop.org/doc/dbus-specification.html#type-system
 
+/*
+    types ::= complete_type*
+    complete_type ::= basic_type | variant | structure | array | dictionary
+    basic_type ::= "y" | "n" | "q" | "u" | "i" | "x" | "t" | "d" |
+                   "b" | "h" |
+                   "s" | "o" | "g"
+    variant ::= "v"
+    structure ::= "(" complete_type+ ")"
+    array ::= "a" complete_type
+    dictionary ::= "a" "{" basic_type complete_type "}"
+*/
+
 namespace DBusMock::Bindings
 {
     /**
@@ -50,9 +62,35 @@ namespace DBusMock::Bindings
             case('t'): return func(uint64_t{});
             case('d'): return func(double{});
             case('s'): return func(std::string{});
+            case('o'): return func(object_path{});
+            case('h'): return func(file_descriptor{});
+            case('g'): return func(signature{});
             default:
                 throw std::domain_error("for now unimplemented type");
         }
+    }
+
+    template <typename FunctionT>
+    bool for_signature_do_noexcept (type_descriptor descr, FunctionT func)
+    {
+        switch (descr.type)
+        {
+            case('y'): func(uint8_t{}); break;
+            case('b'): func(bool{}); break;
+            case('n'): func(int16_t{}); break;
+            case('q'): func(uint16_t{}); break;
+            case('i'): func(int32_t{}); break;
+            case('u'): func(uint32_t{}); break;
+            case('x'): func(int64_t{}); break;
+            case('t'): func(uint64_t{}); break;
+            case('d'): func(double{}); break;
+            case('s'): func(std::string{}); break;
+            case('o'): func(object_path{}); break;
+            case('h'): func(file_descriptor{}); break;
+            case('g'): func(signature{}); break;
+            default: return false;
+        }
+        return true;
     }
 
     struct resolvable_variant
@@ -112,6 +150,18 @@ namespace DBusMock::Bindings
             std::string result;
             (insert(result, type_detect <Types>::value),...);
             return result;
+        }
+
+        static type_descriptor make_descriptor()
+        {
+            auto res = make_type();
+            if (res.size() == 1)
+                return {res.front(), ""};
+            if (res.front() == 'a')
+                return {'a', res.substr(1, res.size() - 1)};
+
+            // maybe wrong?
+            return {res.front(), res.substr(1, res.size() - 1)};
         }
     };
 

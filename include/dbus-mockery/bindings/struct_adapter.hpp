@@ -1,11 +1,14 @@
 #pragma once
 
+#include "types.hpp"
+
 #include <boost/preprocessor/variadic/to_seq.hpp>
 #include <boost/preprocessor/seq/for_each.hpp>
 #include <boost/preprocessor/seq/for_each_i.hpp>
 #include <boost/preprocessor/seq/enum.hpp>
 
 #include <tuple>
+#include <unordered_map>
 
 namespace DBusMock::AdaptedStructs
 {
