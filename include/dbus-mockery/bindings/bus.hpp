@@ -11,21 +11,38 @@
 #include <functional>
 #include <memory>
 #include <atomic>
+#include <mutex>
 
 namespace DBusMock::Bindings
 {
     extern "C" {
         static int generic_callback(sd_bus_message *m, void *userdata, sd_bus_error *ret_error)
         {
-            std::cout << "hello from callback";
             auto* base = reinterpret_cast<slot_base*>(userdata);
             message msg{m};
-            //base->pass_message_to_slot<>(msg, base, base->signature());
-            base->unpack_message(msg);
-
-            // dont aquire ownership, the message is lend.
-            msg.release();
-            return 0;
+            try
+            {
+                if (ret_error != nullptr && sd_bus_error_is_set(ret_error))
+                {
+                    base->on_fail(msg, ret_error->message);
+                    sd_bus_error_free(ret_error);
+                }
+                else
+                    base->unpack_message(msg);
+                msg.release();
+                return 1;
+            }
+            catch (std::exception const& exc)
+            {
+                base->on_fail(msg, exc.what());
+                msg.release();
+                return -1;
+            }
+            catch (...)
+            {
+                msg.release();
+                return -1;
+            }
         }
     }
 
@@ -62,7 +79,7 @@ namespace DBusMock::Bindings
          * Enter a busy, blocking event loop, as long as "running is true".
          * Does not set running to true by itself.
          */
-        void busy_loop(std::atomic <bool>& running);
+        void busy_loop(std::atomic <bool>* running);
 
         /**
          * @brief call_method Calls a specific method
@@ -81,11 +98,13 @@ namespace DBusMock::Bindings
             ParametersT const&... parameters // TODO: improvable for const char* and fundamentals
         )
         {
+            std::scoped_lock guard{sdbus_lock_};
+
             using namespace std::string_literals;
 
             sd_bus_message* raw_handle{};
             auto r = sd_bus_message_new_method_call(
-                bus,
+                bus_,
                 &raw_handle,
                 service.data(),
                 path.data(),
@@ -110,7 +129,7 @@ namespace DBusMock::Bindings
                 throw std::runtime_error("could not set message reply expectation: "s + strerror(-r));
 
             // call method
-            r = sd_bus_call(bus, sendable.handle(), 0, &error, &reply_handle);
+            r = sd_bus_call(bus_, sendable.handle(), 0, &error, &reply_handle);
 
             // convert error into throwable if set.
             if (sd_bus_error_is_set(&error))
@@ -124,49 +143,33 @@ namespace DBusMock::Bindings
         }
 
         /**
-         * @brief call_method Calls a specific method
-         * @param service The service name.
-         * @param path The path in the service.
-         * @param interface The interface name under the path.
-         * @param method_name The method name of the interface.
-         * @return A method call result
+         *  flushes the bus.
          */
-        template <typename... ParametersT>
-        [[deprecated]] message call_method_simple(
-            std::string_view service,
-            std::string_view path,
-            std::string_view interface,
-            std::string_view method_name,
-            ParametersT const&... parameters // TODO: improvable for const char* and fundamentals
-        )
-        {
-            sd_bus_message* msg;
+        void flush();
 
-            auto error = SD_BUS_ERROR_NULL;
-            auto r = sd_bus_call_method(
-                bus,
-                service.data(),
-                path.data(),
-                interface.data(),
-                method_name.data(),
-                &error,
-                &msg,
-                type_constructor <ParametersT...>::make_type().c_str(),
-                parameters...
-            );
+        /**
+         * @brief attach_event_system Attaches the bus to an event system.
+         *        This is used for more complex event loops.
+         * @see https://www.freedesktop.org/software/systemd/man/sd-event.html
+         * @param e An sd_event. You have to create and provide it yourself, look up docs for sd_bus_attach_event()
+         * @param priority. A priority. Valid parameters are:
+         *  SD_EVENT_PRIORITY_IMPORTANT
+         *  SD_EVENT_PRIORITY_NORMAL
+         *  SD_EVENT_PRIORITY_IDLE
+         */
+        void attach_event_system(sd_event* e, int priority = SD_EVENT_PRIORITY_NORMAL);
 
-            if (r < 0)
-            {
-                std::string msg = error.message;
-                sd_bus_error_free(&error);
-                using namespace std::string_literals;
-                throw std::runtime_error("cannot call method: "s + msg);
-            }
+        /**
+         * @brief detach_event_system Detaches the bus from an event system.
+         * Since its not documented in sd_bus, I dont know what happens if you call it without it having an attached
+         * event system.
+         */
+        void detach_event_system();
 
-            sd_bus_error_free(&error);
-
-            return message{msg};
-        }
+        /**
+         *  Returns the attached event system, if any.
+         */
+        sd_event* get_event_system();
 
         /**
          * @brief call_method Retrieves a single property
@@ -185,6 +188,8 @@ namespace DBusMock::Bindings
             T& prop
         )
         {
+            std::scoped_lock guard{sdbus_lock_};
+
             auto message = call_method(
                 service,
                 path,
@@ -206,11 +211,13 @@ namespace DBusMock::Bindings
             T const& prop
         )
         {
+            std::scoped_lock guard{sdbus_lock_};
+
             using namespace std::string_literals;
 
             sd_bus_message* m{};
             auto r = sd_bus_message_new_method_call(
-                bus,
+                bus_,
                 &m,
                 service.data(),
                 path.data(),
@@ -235,7 +242,7 @@ namespace DBusMock::Bindings
             if (r < 0)
                 throw std::runtime_error("could not set message reply expectation: "s + strerror(-r));
 
-            r = sd_bus_call(bus, m, 0, &error, &reply);
+            r = sd_bus_call(bus_, m, 0, &error, &reply);
 
             if (sd_bus_error_is_set(&error))
                 throw std::runtime_error(error.message);
@@ -262,6 +269,8 @@ namespace DBusMock::Bindings
             variant_dictionary <MapType, Remain...>& dict
         )
         {
+            std::scoped_lock guard{sdbus_lock_};
+
             auto message = call_method(
                 service,
                 path,
@@ -280,6 +289,8 @@ namespace DBusMock::Bindings
          * @param path The path in the service.
          * @param interface The interface name under the path.
          * @param signal The name of the signal to listen to.
+         * @param func The function that is called on an emitted signal
+         * @param fail A function that is called when an error occured
          * @param release_slot: Gives the connected slot object back to the caller, who then has to manage its lifetime.
          *        It has to be free'd with delete (means: pass it to a unique_ptr please).
          */
@@ -290,27 +301,30 @@ namespace DBusMock::Bindings
             std::string_view path,
             std::string_view interface,
             std::string_view signal,
-            std::function <FunctionT> func,
+            std::function <FunctionT> const& func,
+            std::function <void(message&, std::string const&)> const& fail /* called in error case */,
             bool release_slot = false
         )
         {
+            std::scoped_lock guard{sdbus_lock_};
+
             slot <FunctionT>* slo;
             if (!release_slot)
             {
-                unnamed_slots.emplace_back(
-                    new slot <FunctionT> {func}
+                unnamed_slots_.emplace_back(
+                    new slot <FunctionT> {func, fail}
                 );
-                slo = static_cast <slot <FunctionT>*>(unnamed_slots.rbegin()->get());
+                slo = static_cast <slot <FunctionT>*>(unnamed_slots_.rbegin()->get());
             }
             else
             {
-                slo = new slot <FunctionT>(func);
+                slo = new slot <FunctionT>(func, fail);
             }
 
             sd_bus_slot* s;
             sd_bus_match_signal
             (
-                bus,
+                bus_,
                 &s,
                 service.data(),
                 path.data(),
@@ -340,11 +354,12 @@ namespace DBusMock::Bindings
          * @brief Bus Constructor is private, because one is meant to use the factories.
          * @param bus
          */
-        Bus(sd_bus* bus);
+        Bus(sd_bus* bus_);
 
     private:
-        sd_bus* bus;
-        std::vector <std::unique_ptr <slot_base>> unnamed_slots;
+        sd_bus* bus_;
+        std::vector <std::unique_ptr <slot_base>> unnamed_slots_;
+        std::recursive_mutex sdbus_lock_;
     };
 
     Bus open_system_bus();

@@ -3,6 +3,8 @@
 #include "message.hpp"
 
 #include <functional>
+#include <iostream>
+#include <tuple>
 
 namespace DBusMock::Bindings
 {
@@ -32,7 +34,16 @@ namespace DBusMock::Bindings
 
         void unpack_message(message& msg)
         {
+            func_(std::move(read_single <List>(msg))...);
+        }
 
+    private:
+        template <typename T>
+        T read_single(message& msg)
+        {
+            T v;
+            msg.read(v);
+            return v;
         }
 
     private:
