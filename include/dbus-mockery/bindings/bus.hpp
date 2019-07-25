@@ -4,6 +4,10 @@
 #include "message.hpp"
 #include "slot.hpp"
 #include "property.hpp"
+#include "bus_fwd.hpp"
+#include "event_loop.hpp"
+#include "async_context.hpp"
+#include "detail/slot_holder.hpp"
 
 #include <string_view>
 #include <string>
@@ -11,69 +15,47 @@
 #include <functional>
 #include <memory>
 #include <atomic>
+#include <chrono>
 #include <mutex>
+
+extern "C" {
+    int dbus_mock_signal_callback(sd_bus_message *m, void *userdata, sd_bus_error *ret_error);
+    int dbus_mock_async_callback(sd_bus_message *m, void *userdata, sd_bus_error *ret_error);
+}
 
 namespace DBusMock::Bindings
 {
-    extern "C" {
-        static int generic_callback(sd_bus_message *m, void *userdata, sd_bus_error *ret_error)
-        {
-            auto* base = reinterpret_cast<slot_base*>(userdata);
-            message msg{m};
-            try
-            {
-                if (ret_error != nullptr && sd_bus_error_is_set(ret_error))
-                {
-                    base->on_fail(msg, ret_error->message);
-                    sd_bus_error_free(ret_error);
-                }
-                else
-                    base->unpack_message(msg);
-                msg.release();
-                return 1;
-            }
-            catch (std::exception const& exc)
-            {
-                base->on_fail(msg, exc.what());
-                msg.release();
-                return -1;
-            }
-            catch (...)
-            {
-                msg.release();
-                return -1;
-            }
-        }
-    }
-
-    class Bus
+    class dbus
     {
+    public:
+        friend int ::dbus_mock_async_callback(sd_bus_message *m, void *userdata, sd_bus_error *ret_error);
+
     public:
         /**
          * @brief open_system_bus Open local system bus.
          * @return
          */
-        friend Bus open_system_bus();
+        friend dbus open_system_bus();
 
         /**
          * @brief open_user_bus Open local user bus.
          * @return
          */
-        friend Bus open_user_bus();
+        friend dbus open_user_bus();
 
         /**
          * @brief open_system_bus Opens the system bus on a remote ssh host.
          * @param host
          * @return
          */
-        friend Bus open_system_bus(std::string const& host);
+        friend dbus open_system_bus(std::string const& host);
 
         /**
          * @brief open_system_bus_machine Opens system bus of machine.
          * @param host
          * @return
          */
-        friend Bus open_system_bus_machine(std::string const& machine);
+        friend dbus open_system_bus_machine(std::string const& machine);
 
         /**
          * Enter a busy, blocking event loop, as long as "running is true".
@@ -143,40 +125,106 @@ namespace DBusMock::Bindings
         }
 
         /**
+         * @brief call_method Calls a specific method
+         * @param service The service name.
+         * @param path The path in the service.
+         * @param interface The interface name under the path.
+         * @param method_name The method name of the interface.
+         * @param params The parameters to pass to the method.
+         * @param cb A callback called when the method call success
+         * @param fail A callback called when the method call fails.
+         * @param timeout A timeout. The call fails, if the timeout is reached
+         * @return A method call result
+         */
+        template <typename CallbackSignature, typename... ParametersT>
+        void call_method_async(
+            std::string_view service,
+            std::string_view path,
+            std::string_view interface,
+            std::string_view method_name,
+            std::function <CallbackSignature> const& cb,
+            std::function <void(message&, std::string const&)> const& fail,
+            std::chrono::microseconds timeout,
+            ParametersT const&... parameters // TODO: improvable for const char* and fundamentals
+        )
+        {
+            using namespace std::string_literals;
+
+            int r = 0;
+            sd_bus_message* raw_handle{};
+            {
+                std::scoped_lock guard{sdbus_lock_};
+                r = sd_bus_message_new_method_call(
+                    bus_,
+                    &raw_handle,
+                    service.data(),
+                    path.data(),
+                    interface.data(),
+                    method_name.data()
+                );
+                if (r < 0)
+                    throw std::runtime_error("could not create message call on bus: "s + strerror(-r));
+            }
+
+            // buildup message, nothing else will touch this, so locking here is not necessary.
+            message sendable{raw_handle};
+
+            // Append parameters
+            (sendable.append(parameters), ...);
+
+            sendable.release(); // the async context takes over later
+
+            // set expect reply (always, since it can error out)
+            r = sd_bus_message_set_expect_reply(raw_handle, 1);
+            if (r < 0)
+                throw std::runtime_error("could not set message reply expectation: "s + strerror(-r));
+
+
+            {
+                std::scoped_lock guard{sdbus_lock_};
+                // call method
+                sd_bus_slot* slot;
+                auto* ac = async_slots_.insert(
+                    std::unique_ptr <async_context_base> (new async_context <
+                        CallbackSignature,
+                        void(message&, std::string const&)
+                    >(this, raw_handle, cb, fail))
+                );
+                r = sd_bus_call_async(bus_, &slot, raw_handle, dbus_mock_async_callback, ac, static_cast <uint64_t> (timeout.count()));
+                ac->slot(slot);
+            }
+
+            if (r < 0)
+                throw std::runtime_error("could not send message on bus: "s + strerror(-r));
+        }
+
+        /**
          *  flushes the bus.
          */
         void flush();
 
         /**
-         * @brief attach_event_system Attaches the bus to an event system.
-         *        This is used for more complex event loops.
-         * @see https://www.freedesktop.org/software/systemd/man/sd-event.html
-         * @param e An sd_event. You have to create and provide it yourself, look up docs for sd_bus_attach_event()
-         * @param priority. A priority. Valid parameters are:
-         *  SD_EVENT_PRIORITY_IMPORTANT
-         *  SD_EVENT_PRIORITY_NORMAL
-         *  SD_EVENT_PRIORITY_IDLE
+         * @brief install_event_loop Install some event loop implementation into the bus connection.
+         *        Its automatically started, if not already so.
+         * @param esys
          */
-        void attach_event_system(sd_event* e, int priority = SD_EVENT_PRIORITY_NORMAL);
+        void install_event_loop(std::unique_ptr <event_loop> esys);
 
         /**
-         * @brief detach_event_system Detaches the bus from an event system.
-         * Since its not documented in sd_bus, I dont know what happens if you call it without it having an attached
-         * event system.
+         * @brief operator sd_bus * this is castable directly to the handle.
          */
-        void detach_event_system();
+        explicit operator sd_bus*()
+        {
+            return bus_;
+        }
 
         /**
-         *  Returns the attached event system, if any.
-         */
-        sd_event* get_event_system();
-
-        /**
-         * @brief call_method Retrieves a single property
+         * @brief read_property Retrieves a single property
          * @param service The service name.
          * @param path The path in the service.
          * @param interface The interface name under the path.
-         * @param prop The name of the property to read
+         * @param property_name The name of the property to read
+         * @param prop The value to read into.
          * @return nothing
          */
         template <typename T>
@@ -202,6 +250,15 @@ namespace DBusMock::Bindings
             message.read(prop);
         }
 
+        /**
+         * @brief write_property Retrieves a single property
+         * @param service The service name.
+         * @param path The path in the service.
+         * @param interface The interface name under the path.
+         * @param property_name The name of the property to write.
+         * @param prop The value to write
+         * @return nothing
+         */
         template <typename T>
         void write_property(
             std::string_view service,
@@ -282,7 +339,6 @@ namespace DBusMock::Bindings
             message.read(dict);
         }
 
-    public:
         /**
          * @brief install_signal_listener Installs a listener for a signal.
          * @param service The service name.
@@ -330,7 +386,7 @@ namespace DBusMock::Bindings
                 path.data(),
                 interface.data(),
                 signal.data(),
-                &generic_callback,
+                &dbus_mock_signal_callback,
                 slo
             );
 
@@ -342,28 +398,63 @@ namespace DBusMock::Bindings
                 return nullptr;
         }
 
-        ~Bus();
+        /**
+         * @brief mutex Returns the mutex of the bus, which can be used to synchronize bus operation with
+         *              other sd_bus calls.
+         * @return A reference to the internal mutex.
+         */
+        std::recursive_mutex& mutex();
 
-        Bus(Bus const&) = delete;
-        Bus& operator=(Bus const&) = delete;
-        Bus(Bus&&) = default;
-        Bus& operator=(Bus&&) = default;
+        /**
+         *  Destroys and cleans up the bus connection gracefully.
+         */
+        ~dbus();
+
+        /**
+         * @brief dbus A dbus connection cannot be copied
+         */
+        dbus(dbus const&) = delete;
+
+        /**
+         * @brief dbus A dbus connection cannot be copied
+         */
+        dbus& operator=(dbus const&) = delete;
+
+        /**
+         * @brief dbus A dbus connection cannot be moved
+         */
+        dbus(dbus&&) = delete;
+
+        /**
+         * @brief dbus A dbus connection cannot be moved
+         */
+        dbus& operator=(dbus&&) = delete;
 
     private:
+        /**
+         * @brief free_async_concext Removes an async context from the store. Dont use manually.
+         *        Do note, that if a call to this free, for some inexplicable reason, doesn't get made:
+         *        the async_contexts will get cleaned up on bus death.
+         * @param ac
+         */
+        void free_async_context(async_context_base* ac);
+
         /**
          * @brief Bus Constructor is private, because one is meant to use the factories.
          * @param bus
          */
-        Bus(sd_bus* bus_);
+        dbus(sd_bus* bus_);
 
     private:
         sd_bus* bus_;
         std::vector <std::unique_ptr <slot_base>> unnamed_slots_;
         std::recursive_mutex sdbus_lock_;
+        std::unique_ptr <event_loop> event_loop_;
+        detail::slot_holder async_slots_;
     };
 
-    Bus open_system_bus();
-    Bus open_user_bus();
-    Bus open_system_bus(std::string const& host);
-    Bus open_system_bus_machine(std::string const& machine);
+    dbus open_system_bus();
+    dbus open_user_bus();
+    dbus open_system_bus(std::string const& host);
+    dbus open_system_bus_machine(std::string const& machine);
 }

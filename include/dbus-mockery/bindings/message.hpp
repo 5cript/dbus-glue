@@ -154,13 +154,14 @@ namespace DBusMock::Bindings
         using container_type = ContainerT <ValueT, AllocatorT <ValueT>>;
         static int read(message& msg, container_type& container)
         {
+            using namespace std::string_literals;
+
             sd_bus_message* smsg = static_cast <sd_bus_message*> (msg);
             auto type = msg.type();
 
             if (type.type != 'a')
-                throw std::invalid_argument("contained type is not an array");
+                throw std::invalid_argument("contained type is not an array ("s + type.string() + ")");
 
-            using namespace std::string_literals;
             auto r = sd_bus_message_enter_container(smsg, SD_BUS_TYPE_ARRAY, type.contained.data());
             if (r < 0)
                 throw std::runtime_error("could not enter array: "s + strerror(-r));

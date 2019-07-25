@@ -27,6 +27,9 @@ add_executable(${PROJECT_NAME}
    "source/dbus-mockery/generator/generator.cpp"
    "source/dbus-mockery/generator/introspect.cpp"
    "source/dbus-mockery/bindings/slot.cpp"
+   "source/dbus-mockery/bindings/event_loop.cpp"
+   "source/dbus-mockery/bindings/busy_loop.cpp"
+   "source/dbus-mockery/bindings/detail/slot_holder.cpp"
 )
 
 # Include Dirs

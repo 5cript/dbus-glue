@@ -45,6 +45,15 @@ namespace DBusMock::Bindings
     {
         char type;
         std::string_view contained;
+
+        std::string string() const
+        {
+            std::string s;
+            s.resize(1 + contained.size());
+            s[0] = type;
+            memcpy(&s[1], contained.data(), contained.size());
+            return s;
+        }
     };
 
     template <typename FunctionT>

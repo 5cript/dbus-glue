@@ -5,6 +5,7 @@
 #include <functional>
 #include <iostream>
 #include <tuple>
+#include <type_traits>
 
 namespace DBusMock::Bindings
 {
@@ -39,9 +40,9 @@ namespace DBusMock::Bindings
 
     private:
         template <typename T>
-        T read_single(message& msg)
+        std::decay_t <T> read_single(message& msg)
         {
-            T v;
+            std::decay_t <T> v;
             msg.read(v);
             return v;
         }

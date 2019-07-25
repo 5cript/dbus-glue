@@ -121,9 +121,16 @@ namespace DBusMock::Mocks
         { \
             using interface_method_base::interface_method_base;\
             \
-            auto Method([[maybe_unused]] Parameters... params) -> void \
+            auto Method(Parameters const&... params) -> void \
             { \
-                dynamic_cast <interface_method_base*> (this)->call_method_no_reply(BOOST_PP_STRINGIZE(Method), params...); \
+                call_method_no_reply(BOOST_PP_STRINGIZE(Method), params...); \
+            } \
+            template <typename... ParametersDeduced> \
+            auto Method(DBusMock::async_flag_t, ParametersDeduced&&... params) \
+            { \
+                interface_async_proxy <void(Parameters...)> prox{*this, BOOST_PP_STRINGIZE(Method)}; \
+                prox.bind_parameters(std::forward <ParametersDeduced&&> (params)...); \
+                return prox; \
             } \
         };\
         \
@@ -133,9 +140,16 @@ namespace DBusMock::Mocks
         { \
             using interface_method_base::interface_method_base;\
             \
-            auto Method([[maybe_unused]] Parameters... params) -> R \
+            auto Method(Parameters const&... params) -> R \
             { \
-                return static_cast <interface_method_base*> (this)->call_method <R, Parameters...> (BOOST_PP_STRINGIZE(Method), params...); \
+                return call_method <R, Parameters...> (BOOST_PP_STRINGIZE(Method), params...); \
+            } \
+            template <typename... ParametersDeduced> \
+            auto Method(DBusMock::async_flag_t, ParametersDeduced&&... params) \
+            { \
+                interface_async_proxy <R(Parameters...)> prox{*this, BOOST_PP_STRINGIZE(Method)}; \
+                prox.bind_parameters(std::forward <ParametersDeduced&&> (params)...); \
+                return prox; \
             } \
         };\
         \
@@ -145,9 +159,16 @@ namespace DBusMock::Mocks
         { \
             using interface_method_base::interface_method_base;\
             \
-            auto Method([[maybe_unused]] Parameters... params) const -> R \
+            auto Method(Parameters const&... params) const -> R \
             { \
-                return dynamic_cast <interface_method_base*> (this)->call_method <R, Parameters...> (BOOST_PP_STRINGIZE(Method), params...); \
+                return call_method <R, Parameters...> (BOOST_PP_STRINGIZE(Method), params...); \
+            } \
+            template <typename... ParametersDeduced> \
+            auto Method(DBusMock::async_flag_t, ParametersDeduced&&... params) const \
+            { \
+                interface_async_proxy <R(Parameters...)> prox{*this, BOOST_PP_STRINGIZE(Method)}; \
+                prox.bind_parameters(std::forward <ParametersDeduced&&> (params)...); \
+                return prox; \
             } \
         };\
         \
@@ -157,9 +178,16 @@ namespace DBusMock::Mocks
         { \
             using interface_method_base::interface_method_base;\
             \
-            auto Method([[maybe_unused]] Parameters... params) const -> void \
+            auto Method(Parameters const&... params) const -> void \
             { \
-                dynamic_cast <interface_method_base*> (this)->call_method_no_reply(BOOST_PP_STRINGIZE(Method), params...); \
+                call_method_no_reply(BOOST_PP_STRINGIZE(Method), params...); \
+            } \
+            template <typename... ParametersDeduced> \
+            auto Method(DBusMock::async_flag_t, ParametersDeduced&&... params) const \
+            { \
+                interface_async_proxy <void(Parameters...)> prox{*this, BOOST_PP_STRINGIZE(Method)}; \
+                prox.bind_parameters(std::forward <ParametersDeduced&&> (params)...); \
+                return prox; \
             } \
         };\
     }
@@ -217,7 +245,7 @@ namespace DBusMock::Mocks
         \
         public: \
             interface_mock_n( \
-                Bindings::Bus& bus, \
+                Bindings::dbus& bus, \
                 std::string const& service, \
                 std::string const& path, \
                 std::string const& interface \
@@ -265,7 +293,7 @@ namespace DBusMock::Mocks \
         ) interface_mock_n_dummy \
     { \
         interface_mock( \
-            Bindings::Bus& bus, \
+            Bindings::dbus& bus, \
             std::string const& service, \
             std::string const& path, \
             std::string const& interface \
@@ -307,7 +335,7 @@ namespace DBusMock
     template <typename T>
     auto create_interface
     (
-        Bindings::Bus& bus,
+        Bindings::dbus& bus,
         std::string const& service,
         std::string const& path,
         std::string const& interface

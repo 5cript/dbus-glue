@@ -38,7 +38,7 @@ namespace DBusMock
 //#####################################################################################################################
     void interface_generator::generate_interface_from(
         std::ostream& str,
-        Bindings::Bus& bus,
+        Bindings::dbus& bus,
         std::string const& service,
         std::string const& path,
         std::string nspace_base
@@ -59,7 +59,7 @@ namespace DBusMock
     }
 //---------------------------------------------------------------------------------------------------------------------
     std::string interface_generator::get_introspected_xml_from(
-        Bindings::Bus& bus,
+        Bindings::dbus& bus,
         std::string const& service,
         std::string const& path
     )
@@ -76,7 +76,7 @@ namespace DBusMock
 //---------------------------------------------------------------------------------------------------------------------
     void interface_generator::write_introspected_xml_to(
         std::string const& file_name,
-        Bindings::Bus& bus,
+        Bindings::dbus& bus,
         std::string const& service,
         std::string const& path
     )
