@@ -287,7 +287,7 @@ namespace DBusMock::Bindings
             message msg{m};
             msg.append(interface.data());
             msg.append(property_name.data());
-            msg.append(prop);
+            msg.append(make_variant(prop));
 
             auto error = SD_BUS_ERROR_NULL;
             sd_bus_message* reply{};
@@ -337,6 +337,82 @@ namespace DBusMock::Bindings
             );
 
             message.read(dict);
+        }
+
+        /**
+         * @brief call_method Reads a property asynchronously
+         * @param service The service name.
+         * @param path The path in the service.
+         * @param interface The interface name under the path.
+         * @param property_name The method name of the property.
+         * @param cb A callback called when the method call success
+         * @param fail A callback called when the method call fails.
+         * @param timeout A timeout. The call fails, if the timeout is reached
+         * @return A method call result
+         */
+        template <typename T>
+        void read_property_async(
+            std::string_view service,
+            std::string_view path,
+            std::string_view interface,
+            std::string_view property_name,
+            std::function <void(std::decay_t <T> const&)> const& cb,
+            std::function <void(message&, std::string const&)> const& fail,
+            std::chrono::microseconds timeout
+        )
+        {
+            std::scoped_lock guard{sdbus_lock_};
+
+            call_method_async(
+                service,
+                path,
+                "org.freedesktop.DBus.Properties",
+                "Get",
+                cb,
+                fail,
+                timeout,
+                interface.data(),
+                property_name.data()
+            );
+        }
+
+        /**
+         * @brief call_method Writes a property asynchronously
+         * @param service The service name.
+         * @param path The path in the service.
+         * @param interface The interface name under the path.
+         * @param property_name The method name of the property.
+         * @param cb A callback called when the method call success
+         * @param fail A callback called when the method call fails.
+         * @param timeout A timeout. The call fails, if the timeout is reached
+         * @return A method call result
+         */
+        template <typename T>
+        void write_property_async(
+            std::string_view service,
+            std::string_view path,
+            std::string_view interface,
+            std::string_view property_name,
+            std::function <void(void)> const& cb,
+            std::function <void(message&, std::string const&)> const& fail,
+            std::chrono::microseconds timeout,
+            T const& prop
+        )
+        {
+            std::scoped_lock guard{sdbus_lock_};
+
+            call_method_async(
+                service,
+                path,
+                "org.freedesktop.DBus.Properties",
+                "Set",
+                cb,
+                fail,
+                timeout,
+                interface.data(),
+                property_name.data(),
+                make_variant(prop)
+            );
         }
 
         /**

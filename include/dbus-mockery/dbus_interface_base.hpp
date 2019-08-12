@@ -11,20 +11,43 @@
 
 namespace DBusMock::Mocks
 {
+    namespace detail
+    {
+        template <typename R>
+        struct func_param_devoid
+        {
+            using type = std::function <void(R const&)>;
+        };
+
+        template <>
+        struct func_param_devoid <void>
+        {
+            using type = std::function <void()>;
+        };
+    }
+
     template <typename CallbackT>
     class interface_async_proxy
+    {
+    };
+    template <typename CallbackT>
+    class interface_async_property_proxy
     {
     };
 
     class interface_mock_base
     {
+    public:
+        template <typename> friend class interface_async_proxy;
+        template <typename> friend class interface_async_property_proxy;
+
     private:
         Bindings::dbus& bus;
         std::string service;
         std::string path;
         std::string interface;
 
-    protected:
+    public:
         interface_mock_base
         (
             Bindings::dbus& bus,
@@ -49,35 +72,6 @@ namespace DBusMock::Mocks
         void write_property(std::string_view property_name, T const& prop)
         {
             bus.write_property(service, path, interface, property_name, prop);
-        }
-
-        virtual ~interface_mock_base() = default;
-    };
-
-    class interface_method_base
-    {
-    public:
-        template <typename> friend class interface_async_proxy;
-
-    private:
-        Bindings::dbus& bus;
-        std::string service;
-        std::string path;
-        std::string interface;
-
-    protected:
-        interface_method_base
-        (
-            Bindings::dbus& bus,
-            std::string const& service,
-            std::string const& path,
-            std::string const& interface
-        )
-            : bus{bus}
-            , service{service}
-            , path{path}
-            , interface{interface}
-        {
         }
 
         template <typename... ParametersT>
@@ -118,42 +112,118 @@ namespace DBusMock::Mocks
             );
         }
 
-        virtual ~interface_method_base() = default;
+        template <typename T>
+        void read_property_async
+        (
+            std::string_view property_name,
+            std::function <void (T const&)> const& cb,
+            std::function <void(Bindings::message&, std::string const&)> const& err,
+            std::chrono::microseconds timeout
+        ) const
+        {
+            bus.read_property_async <T>(
+                service,
+                path,
+                interface,
+                property_name,
+                cb,
+                err,
+                timeout
+            );
+        }
+
+        template <typename T>
+        void write_property_async
+        (
+            std::string_view property_name,
+            std::function <void()> const& cb,
+            std::function <void(Bindings::message&, std::string const&)> const& err,
+            std::chrono::microseconds timeout,
+            T const& prop
+        )
+        {
+            bus.write_property_async(
+                service,
+                path,
+                interface,
+                property_name,
+                cb,
+                err,
+                timeout,
+                prop
+            );
+        }
+
+        virtual ~interface_mock_base() = default;
     };
 
-    template <typename R, typename... ParametersT>
-    class interface_async_proxy <R(ParametersT...)>
+    template <typename R>
+    class interface_async_base
     {
     public:
-        interface_async_proxy
+        virtual ~interface_async_base() = default;
+
+        interface_async_base
         (
-            interface_method_base& base,
-            std::string_view method_name
+            interface_mock_base& base,
+            std::string_view sview // generic meaning
         )
             : base_{base}
             , base_params_{
-                method_name,
+                sview,
                 {},
                 {},
                 std::chrono::seconds{10}
             }
+        {
+        }
+
+        interface_async_base& then(typename detail::func_param_devoid <R>::type const& cb)
+        {
+            std::get <1> (base_params_) = cb;
+            return *this;
+        }
+
+        interface_async_base& error(std::function <void(Bindings::message&, std::string const&)> const& fail)
+        {
+            std::get <2> (base_params_) = fail;
+            return *this;
+        }
+
+        interface_async_base& timeout(std::chrono::microseconds timeout)
+        {
+            std::get <3> (base_params_)  = timeout;
+            return *this;
+        }
+
+    protected:
+        interface_mock_base& base_;
+        std::tuple <
+            std::string_view,
+            typename detail::func_param_devoid <R>::type,
+            std::function <void(Bindings::message&, std::string const&)>,
+            std::chrono::microseconds
+        > base_params_;
+    };
+
+    template <typename R, typename... ParametersT>
+    class interface_async_proxy <R(ParametersT...)> : public interface_async_base <R>
+    {
+    public:
+        interface_async_proxy
+        (
+            interface_mock_base& base,
+            std::string_view method_name
+        )
+            : interface_async_base <R>{base, method_name}
             , params_{}
         {
         }
+
         interface_async_proxy& operator=(interface_async_proxy const&) = delete;
         interface_async_proxy& operator=(interface_async_proxy&&) = default;
         interface_async_proxy(interface_async_proxy const&) = delete;
         interface_async_proxy(interface_async_proxy&&) = default;
-
-        ~interface_async_proxy()
-        {
-            auto catuple = std::tuple_cat(std::move(base_params_), std::move(params_));
-            std::apply
-            (
-                [this](auto&&... parms){base_.call_method_async(std::forward <decltype(parms)&&> (parms)...);},
-                std::move(catuple)
-            );
-        }
 
         template <typename... ParametersDeduced>
         interface_async_proxy& bind_parameters
@@ -165,32 +235,76 @@ namespace DBusMock::Mocks
             return *this;
         }
 
-        interface_async_proxy& then(std::function <void(R)> const& cb)
+        ~interface_async_proxy()
         {
-            std::get <1> (base_params_) = cb;
-            return *this;
-        }
-
-        interface_async_proxy& error(std::function <void(Bindings::message&, std::string const&)> const& fail)
-        {
-            std::get <2> (base_params_) = fail;
-            return *this;
-        }
-
-        interface_async_proxy& timeout(std::chrono::microseconds timeout)
-        {
-            std::get <3> (base_params_)  = timeout;
-            return *this;
+            auto catuple = std::tuple_cat(std::move(interface_async_base<R>::base_params_), std::move(params_));
+            std::apply
+            (
+                [this](auto&&... parms){interface_async_base<R>::base_.call_method_async(std::forward <decltype(parms)&&> (parms)...);},
+                std::move(catuple)
+            );
         }
 
     private:
-        interface_method_base& base_;
-        std::tuple <
-            std::string_view,
-            std::function <void(R)>,
-            std::function <void(Bindings::message&, std::string const&)>,
-            std::chrono::microseconds
-        > base_params_;
+        std::tuple <ParametersT...> params_;
+    };
+
+    template <typename R, typename... ParametersT>
+    class interface_async_property_proxy <R(ParametersT...)> : public interface_async_base <R>
+    {
+    public:
+        interface_async_property_proxy
+        (
+            interface_mock_base& base,
+            std::string_view property_name
+        )
+            : interface_async_base <R>{base, property_name}
+            , params_{}
+        {
+        }
+
+        interface_async_property_proxy& operator=(interface_async_property_proxy const&) = delete;
+        interface_async_property_proxy& operator=(interface_async_property_proxy&&) = default;
+        interface_async_property_proxy(interface_async_property_proxy const&) = delete;
+        interface_async_property_proxy(interface_async_property_proxy&&) = default;
+
+        template <typename... ParametersDeduced>
+        interface_async_property_proxy& bind_parameters
+        (
+            ParametersDeduced&&... params
+        )
+        {
+            if constexpr (sizeof...(ParametersT) != 0)
+                params_ = {std::forward <ParametersDeduced&&> (params)...};
+            return *this;
+        }
+
+        ~interface_async_property_proxy()
+        {
+            if constexpr (sizeof...(ParametersT) == 0)
+            {
+                std::apply
+                (
+                    [this](auto&&... parms)
+                    {
+                        interface_async_base <R>::base_.read_property_async(std::forward <decltype(parms)&&> (parms)...);
+                    },
+                    std::move(interface_async_base <R>::base_params_)
+                );
+            }
+            else
+            {
+                auto catuple = std::tuple_cat(std::move(interface_async_base <R>::base_params_), std::move(params_));
+                std::apply
+                (
+                    [this](auto&&... parms){interface_async_base <R>::base_.write_property_async(std::forward <decltype(parms)&&> (parms)...);},
+                    std::move(catuple)
+                );
+
+            }
+        }
+
+    private:
         std::tuple <ParametersT...> params_;
     };
 }

@@ -43,6 +43,12 @@ namespace DBusMock
             return t;
         }
 
+        auto get(async_flag_t const&) const
+        {
+            Mocks::interface_async_property_proxy <T()> prox{*property<T>::iface_, property<T>::name_};
+            return prox;
+        }
+
         explicit operator T() const
         {
             return get();
@@ -72,6 +78,13 @@ namespace DBusMock
             property<T>::iface_->write_property(property<T>::name_, var);
         }
 
+        auto set(async_flag_t const&, type const& var) const
+        {
+            Mocks::interface_async_property_proxy <void(type)> prox{*property<T>::iface_, property<T>::name_};
+            prox.bind_parameters(var);
+            return prox;
+        }
+
         writable& operator=(type const& var)
         {
             set(var);
@@ -95,6 +108,7 @@ namespace DBusMock
                           , public writable <T>
     {
         using type = T;
-        using property <T>::property;
+        using writable <T>::writable;
+        using readable <T>::readable;
     };
 }

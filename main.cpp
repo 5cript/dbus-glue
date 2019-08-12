@@ -1,27 +1,29 @@
 #include <dbus-mockery/dbus_interface.hpp>
 #include <dbus-mockery/bindings/busy_loop.hpp>
 #include <iostream>
+#include <chrono>
 
-namespace org::freedesktop
+namespace BlueZ::org::bluez::hci
 {
-    // Declare an interface. This one is just reduced to one function, which is enough for this example
-    class IDBus
+    class Adapter
     {
     public:
-        virtual auto ListNames() -> std::vector <std::string> = 0;
+        virtual ~Adapter() = default;
 
-        // Silences a warning, but IDBus is never really used polymorphicly.
-        virtual ~IDBus() = default;
+    public: // Methods
+    public: // Properties
+        DBusMock::readable <std::string> Name;
+        DBusMock::read_writeable <std::string> Alias;
+    public: // Signals
     };
 }
 
-// Mock the interface (i know the term is not really correct, but the idea comes from mocking frameworks).
 DBUS_MOCK_NAMESPACE
 (
-    (org)(freedesktop),
-    IDBus,
-    DBUS_MOCK_METHODS(ListNames),
-    DBUS_MOCK_NO_PROPERTIES,
+    (BlueZ)(org)(bluez)(hci),
+    Adapter,
+    DBUS_MOCK_NO_METHODS,
+    DBUS_MOCK_PROPERTIES(Name, Alias),
     DBUS_MOCK_NO_SIGNALS
 )
 
@@ -33,22 +35,17 @@ int main()
     auto bus = Bindings::open_system_bus();
     make_busy_loop(&bus);
 
-    auto dbusInterface = create_interface <org::freedesktop::IDBus>(
+    auto adapter = create_interface <BlueZ::org::bluez::hci::Adapter>
+    (
         bus,
-        "org.freedesktop.DBus",
-        "/org/freedesktop/DBus",
-        "org.freedesktop.DBus"
+        "org.bluez",
+        "/org/bluez/hci0",
+        "org.bluez.Adapter1"
     );
 
-    auto names = dbusInterface.ListNames();
-
-    dbusInterface.ListNames(DBusMock::async_flag)
-        .then([](auto const& names){
-            for (auto const& i : names)
-            {
-                if (i.front() != ':')
-                    std::cout << i << "\n";
-            }
+    adapter.Name.get(async_flag)
+        .then([](auto const& name) {
+            std::cout << "name: " << name << "\n";
         })
         .error([](auto&, auto const& errorMessage){
             std::cerr << errorMessage << "\n";
@@ -56,8 +53,16 @@ int main()
         .timeout(1s)
     ;
 
-    // prevent immediate exit
-    std::cin.get();
+    adapter.Alias.set(async_flag, "MyAlias")
+        .then([]() {
+            std::cout << "alias setting complete\n";
+        })
+        .error([](auto&, auto const& errorMessage){
+            std::cerr << errorMessage << "\n";
+        })
+        .timeout(1s)
+    ;
 
+    std::cin.get();
     return 0;
 }

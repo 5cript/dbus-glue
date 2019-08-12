@@ -41,7 +41,7 @@ On a created interface, linked to a given DBus interface, you can:
 - [x] Read and Write Properties.
 - [ ] Connect to slots and listen for signals.
 - [x] Call methods and get the results asnchronously.
-- [ ] Read and Write Properties asynchronously.
+- [x] Read and Write Properties asynchronously.
 
 ##### Improvements not planed, but sensible:
 - [ ] Wrap sd_event in another library and make it interact with this.

@@ -174,6 +174,16 @@ namespace DBusMock::Bindings
         }
     };
 
+    template <typename T>
+    resolvable_variant make_variant(T const& val)
+    {
+        resolvable_variant vari;
+        vari.descriptor.contained = type_detect <T>::value;
+        vari.descriptor.type = type_detect <T>::value[0];
+        vari.value = val;
+        return vari;
+    }
+
     /**
      * @brief Converts a sdbus type char into a readable type name
      * @param type A sdbus type char

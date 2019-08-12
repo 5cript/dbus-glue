@@ -81,7 +81,7 @@ namespace DBusMock::Mocks
     BOOST_PP_IF(BOOST_PP_SEQ_HEAD(nspace),, ::DBUS_MOCK_NAMESPACE_COLON_SEQ(BOOST_PP_SEQ_POP_FRONT(nspace))::)
 
 #define DBUS_MOCK_EXPAND_NSPACE_INTERMEDIARY_DASH(nspace) \
-    BOOST_PP_IF(BOOST_PP_SEQ_HEAD(nspace),, ::DBUS_MOCK_NAMESPACE_COLON_SEQ_DASH(BOOST_PP_SEQ_POP_FRONT(nspace))::)
+    BOOST_PP_IF(BOOST_PP_SEQ_HEAD(nspace),::, ::DBUS_MOCK_NAMESPACE_COLON_SEQ_DASH(BOOST_PP_SEQ_POP_FRONT(nspace))::)
 
 #define DBUS_MOCK_SEQUENCE_FACTORY_0(...) \
      ((__VA_ARGS__)) DBUS_MOCK_SEQUENCE_FACTORY_1
@@ -117,9 +117,9 @@ namespace DBusMock::Mocks
         \
         template <typename Owner, typename IFace, typename... Parameters> \
         struct DBUS_MOCK_METHOD_HELPER_FORGE(IFace, Method) <Owner, void(IFace::*)(Parameters...)> \
-            : public virtual interface_method_base \
+            : public virtual interface_mock_base \
         { \
-            using interface_method_base::interface_method_base;\
+            using interface_mock_base::interface_mock_base;\
             \
             auto Method(Parameters const&... params) -> void \
             { \
@@ -136,9 +136,9 @@ namespace DBusMock::Mocks
         \
         template <typename Owner, typename R, typename IFace, typename... Parameters> \
         struct DBUS_MOCK_METHOD_HELPER_FORGE(IFace, Method) <Owner, R(IFace::*)(Parameters...)> \
-            : public virtual interface_method_base \
+            : public virtual interface_mock_base \
         { \
-            using interface_method_base::interface_method_base;\
+            using interface_mock_base::interface_mock_base;\
             \
             auto Method(Parameters const&... params) -> R \
             { \
@@ -155,9 +155,9 @@ namespace DBusMock::Mocks
         \
         template <typename Owner, typename R, typename IFace, typename... Parameters> \
         struct DBUS_MOCK_METHOD_HELPER_FORGE(IFace, Method) <Owner, R(IFace::*)(Parameters...) const> \
-            : public virtual interface_method_base \
+            : public virtual interface_mock_base \
         { \
-            using interface_method_base::interface_method_base;\
+            using interface_mock_base::interface_mock_base;\
             \
             auto Method(Parameters const&... params) const -> R \
             { \
@@ -174,9 +174,9 @@ namespace DBusMock::Mocks
         \
         template <typename Owner, typename IFace, typename... Parameters> \
         struct DBUS_MOCK_METHOD_HELPER_FORGE(IFace, Method) <Owner, void(IFace::*)(Parameters...) const> \
-            : public virtual interface_method_base \
+            : public virtual interface_mock_base \
         { \
-            using interface_method_base::interface_method_base;\
+            using interface_mock_base::interface_mock_base;\
             \
             auto Method(Parameters const&... params) const -> void \
             { \
@@ -234,7 +234,6 @@ namespace DBusMock::Mocks
         template <> \
         struct interface_mock_n <DBUS_MOCK_EXPAND_NSPACE_RIGHT(NSpace) IFace, NUMERATOR> \
             : virtual interface_mock_base \
-            , virtual interface_method_base \
               BOOST_PP_IF(BOOST_PP_SEQ_HEAD(Methods), BOOST_PP_SEQ_FOR_EACH, DBUS_MOCK_DO_NOTHING)(DBUS_MOCK_METHOD_DERIVE, (NSpace, IFace, \
                 interface_mock_n <DBUS_MOCK_EXPAND_NSPACE_RIGHT(NSpace) IFace, NUMERATOR>), BOOST_PP_SEQ_POP_FRONT(Methods)) \
         { \
@@ -251,7 +250,6 @@ namespace DBusMock::Mocks
                 std::string const& interface \
             ) \
                 : interface_mock_base{bus, service, path, interface} \
-                , interface_method_base{bus, service, path, interface} \
                   BOOST_PP_IF(BOOST_PP_SEQ_HEAD(Methods), BOOST_PP_SEQ_FOR_EACH, DBUS_MOCK_DO_NOTHING)( \
                     DBUS_MOCK_METHOD_CTOR, \
                     (NSpace, IFace, interface_mock_n <DBUS_MOCK_EXPAND_NSPACE_RIGHT(NSpace) IFace, NUMERATOR>), \
@@ -299,7 +297,6 @@ namespace DBusMock::Mocks \
             std::string const& interface \
         ) \
             : interface_mock_base{bus, service, path, interface} \
-            , interface_method_base{bus, service, path, interface} \
             , BOOST_PP_SEQ_FOR_EACH( \
                 DBUS_MOCK_CTOR_ZIP_SEQ_EACH, \
                 DBUS_MOCK_EXPAND_NSPACE_RIGHT(NSpace) IFace, \
@@ -314,7 +311,7 @@ namespace DBusMock::Mocks \
     DBUS_MOCK_ZIP_IMPL(NSpace, IFace, SEQ)
 
 #define DBUS_MOCK_ZIP(NSpace, IFace, ...) \
-    DBUS_MOCK_ZIP_IMPL_2(BOOST_PP_SEQ_PUSH_FRONT(NSpace, 0), IFace, BOOST_PP_VARIADIC_TO_SEQ(__VA_ARGS__))
+    DBUS_MOCK_ZIP_IMPL_2(NSpace, IFace, BOOST_PP_VARIADIC_TO_SEQ(__VA_ARGS__))
 
 #define DBUS_MOCK(IFace, Methods, Properties, Signals) \
     DBUS_MOCK_IMPL(0, BOOST_PP_SEQ_PUSH_FRONT((X), 1), IFace, Methods, Properties, Signals) \
@@ -325,7 +322,7 @@ namespace DBusMock::Mocks \
 
 #define DBUS_MOCK_NAMESPACE(NSpace, IFace, Methods, Properties, Signals) \
     DBUS_MOCK_IMPL(0, BOOST_PP_SEQ_PUSH_FRONT(NSpace, 0), IFace, Methods, Properties, Signals) \
-    DBUS_MOCK_ZIP(NSpace, IFace, 0)
+    DBUS_MOCK_ZIP(BOOST_PP_SEQ_PUSH_FRONT(NSpace, 0), IFace, 0)
 
 #define DBUS_MOCK_NAMESPACE_N(N, NSpace, IFace, Methods, Properties, Signals) \
     DBUS_MOCK_IMPL(N, BOOST_PP_SEQ_PUSH_FRONT(NSpace, 0), IFace, Methods, Properties, Signals)
