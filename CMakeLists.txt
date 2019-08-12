@@ -17,8 +17,7 @@ endif()
 project(dbus-mockery)
 
 # Add Executable
-add_executable(${PROJECT_NAME}
-   "main.cpp"
+add_library(${PROJECT_NAME} STATIC
    "source/dbus-mockery/bindings/message.cpp"
    "source/dbus-mockery/bindings/types.cpp"
    "source/dbus-mockery/bindings/bus.cpp"

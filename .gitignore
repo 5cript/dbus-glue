@@ -34,3 +34,6 @@
 CMakeLists.txt.user
 process.sh
 prepro.txt
+main.cpp
+build/*
+devel_project/*
