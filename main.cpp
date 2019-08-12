@@ -1,68 +1,113 @@
 #include <dbus-mockery/dbus_interface.hpp>
+#include <dbus-mockery/bindings/bus.hpp>
 #include <dbus-mockery/bindings/busy_loop.hpp>
+
 #include <iostream>
+#include <fstream>
+#include <string>
+
+#include <thread>
 #include <chrono>
 
-namespace BlueZ::org::bluez::hci
+using namespace DBusMock;
+using namespace std::chrono_literals;
+
+/**
+ * @brief The IAccounts interface. Its the provided interface (org.freedesktop.Accounts) as a C++ class.
+ */
+class IAccounts
 {
-    class Adapter
-    {
-    public:
-        virtual ~Adapter() = default;
+public:
+    virtual ~IAccounts() = default;
 
-    public: // Methods
-    public: // Properties
-        DBusMock::readable <std::string> Name;
-        DBusMock::read_writeable <std::string> Alias;
-    public: // Signals
-    };
-}
+public: // Methods
+    virtual auto CreateUser(std::string const& name, std::string const& fullname, int32_t accountType) -> object_path = 0;
+    virtual auto DeleteUser(int64_t id, bool removeFiles) -> void = 0;
+public: // Properties
+public: // signals
+    DBusMock::signal <void(object_path)> UserAdded;
+    DBusMock::signal <void(object_path)> UserDeleted;
+};
 
-DBUS_MOCK_NAMESPACE
+//----------------------------------------------------------------------------------------
+
+// This step is necessary to enable interface auto-implementation.
+// There is a limit to how many properterties and methods are possible. (currently either 64 or 255 each, haven't tried, assume 64)
+// This limit can be circumvented by DBUS_MOCK_N. Which allows to mock the same interface more than once.
+// A successory call to DBUS_MOCK_ZIP merges them all together.
+DBUS_MOCK
 (
-    (BlueZ)(org)(bluez)(hci),
-    Adapter,
-    DBUS_MOCK_NO_METHODS,
-    DBUS_MOCK_PROPERTIES(Name, Alias),
-    DBUS_MOCK_NO_SIGNALS
+    IAccounts,
+    DBUS_MOCK_METHODS(CreateUser, DeleteUser),
+    DBUS_MOCK_NO_PROPERTIES,
+    DBUS_MOCK_SIGNALS(UserAdded, UserDeleted)
 )
 
 int main()
 {
-    using namespace DBusMock;
-    using namespace std::chrono_literals;
-
     auto bus = Bindings::open_system_bus();
-    make_busy_loop(&bus);
 
-    auto adapter = create_interface <BlueZ::org::bluez::hci::Adapter>
-    (
-        bus,
-        "org.bluez",
-        "/org/bluez/hci0",
-        "org.bluez.Adapter1"
-    );
+    try
+    {
+        bus.install_event_loop(std::unique_ptr <Bindings::event_loop> (new Bindings::busy_loop(&bus, 50ms)));
 
-    adapter.Name.get(async_flag)
-        .then([](auto const& name) {
-            std::cout << "name: " << name << "\n";
-        })
-        .error([](auto&, auto const& errorMessage){
-            std::cerr << errorMessage << "\n";
-        })
-        .timeout(1s)
-    ;
+        // wrapped interface for creating / deleting accounts.
+        auto accountControl = create_interface <IAccounts>(
+            bus,
+            "org.freedesktop.Accounts",
+            "/org/freedesktop/Accounts",
+            "org.freedesktop.Accounts"
+        );
 
-    adapter.Alias.set(async_flag, "MyAlias")
-        .then([]() {
-            std::cout << "alias setting complete\n";
-        })
-        .error([](auto&, auto const& errorMessage){
-            std::cerr << errorMessage << "\n";
-        })
-        .timeout(1s)
-    ;
+        accountControl.UserAdded.listen(
+            [](object_path const& p) {
+                // success callback
+                std::cout << "callback - create: " << p << std::endl;
+            },
+            [](Bindings::message&, std::string const& str) {
+                // failure callback
+                std::cerr << "oh no something gone wrong: " << str << "\n";
+            }
+        );
 
-    std::cin.get();
+        // WARNING! Passing "release_slot" forces you to manage the slots lifetime yourself!
+        // You can use this variation to manage lifetimes of your observed signals. With a unique_ptr for example.
+        auto* slot = accountControl.UserDeleted.listen(
+            [&](object_path const& p) {
+                // this is called from the dbus system.
+                std::cout << "callback - delete: " << p << std::endl;
+
+                // create a user from here.
+                auto path = accountControl.CreateUser("tempus", "tempus", 0);
+            },
+            [](Bindings::message&, std::string const& str) {
+                // this is called when an error got signaled into our callback.
+                std::cerr << "oh no something gone wrong: " << str << "\n";
+            },
+            DBusMock::release_slot
+        );
+
+        // try to delete a user with id 1001. WARNING, DONT JUST DELETE SOME USER ON YOUR SYSTEM. obviously...
+        try {
+            // commented out in case you just run this example
+            // you should get the id from the name first.
+            //accountControl.DeleteUser(1001, false);
+        } catch (std::exception const& exc) {
+            // Create the user if he doesn't exist
+            accountControl.CreateUser("tempus", "tempus", 0);
+            std::cout << exc.what() << std::endl;
+        }
+
+        // just wait here so we dont exit directly
+        std::cin.get();
+
+        // cleanup. IF!!! you passed "release_slot"
+        delete slot;
+    }
+    catch (std::exception const& exc)
+    {
+        std::cout << exc.what() << "\n";
+    }
+
     return 0;
 }

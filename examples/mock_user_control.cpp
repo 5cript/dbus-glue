@@ -12,24 +12,24 @@ using namespace DBusMock;
 class IAccounts
 {
 public:
-    virtual ~IAccounts() = default;
+	virtual ~IAccounts() = default;
 
-    virtual auto CacheUser(std::string const& name) -> object_path = 0;
-    virtual auto CreateUser(std::string const& name, std::string const& fullname, int32_t accountType) -> object_path = 0;
-    virtual auto DeleteUser(int64_t id, bool removeFiles) -> void = 0;
-    virtual auto FindUserById(int64_t id) -> object_path = 0;
-    virtual auto ListCachedUsers() -> std::vector <object_path> = 0;
-    virtual auto UncacheUser(std::string const& user) -> void = 0;
+	virtual auto CacheUser(std::string const& name) -> object_path = 0;
+	virtual auto CreateUser(std::string const& name, std::string const& fullname, int32_t accountType) -> object_path = 0;
+	virtual auto DeleteUser(int64_t id, bool removeFiles) -> void = 0;
+	virtual auto FindUserById(int64_t id) -> object_path = 0;
+	virtual auto ListCachedUsers() -> std::vector <object_path> = 0;
+	virtual auto UncacheUser(std::string const& user) -> void = 0;
 
 public: // Properties
-    readable <std::vector <object_path>> AutomaticLoginUsers;
-    readable <bool> HasMultipleUsers;
-    readable <bool> HasNoUsers;
-    readable <std::string> DaemonVersion;
+	readable <std::vector <object_path>> AutomaticLoginUsers;
+	readable <bool> HasMultipleUsers;
+	readable <bool> HasNoUsers;
+	readable <std::string> DaemonVersion;
 
 public: // signals
-    using UserAdded = void(object_path);
-    using UserDeleted = void(object_path);
+	DBusMock::signal <void(object_path)> UserAdded;
+	DBusMock::signal <void(object_path)> UserDeleted;
 };
 
 //----------------------------------------------------------------------------------------
@@ -50,33 +50,33 @@ DBUS_MOCK
 
 int main()
 {
-    // open the system bus.
-    auto bus = Bindings::open_system_bus();
+	// open the system bus.
+	auto bus = Bindings::open_system_bus();
 
-    try
-    {
-        // attach interface to remote interface.
-        auto user_control = create_interface <IAccounts> (bus, "org.freedesktop.Accounts", "/org/freedesktop/Accounts", "org.freedesktop.Accounts");
+	try
+	{
+		// attach interface to remote interface.
+		auto user_control = create_interface <IAccounts> (bus, "org.freedesktop.Accounts", "/org/freedesktop/Accounts", "org.freedesktop.Accounts");
 
-        // calling a method with parameters
-        //user_control.CreateUser("hello", "hello", 0);
+		// calling a method with parameters
+		//user_control.CreateUser("hello", "hello", 0);
 
-        // calling a method and getting the result
-        auto cachedUsers = user_control.ListCachedUsers();
+		// calling a method and getting the result
+		auto cachedUsers = user_control.ListCachedUsers();
 
-        for (auto const& user : cachedUsers)
-        {
-            // the object_path type has a stream operator for output
-            std::cout << user << "\n";
-        }
+		for (auto const& user : cachedUsers)
+		{
+			// the object_path type has a stream operator for output
+			std::cout << user << "\n";
+		}
 
-        // reading a property
-        std::cout << user_control.DaemonVersion << "\n";
-    }
-    catch (std::exception const& exc) // catch all possible exceptions.
-    {
-        std::cout << exc.what() << "\n";
-    }
+		// reading a property
+		std::cout << user_control.DaemonVersion << "\n";
+	}
+	catch (std::exception const& exc) // catch all possible exceptions.
+	{
+		std::cout << exc.what() << "\n";
+	}
 
-    return 0;
+	return 0;
 }

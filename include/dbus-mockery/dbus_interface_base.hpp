@@ -154,6 +154,26 @@ namespace DBusMock::Mocks
             );
         }
 
+        template <typename... Args>
+        auto* install_signal_listener
+        (
+            std::string_view signal_name,
+            std::function <void(Args const&...)> const& cb,
+            std::function <void(Bindings::message&, std::string const&)> const& err,
+            bool release
+        )
+        {
+            return bus.install_signal_listener(
+                service,
+                path,
+                interface,
+                signal_name,
+                cb,
+                err,
+                release
+            );
+        }
+
         virtual ~interface_mock_base() = default;
     };
 

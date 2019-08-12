@@ -242,6 +242,10 @@ namespace DBusMock::Mocks
                 BOOST_PP_SEQ_FOR_EACH, DBUS_MOCK_DO_NOTHING \
             )(DBUS_MOCK_PROPERTY_ROLL, DBUS_MOCK_EXPAND_NSPACE_RIGHT(NSpace) IFace, BOOST_PP_SEQ_POP_FRONT(Properties))\
         \
+            BOOST_PP_IF(BOOST_PP_SEQ_HEAD(Signals), \
+                BOOST_PP_SEQ_FOR_EACH, DBUS_MOCK_DO_NOTHING \
+            )(DBUS_MOCK_PROPERTY_ROLL, DBUS_MOCK_EXPAND_NSPACE_RIGHT(NSpace) IFace, BOOST_PP_SEQ_POP_FRONT(Signals))\
+        \
         public: \
             interface_mock_n( \
                 Bindings::dbus& bus, \
@@ -261,6 +265,13 @@ namespace DBusMock::Mocks
                     DBUS_MOCK_PROPERTY_CTOR, \
                     DBUS_MOCK_EXPAND_NSPACE_RIGHT(NSpace) IFace, \
                     BOOST_PP_SEQ_POP_FRONT(Properties) \
+                  ) \
+                  BOOST_PP_IF(BOOST_PP_SEQ_HEAD(Signals), \
+                    BOOST_PP_SEQ_FOR_EACH, DBUS_MOCK_DO_NOTHING \
+                  )( \
+                    DBUS_MOCK_PROPERTY_CTOR, \
+                    DBUS_MOCK_EXPAND_NSPACE_RIGHT(NSpace) IFace, \
+                    BOOST_PP_SEQ_POP_FRONT(Signals) \
                   ) \
             { \
             } \

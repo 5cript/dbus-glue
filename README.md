@@ -30,7 +30,6 @@ Here is a checkbox list of all the tings to come and all that are done so far.
     - [x] Writing properties
     - [x] Listening for signals
     - [x] Starting an event loop
-    - [ ] Inspecting interfaces
 - [x] A Macro for declaring DBus interfaces as C++ interfaces.
 - [x] Attaching or creating a (simple) event loop to the bus object.
 (Note: If you use the sd_event* object system, you still have to setup and teardown the event stuff yourself, this is not wrapped by this library.)

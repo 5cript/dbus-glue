@@ -360,8 +360,7 @@ namespace DBusMock::Introspect
             stream << "\tpublic: // Signals\n";
             for (auto const& signal : face.signals)
             {
-                stream << "\t\t";
-                stream << "using " << signal.name << " = void(";
+                stream << "\t\tsignal <void(";
                 auto end = std::end(signal.arguments);
                 for (auto arg = std::begin(signal.arguments); arg != end; ++arg)
                 {
@@ -369,7 +368,7 @@ namespace DBusMock::Introspect
                     if (arg + 1 != end)
                         stream << "," << space_aft_comma();
                 }
-                stream << ");\n";
+                stream << ")> " << signal.name << ";\n";
             }
             stream << "\t};\n\n";
         }
