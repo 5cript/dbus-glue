@@ -50,3 +50,7 @@ set(DEBUG_OPTIONS -fexceptions -g -Wall -pedantic-errors -pedantic)
 set(RELEASE_OPTIONS -fexceptions -O3 -Wall -pedantic-errors -pedantic)
 target_compile_options(${PROJECT_NAME} PUBLIC "$<$<CONFIG:DEBUG>:${DEBUG_OPTIONS}>")
 target_compile_options(${PROJECT_NAME} PUBLIC "$<$<CONFIG:RELEASE>:${RELEASE_OPTIONS}>")
+
+# Install
+install(TARGETS dbus-mockery DESTINATION lib)
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/ DESTINATION include FILES_MATCHING PATTERN "*.h*")

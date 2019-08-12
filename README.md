@@ -1,7 +1,5 @@
 # DBus Mockery
 
-Currently a work in Progress.
-
 ## Table of Contents
 * [Summary](#Summary)
 * [Documentation](#Documentation)
@@ -38,7 +36,7 @@ Here is a checkbox list of all the tings to come and all that are done so far.
 On a created interface, linked to a given DBus interface, you can:
 - [x] Call methods.
 - [x] Read and Write Properties.
-- [ ] Connect to slots and listen for signals.
+- [x] Connect to slots and listen for signals.
 - [x] Call methods and get the results asnchronously.
 - [x] Read and Write Properties asynchronously.
 
@@ -46,8 +44,12 @@ On a created interface, linked to a given DBus interface, you can:
 - [ ] Wrap sd_event in another library and make it interact with this.
 
 ## Build
-(Currently the cmake in the project builds a binary executable, this will be changed as soon as I deem it ready to be used.)
 This project uses cmake.
+* cd dbus-mockery
+* mkdir -p build
+* cmake ..
+* make -j4 (or more/less cores)
+* make install (if you want)
 ##### Dependencies:
 - libsystemd, because the systemd sd-bus library is used underneath.
 - boost preprocessor
@@ -57,11 +59,7 @@ This is a short tutorial for using the library.
 
 #### Getting started
 1. clone the library using git clone
-2. create a building directory somewhere and build the library, example by convention:
-    * cd dbus-mockery
-    * mkdir -p build
-    * cmake ..
-    * make -j4 (or more/less cores)
+2. create a building directory somewhere and build the library, see the build chapter.
 3. now you can add the "include" directory to your projects search path and link the lib. Alternatively use make install. I personally advocate for a project structure where all git dependecies are parallel in the filesystem to the dependent project.
 
 #### Hello World
@@ -142,6 +140,8 @@ Now lets change a little bit of the program. We now dont want to do the call syn
 I therefore recommend to switch to an entirely asynchronous architecture when you use any asynchronous methods/signals on the bus.
 
 Asynchronous functions use "continuation" style. Which means that when ever an asynchronous function finishes, a callback is called from which on execution can be resumed.
+
+Properties can also be read and written asynchronously, by calling get/set on them with the async flag, just the same as with methods.
 
 Only showing relevant differences to before:
 ```C++
@@ -305,17 +305,14 @@ int main()
 
 ### Connect signal with slot
 Here is an example on how to listen to emitted signals.
-Not that signal handling requires an event loop.
+Note that signal handling requires an event loop.
 
 ```C++
 #include <dbus-mockery/dbus_interface.hpp>
 #include <dbus-mockery/bindings/bus.hpp>
 #include <dbus-mockery/bindings/busy_loop.hpp>
 
-#include <dbus-mockery-system/accounts/accounts.hpp>
-
 #include <iostream>
-#include <fstream>
 #include <string>
 
 #include <thread>
@@ -323,6 +320,37 @@ Not that signal handling requires an event loop.
 
 using namespace DBusMock;
 using namespace std::chrono_literals;
+
+/**
+ * @brief The IAccounts interface. Its the provided interface (org.freedesktop.Accounts) as a C++ class.
+ */
+class IAccounts
+{
+public:
+	virtual ~IAccounts() = default;
+
+public: // Methods
+	virtual auto CreateUser(std::string const& name, std::string const& fullname, int32_t accountType) -> object_path = 0;
+	virtual auto DeleteUser(int64_t id, bool removeFiles) -> void = 0;
+public: // Properties
+public: // signals
+	DBusMock::signal <void(object_path)> UserAdded;
+	DBusMock::signal <void(object_path)> UserDeleted;
+};
+
+//----------------------------------------------------------------------------------------
+
+// This step is necessary to enable interface auto-implementation.
+// There is a limit to how many properterties and methods are possible. (currently either 64 or 255 each, haven't tried, assume 64)
+// This limit can be circumvented by DBUS_MOCK_N. Which allows to mock the same interface more than once.
+// A successory call to DBUS_MOCK_ZIP merges them all together.
+DBUS_MOCK
+(
+    IAccounts,
+    DBUS_MOCK_METHODS(CreateUser, DeleteUser),
+    DBUS_MOCK_NO_PROPERTIES,
+    DBUS_MOCK_SIGNALS(UserAdded, UserDeleted)
+)
 
 int main()
 {
@@ -333,19 +361,14 @@ int main()
 		bus.install_event_loop(std::unique_ptr <Bindings::event_loop> (new Bindings::busy_loop(&bus, 50ms)));
 
 		// wrapped interface for creating / deleting accounts.
-		auto accountControl = create_interface <Accounts::org::freedesktop::Accounts::Accounts>(
+		auto accountControl = create_interface <IAccounts>(
 		    bus,
 		    "org.freedesktop.Accounts",
 		    "/org/freedesktop/Accounts",
 		    "org.freedesktop.Accounts"
 		);
 
-		// listen for created users
-		bus.install_signal_listener <void(object_path)> (
-		    "org.freedesktop.Accounts",
-		    "/org/freedesktop/Accounts",
-		    "org.freedesktop.Accounts",
-		    "UserAdded",
+		accountControl.UserAdded.listen(
 		    [](object_path const& p) {
 			    // success callback
 			    std::cout << "callback - create: " << p << std::endl;
@@ -356,38 +379,39 @@ int main()
 		    }
 		);
 
-		// listen for user deleted events:
-		bus.install_signal_listener <void(object_path)> (
-		    "org.freedesktop.Accounts",
-		    "/org/freedesktop/Accounts",
-		    "org.freedesktop.Accounts",
-		    "UserDeleted",
+		// WARNING! Passing "release_slot" forces you to manage the slots lifetime yourself!
+		// You can use this variation to manage lifetimes of your observed signals. With a unique_ptr for example.
+		auto* slot = accountControl.UserDeleted.listen(
 		    [&](object_path const& p) {
-			    // this is called from the dbus system.
-			    std::cout << "callback - delete: " << p << std::endl;
+		        // this is called from the dbus system.
+		        std::cout << "callback - delete: " << p << std::endl;
 
-				// create a user from here.
-				auto path = accountControl.CreateUser("tempus", "tempus", 0);
-		    },
+		        // create a user from here.
+		        auto path = accountControl.CreateUser("tempus", "tempus", 0);
+	        },
 		    [](Bindings::message&, std::string const& str) {
 			    // this is called when an error got signaled into our callback.
 			    std::cerr << "oh no something gone wrong: " << str << "\n";
-		    }
-		);
+		    },
+		    DBusMock::release_slot
+			);
 
-		// try to delete a user with id 1001. WARNING, DONT JUST DELETE SOME USER ON YOUR SYSTEM. obviously...
-		try {
-			// commented out in case you just run this example
-			// you should get the id from the name first.
-			// accountControl.DeleteUser(1001, false);
-		} catch (std::exception const& exc) {
-			// Create the user if he doesn't exist
-			accountControl.CreateUser("tempus", "tempus", 0);
-			std::cout << exc.what() << std::endl;
-		}
+			// try to delete a user with id 1001. WARNING, DONT JUST DELETE SOME USER ON YOUR SYSTEM. obviously...
+			try {
+				// commented out in case you just run this example
+				// you should get the id from the name first.
+				//accountControl.DeleteUser(1001, false);
+			} catch (std::exception const& exc) {
+				// Create the user if he doesn't exist
+				accountControl.CreateUser("tempus", "tempus", 0);
+				std::cout << exc.what() << std::endl;
+			}
 
-		// just wait here so we dont exit directly
-		std::cin.get();
+			// just wait here so we dont exit directly
+			std::cin.get();
+
+		// cleanup. IF!!! you passed "release_slot"
+		delete slot;
 	}
 	catch (std::exception const& exc)
 	{
