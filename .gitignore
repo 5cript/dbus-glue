@@ -37,3 +37,4 @@ prepro.txt
 main.cpp
 build/*
 devel_project/*
+.clang-format
