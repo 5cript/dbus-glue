@@ -49,7 +49,7 @@ namespace DBusMock
 			return prox;
 		}
 
-		explicit operator T() const
+		operator T() const
 		{
 			return get();
 		}
@@ -115,6 +115,11 @@ namespace DBusMock
 		{
 			writable <T>::set(var);
 			return *this;
+		}
+
+		operator T() const
+		{
+			return readable <T>::get();
 		}
 	};
 
