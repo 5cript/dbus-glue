@@ -6,7 +6,7 @@
 
 #include <functional>
 
-namespace DBusMock::Bindings
+namespace DBusMock
 {
     class async_context_base
 	{

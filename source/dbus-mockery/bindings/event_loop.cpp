@@ -1,10 +1,10 @@
 #include <dbus-mockery/bindings/event_loop.hpp>
 #include <dbus-mockery/bindings/bus.hpp>
 
-namespace DBusMock::Bindings
+namespace DBusMock
 {
     event_loop::event_loop(dbus* bus)
-        : bus{bus}
-    {
-    }
+	    : bus{bus}
+	{
+	}
 }

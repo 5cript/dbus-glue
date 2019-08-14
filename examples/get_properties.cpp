@@ -7,9 +7,9 @@ using namespace DBusMock;
 
 int main()
 {
-	auto bus = Bindings::open_system_bus();
+	auto bus = open_system_bus();
 
-	Bindings::variant_dictionary <std::map> dict;
+	variant_dictionary <std::map> dict;
 	bus.read_properties(
 	    "org.freedesktop.timedate1",
 	    "/org/freedesktop/timedate1",

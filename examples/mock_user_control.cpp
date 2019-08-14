@@ -51,7 +51,7 @@ DBUS_MOCK
 int main()
 {
 	// open the system bus.
-	auto bus = Bindings::open_system_bus();
+	auto bus = open_system_bus();
 
 	try
 	{

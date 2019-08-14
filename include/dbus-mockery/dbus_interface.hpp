@@ -248,7 +248,7 @@ namespace DBusMock::Mocks
 	    \
 	    public: \
 	        interface_mock_n( \
-	            Bindings::dbus& bus, \
+	            dbus& bus, \
 	            std::string const& service, \
 	            std::string const& path, \
 	            std::string const& interface \
@@ -304,7 +304,7 @@ namespace DBusMock::Mocks \
 	    using interface_type = DBUS_MOCK_EXPAND_NSPACE_RIGHT(NSpace) IFace; \
 	    \
 	    interface_mock( \
-	        Bindings::dbus& bus, \
+	        dbus& bus, \
 	        std::string const& service, \
 	        std::string const& path, \
 	        std::string const& interface \
@@ -345,7 +345,7 @@ namespace DBusMock
     template <typename T>
     auto create_interface
 	(
-	    Bindings::dbus& bus,
+	    dbus& bus,
 	    std::string const& service,
 	    std::string const& path,
 	    std::string const& interface

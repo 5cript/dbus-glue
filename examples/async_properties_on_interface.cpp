@@ -32,7 +32,7 @@ int main()
 	using namespace DBusMock;
 	using namespace std::chrono_literals;
 
-	auto bus = Bindings::open_system_bus();
+	auto bus = open_system_bus();
 	make_busy_loop(&bus);
 
 	auto adapter = create_interface <BlueZ::org::bluez::hci::Adapter>

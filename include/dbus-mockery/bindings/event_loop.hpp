@@ -2,7 +2,7 @@
 
 #include "bus_fwd.hpp"
 
-namespace DBusMock::Bindings
+namespace DBusMock
 {
     /**
 	 * @brief The event_loop interface has to be implemented by a custom event loop system, so it can be passed to a

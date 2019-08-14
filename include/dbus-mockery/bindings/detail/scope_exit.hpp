@@ -2,7 +2,7 @@
 
 #include <functional>
 
-namespace DBusMock::Bindings::detail
+namespace DBusMock::detail
 {
     struct on_scope_exit
 	{

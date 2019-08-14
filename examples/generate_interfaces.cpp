@@ -8,7 +8,7 @@ using namespace DBusMock;
 
 int main()
 {
-	auto bus = Bindings::open_system_bus();
+	auto bus = open_system_bus();
 
 	try
 	{

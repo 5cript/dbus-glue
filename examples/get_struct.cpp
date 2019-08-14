@@ -11,26 +11,26 @@ using namespace DBusMock;
 
 struct Session
 {
-    std::string name;
-    object_path op;
+	std::string name;
+	object_path op;
 };
 
 MAKE_DBUS_STRUCT(Session, name, op)
 
 int main()
 {
-    auto bus = Bindings::open_system_bus();
+	auto bus = open_system_bus();
 
-    try {
-        Session session;
-        bus.read_property("org.freedesktop.login1", "/org/freedesktop/login1/seat/self", "org.freedesktop.login1.Seat", "ActiveSession", session);
+	try {
+		Session session;
+		bus.read_property("org.freedesktop.login1", "/org/freedesktop/login1/seat/self", "org.freedesktop.login1.Seat", "ActiveSession", session);
 
-        std::cout << session.name << "\n" << session.op.string() << "\n";
-    } catch (std::exception const& exc) {
-        std::cout << exc.what() << "\n";
-    }
+		std::cout << session.name << "\n" << session.op.string() << "\n";
+	} catch (std::exception const& exc) {
+		std::cout << exc.what() << "\n";
+	}
 
-    std::cout << std::flush;
+	std::cout << std::flush;
 
-    return 0;
+	return 0;
 }

@@ -5,7 +5,7 @@
 #include <set>
 #include <memory>
 
-namespace DBusMock::Bindings::detail
+namespace DBusMock::detail
 {
     /**
 	 * @brief The slot_holder class holds slots for at least as long as the bus lives,
@@ -15,7 +15,7 @@ namespace DBusMock::Bindings::detail
     class slot_holder
 	{
 	public:
-		using async_context = Bindings::async_context_base;
+		using async_context = async_context_base;
 
 	public:
 		slot_holder()

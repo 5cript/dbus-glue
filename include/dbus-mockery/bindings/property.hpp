@@ -3,6 +3,6 @@
 #include "bus.hpp"
 #include "message.hpp"
 
-namespace DBusMock::Bindings
+namespace DBusMock
 {
 }

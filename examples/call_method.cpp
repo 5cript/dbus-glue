@@ -8,7 +8,7 @@ int main()
 {
 	using namespace DBusMock;
 
-	auto bus = Bindings::open_system_bus();
+	auto bus = open_system_bus();
 
 	/* Issue the method call and store the respons message in m */
 	auto response = bus.call_method(

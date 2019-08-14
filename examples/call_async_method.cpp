@@ -7,7 +7,7 @@ int main()
 	using namespace DBusMock;
 	using namespace std::chrono_literals;
 
-	auto bus = Bindings::open_system_bus();
+	auto bus = open_system_bus();
 
 	// install busy_loop as event_loop.
 	make_busy_loop(&bus);
@@ -22,7 +22,7 @@ int main()
 		    for (auto const& zone : timeZones)
 				std::cout << zone << "\n";
 	    },
-	    [](Bindings::message&, std::string const& errorMessage)
+	    [](message&, std::string const& errorMessage)
 	    {
 		    std::cerr << errorMessage << "\n";
 	    },
