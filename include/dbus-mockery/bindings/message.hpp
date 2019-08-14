@@ -4,6 +4,7 @@
 #include "types.hpp"
 #include "object_path.hpp"
 #include "struct_adapter.hpp"
+#include "msg_fwd.hpp"
 
 #include <memory>
 #include <string>
@@ -92,22 +93,42 @@ namespace DBusMock
 		 * @param resolvable A variant
 		 * @return
 		 */
-		int read_variant(resolvable_variant& resolvable)
+		int read_variant(resolvable_variant& var)
 		{
 			int result = 0;
-			unpack_variant([this, &resolvable, &result](){
+			unpack_variant([this, &var, &result](){
 				//result = read_proxy<T>::read(*this, value);
 				auto descr = type();
-				resolvable.descriptor = descr;
-				for_signature_do(descr, [this, &resolvable, &result](auto dummy){
+				var.descriptor = descr;
+				for_signature_do(descr, [this, &var, &result](auto dummy){
 					using value_type = std::decay_t<decltype(dummy)>;
 					value_type val;
 					result = read_proxy <value_type>::read(*this, val);
-					resolvable.value = val;
+					var.value = val;
 				});
 			}, type().contained);
 			return result;
 		}
+
+		int read_variant(message_variant& mvar)
+		{
+			return mvar.assign(*this);
+		}
+
+		/**
+		 * @brief clone Creates a new message copy from this. A rewind is automatically called, if full == true.
+		 * @param full If true will copy everything up to then end of the message. Otherwise only a full type.
+		 * @param r Outwars parameter showing if something was read or not.
+		 * @return A new message.
+		 */
+		message clone(int& r, bool full = true);
+
+		/**
+		 * @brief clone Same as clone with r parameter, but doesn't have the carry out.
+		 * @param full
+		 * @return
+		 */
+		message clone(bool full = true);
 
 		/**
 		 * @brief handle Returns the handle directly. Do not close obviously.
@@ -117,6 +138,12 @@ namespace DBusMock
 		{
 			return msg;
 		}
+
+		/**
+		 * @brief rewind Rewinds the read ptr back to the beginning.
+		 * @param full Rewind full message if true, only currently open container if false.
+		 */
+		void rewind(bool full = true);
 
 	private:
 		template <typename FunctionT>
@@ -314,10 +341,10 @@ namespace DBusMock
 				if (r < 0)
 					throw std::runtime_error("could not read name in dictionary: "s + strerror(-r));
 
-				resolvable_variant resolvable;
-				r = msg.read_variant(resolvable);
+				variant var;
+				r = msg.read_variant(var);
 
-				dict.emplace(name, resolvable);
+				dict.emplace(name, var);
 
 				r = sd_bus_message_exit_container(smsg);
 				if (r < 0)
@@ -381,7 +408,10 @@ namespace DBusMock
 	};
 
 	template <template <typename, typename...> typename MapT, typename ValueT, typename KeyT, typename CompareOrHash, typename AllocatorOrKeyEqual, typename... MaybeAllocator>
-	struct message::read_proxy <MapT <KeyT, ValueT, CompareOrHash, AllocatorOrKeyEqual, MaybeAllocator...>, void>
+	struct message::read_proxy <
+	    MapT <KeyT, ValueT, CompareOrHash, AllocatorOrKeyEqual, MaybeAllocator...>,
+	    std::enable_if_t <!std::is_same_v <ValueT, variant>>
+	>
 	{
 		using map_type = MapT <KeyT, ValueT, CompareOrHash, AllocatorOrKeyEqual, MaybeAllocator...>;
 		static int read(message& msg, map_type& dict)
@@ -403,15 +433,18 @@ namespace DBusMock
 				if (r == 0)
 					break;
 
-				char const* name;
-				r = sd_bus_message_read_basic(smsg, 's', &name);
+				KeyT key;
+				msg.read(key);
+				/*
+				r = sd_bus_message_read_basic(smsg, msg.type().type, &key);
 				if (r < 0)
 					throw std::runtime_error("could not read name in dictionary: "s + strerror(-r));
+				*/
 
 				ValueT value;
 				msg.read(value);
 
-				dict.emplace(name, value);
+				dict.emplace(key, value);
 
 				r = sd_bus_message_exit_container(smsg);
 				if (r < 0)
@@ -582,6 +615,38 @@ namespace DBusMock
 			r = sd_bus_message_close_container(smsg);
 			if (r < 0)
 				throw std::runtime_error("could not close variant: "s + strerror(-r));
+			return r;
+		}
+	};
+
+	template <template <typename, typename...> typename ContainerT, template <typename> typename AllocatorT, typename ValueT>
+	struct message::append_proxy <ContainerT <ValueT, AllocatorT <ValueT>>, void>
+	{
+		using container_type = ContainerT <ValueT, AllocatorT <ValueT>>;
+		static int write(message& msg, container_type const& container)
+		{
+			using namespace std::string_literals;
+
+			sd_bus_message* smsg = static_cast <sd_bus_message*> (msg);
+
+			auto r = sd_bus_message_open_container(smsg, SD_BUS_TYPE_ARRAY, "a");
+			if (r < 0)
+				throw std::runtime_error("could not open array: "s + strerror(-r));
+
+			for (auto const& i : container)
+			{
+				r = msg.append(i);
+				if (r < 0)
+				{
+					sd_bus_message_close_container(smsg);
+					throw std::runtime_error("could not write to array: "s + strerror(-r));
+				}
+			}
+
+			r = sd_bus_message_close_container(smsg);
+			if (r < 0)
+				throw std::runtime_error("could not close array: "s + strerror(-r));
+
 			return r;
 		}
 	};

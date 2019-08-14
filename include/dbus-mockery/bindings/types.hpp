@@ -5,6 +5,7 @@
 #include "signature.hpp"
 #include "file_descriptor.hpp"
 #include "struct_adapter.hpp"
+#include "msg_fwd.hpp"
 
 #include <string>
 #include <string_view>
@@ -13,6 +14,8 @@
 #include <stdexcept>
 #include <utility>
 #include <type_traits>
+#include <vector>
+#include <memory>
 
 // https://dbus.freedesktop.org/doc/dbus-specification.html#type-system
 
@@ -56,34 +59,20 @@ namespace DBusMock
 		}
 	};
 
-	template <typename FunctionT>
-	void for_signature_do (type_descriptor descr, FunctionT func)
+	constexpr bool is_possible_key(char c)
 	{
-		switch (descr.type)
-		{
-		    case('y'): return func(uint8_t{});
-		    case('b'): return func(bool{});
-		    case('n'): return func(int16_t{});
-		    case('q'): return func(uint16_t{});
-		    case('i'): return func(int32_t{});
-		    case('u'): return func(uint32_t{});
-		    case('x'): return func(int64_t{});
-		    case('t'): return func(uint64_t{});
-		    case('d'): return func(double{});
-		    case('s'): return func(std::string{});
-		    case('o'): return func(object_path{});
-		    case('h'): return func(file_descriptor{});
-		    case('g'): return func(signature{});
-		    default:
-			    throw std::domain_error("for now unimplemented type");
-		}
+		return c == 'y' || c == 'n' || c == 'q' || c == 'i' || c == 'u' || c == 'x' || c == 't'	||
+		       c == 's' || c == 'o';
 	}
 
 	template <typename FunctionT>
 	bool for_signature_do_noexcept (type_descriptor descr, FunctionT func)
 	{
+		using namespace	std::string_literals;
+
 		switch (descr.type)
 		{
+		    default: return false;
 		    case('y'): func(uint8_t{}); break;
 		    case('b'): func(bool{}); break;
 		    case('n'): func(int16_t{}); break;
@@ -97,11 +86,27 @@ namespace DBusMock
 		    case('o'): func(object_path{}); break;
 		    case('h'): func(file_descriptor{}); break;
 		    case('g'): func(signature{}); break;
-		    default: return false;
 		}
 		return true;
 	}
 
+	template <typename FunctionT>
+	void for_signature_do (type_descriptor descr, FunctionT func)
+	{
+		using namespace	std::string_literals;
+
+		bool suc = for_signature_do_noexcept(descr, [](auto){});
+		if (suc)
+			for_signature_do_noexcept(descr, func);
+		else
+		{
+			throw std::domain_error(
+			    "resolvable_variants cannot contain arrays or other complex types"s + descr.string()
+			);
+		}
+	}
+
+	// can only be used for simple fundamentals (integers, string, etc). not containers, dicts or structs
 	struct resolvable_variant
 	{
 		type_descriptor descriptor;
@@ -138,10 +143,48 @@ namespace DBusMock
 		}
 	};
 
-	using variant = resolvable_variant;
+	/**
+	 * @brief The message_variant struct is a variant that can only be read by hand and cannot be autoresolved like
+	 *		  the resolvable variant, which automagically reads the contained type into a variable.
+	 *		  Since recursion in the resolve mechanism will lead to infinite recursion in the compiler.
+	 */
+	struct message_variant
+	{
+	public:
+		message_variant(type_descriptor descr, class message& msg);
+		message_variant() = default;
+
+		message_variant(message_variant&&) = default;
+		message_variant& operator=(message_variant&&) = default;
+
+		/**
+		 * @brief message_variant Copies a message_variant. WARNING will rewind source, so dont copy on incomplete read.
+		 *						  I dont really have a solution for this.
+		 */
+		message_variant(message_variant const&);
+
+		/**
+		 * @brief message_variant Copies a message_variant. WARNING will rewind source, so dont copy on incomplete read.
+		 *						  I dont really have a solution for this.
+		 */
+		message_variant& operator=(message_variant const&);
+
+		int assign(message& msg);
+		void clear();
+
+		type_descriptor descriptor();
+
+	private:
+		type_descriptor descriptor_;
+
+		/// Contains the variant data. Can be anything
+		std::unique_ptr <message> message_;
+	};
+
+	using variant = message_variant;
 
 	template <template <typename...> typename MapT, typename... Remain>
-	using variant_dictionary = MapT <std::string, resolvable_variant, Remain...>;
+	using variant_dictionary = MapT <std::string, variant, Remain...>;
 
 	/**
 	 *	Creates a type string for the given type list
