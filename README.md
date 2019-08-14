@@ -108,7 +108,7 @@ int main()
     using namespace DBusMock;
 
     // open the system bus
-    auto bus = Bindings::open_system_bus();
+    auto bus = open_system_bus();
 
     // bind the interface to the remote dbus interface:
     auto dbusInterface = create_interface <org::freedesktop::IDBus>(
@@ -154,11 +154,11 @@ int main()
     using namespace std::chrono_literals;
 
     // open the system bus
-    auto bus = Bindings::open_system_bus();
+    auto bus = open_system_bus();
 
     // create an event loop and attach it to the bus.
     // This is the default implementation, you can provide your own. For instance by using sd_event.
-    Bindings::make_busy_loop(&bus);
+    make_busy_loop(&bus);
 
     // bind the interface to the remote dbus interface:
     auto dbusInterface = create_interface <org::freedesktop::IDBus>(
@@ -275,7 +275,7 @@ DBUS_MOCK
 int main()
 {
     // open the system bus.
-    auto bus = Bindings::open_system_bus();
+    auto bus = open_system_bus();
 
     try
     {
@@ -357,11 +357,11 @@ DBUS_MOCK
 
 int main()
 {
-	auto bus = Bindings::open_system_bus();
+	auto bus = open_system_bus();
 
 	try
 	{
-		bus.install_event_loop(std::unique_ptr <Bindings::event_loop> (new Bindings::busy_loop(&bus, 50ms)));
+		bus.install_event_loop(std::unique_ptr <event_loop> (new busy_loop(&bus, 50ms)));
 
 		// wrapped interface for creating / deleting accounts.
 		auto accountControl = create_interface <IAccounts>(
@@ -376,7 +376,7 @@ int main()
 			    // success callback
 			    std::cout << "callback - create: " << p << std::endl;
 		    },
-		    [](Bindings::message&, std::string const& str) {
+		    [](message&, std::string const& str) {
 			    // failure callback
 			    std::cerr << "oh no something gone wrong: " << str << "\n";
 		    }
@@ -392,7 +392,7 @@ int main()
 		        // create a user from here.
 		        auto path = accountControl.CreateUser("tempus", "tempus", 0);
 	        },
-		    [](Bindings::message&, std::string const& str) {
+		    [](message&, std::string const& str) {
 			    // this is called when an error got signaled into our callback.
 			    std::cerr << "oh no something gone wrong: " << str << "\n";
 		    },
