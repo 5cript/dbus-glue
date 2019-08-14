@@ -145,6 +145,9 @@ Properties can also be read and written asynchronously, by calling get/set on th
 
 Only showing relevant differences to before:
 ```C++
+// new required header for the event loop
+#include <dbus-mockery/bindings/busy_loop.hpp>
+
 int main()
 {
     using namespace DBusMock;
@@ -155,7 +158,7 @@ int main()
 
     // create an event loop and attach it to the bus.
     // This is the default implementation, you can provide your own. For instance by using sd_event.
-    make_busy_loop(&bus);
+    Bindings::make_busy_loop(&bus);
 
     // bind the interface to the remote dbus interface:
     auto dbusInterface = create_interface <org::freedesktop::IDBus>(
