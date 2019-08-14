@@ -145,6 +145,9 @@ Properties can also be read and written asynchronously, by calling get/set on th
 
 Only showing relevant differences to before:
 ```C++
+// new required header for the event loop
+#include <dbus-mockery/bindings/busy_loop.hpp>
+
 int main()
 {
     using namespace DBusMock;
