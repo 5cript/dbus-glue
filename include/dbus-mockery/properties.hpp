@@ -49,6 +49,11 @@ namespace DBusMock
 			return prox;
 		}
 
+		bool operator==(T const& t)
+		{
+			return get() == t;
+		}
+
 		operator T() const
 		{
 			return get();
@@ -115,6 +120,11 @@ namespace DBusMock
 		{
 			writable <T>::set(var);
 			return *this;
+		}
+
+		bool operator==(T const& t)
+		{
+			return readable <T>::get() == t;
 		}
 
 		operator T() const

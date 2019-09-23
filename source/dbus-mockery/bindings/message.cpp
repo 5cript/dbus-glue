@@ -14,6 +14,19 @@ namespace DBusMock
     {
     }
 //---------------------------------------------------------------------------------------------------------------------
+    message::message(sd_bus* bus, uint8_t type)
+    {
+        auto r = sd_bus_message_new(bus, &msg, type);
+        if (r < 0)
+            throw std::runtime_error("could not create message: "s + strerror(-r));
+        sd_bus_message_ref(msg);
+    }
+//---------------------------------------------------------------------------------------------------------------------
+    int message::seal(uint64_t cookie)
+    {
+        return sd_bus_message_seal(msg, cookie, 0);
+    }
+//---------------------------------------------------------------------------------------------------------------------
     message::~message()
     {
         if (msg != nullptr)
@@ -32,15 +45,27 @@ namespace DBusMock
     {
         other.msg = nullptr;
     }
-//---------------------------------------------------------------------------------------------------------------------
-    message message::clone(int& r, bool full)
+//--------------------------------------------------------------------------------------------------------------------
+    sd_bus* message::bus() const
+    {
+        return sd_bus_message_get_bus(msg);
+    }
+//--------------------------------------------------------------------------------------------------------------------
+    uint8_t message::message_type() const
+    {
+        uint8_t msgType;
+        sd_bus_message_get_type(msg, &msgType);
+        return msgType;
+    }
+//--------------------------------------------------------------------------------------------------------------------
+    message message::clone(int& r, bool full) const
     {
         using namespace std::string_literals;
 
-        auto* bus = sd_bus_message_get_bus(handle());
+        auto* bus = sd_bus_message_get_bus(msg);
         sd_bus_message* created;
         uint8_t msgType;
-        r = sd_bus_message_get_type(handle(), &msgType);
+        r = sd_bus_message_get_type(msg, &msgType);
         if (r < 0)
             throw std::runtime_error("could not clone message: "s + strerror(-r));
 
@@ -48,21 +73,37 @@ namespace DBusMock
         if (r < 0)
             throw std::runtime_error("could not clone message: "s + strerror(-r));
 
-        sd_bus_message_copy(created, handle(), full);
+        sd_bus_message_copy(created, msg, full);
         if (full)
             rewind(full);
-        return message{created};
+
+        return [&created](){
+            message m{created};
+            m.seal();
+            return m;
+        }();
     }
 //---------------------------------------------------------------------------------------------------------------------
-    message message::clone(bool full)
+    message message::clone(bool full) const
     {
         int r;
         return clone(r, full);
     }
 //---------------------------------------------------------------------------------------------------------------------
-    void message::rewind(bool full)
+    int message::copy_into(message& msg, bool full) const
     {
-        sd_bus_message_rewind(handle(), full);
+        int r = sd_bus_message_copy(msg.msg, this->msg, full);
+        if (r < 0)
+            throw std::runtime_error("could not copy message into another: "s + strerror(-r));
+        return r;
+    }
+//---------------------------------------------------------------------------------------------------------------------
+    int message::rewind(bool full) const
+    {
+        int r = sd_bus_message_rewind(msg, full);
+        if (r < 0)
+            throw std::runtime_error("could not rewind message: "s + strerror(-r));
+        return r;
     }
 //---------------------------------------------------------------------------------------------------------------------
     message::operator sd_bus_message*()

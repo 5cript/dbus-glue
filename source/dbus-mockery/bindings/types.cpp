@@ -13,36 +13,92 @@ using namespace std::string_literals;
 namespace DBusMock
 {
 //#####################################################################################################################
-    message_variant::message_variant(type_descriptor descr, class message& msg)
-        : descriptor_{std::move(descr)}
-        , message_{}
+    message_variant::message_variant(class message& msg)
+        : message_{}
     {
         assign(msg);
     }
 //---------------------------------------------------------------------------------------------------------------------
-    message_variant::message_variant(message_variant const& other)
-        : descriptor_{other.descriptor_}
-        , message_{new message(other.message_->clone(true))}
+    message_variant::message_variant(class message&& msg)
+        : message_{new message(std::move(msg))}
     {
+    }
+//---------------------------------------------------------------------------------------------------------------------
+    message_variant::message_variant(message_variant const& other)
+        : message_{new message(other.message_->clone(true))}
+    {
+    }
+//---------------------------------------------------------------------------------------------------------------------
+    message_variant::message_variant(class message* msg)
+        : message_(msg)
+    {
+    }
+//---------------------------------------------------------------------------------------------------------------------
+    message* message_variant::release()
+    {
+        return message_.release();
     }
 //---------------------------------------------------------------------------------------------------------------------
     message_variant& message_variant::operator=(message_variant const& other)
     {
         message_.reset(new message(other.message_->clone(true)));
-        descriptor_ = other.descriptor_;
         return *this;
     }
 //---------------------------------------------------------------------------------------------------------------------
     int message_variant::assign(message& msg)
     {
         int r = 0;
-        message_.reset(new message(msg.clone(r, false)));
+
+        auto* handle = msg.msg;
+
+        r = sd_bus_message_enter_container(handle, SD_BUS_TYPE_VARIANT, msg.type().contained.data());
+        if (r < 0)
+            throw std::runtime_error("could not enter variant");
+
+        message_.reset(new message(msg.bus(), 2));
+        msg.copy_into(*message_.get(), false);
+        message_->seal();
+
+        r = sd_bus_message_exit_container(handle);
+        if (r < 0)
+            throw std::runtime_error("could copy exit variant");
+
         return r;
     }
 //---------------------------------------------------------------------------------------------------------------------
     void message_variant::clear()
     {
         message_.reset(nullptr);
+    }
+//---------------------------------------------------------------------------------------------------------------------
+    type_descriptor message_variant::type() const
+    {
+        return message_->type();
+    }
+//---------------------------------------------------------------------------------------------------------------------
+    void message_variant::rewind(bool complete)
+    {
+        message_->rewind(complete);
+    }
+//---------------------------------------------------------------------------------------------------------------------
+    int message_variant::append_to(message& other) const
+    {
+        using namespace std::string_literals;
+        sd_bus_message* smsg = static_cast <sd_bus_message*> (other);
+
+        auto r = sd_bus_message_open_container(smsg, SD_BUS_TYPE_VARIANT, type().contained.data());
+        if (r < 0)
+            throw std::runtime_error("could not open variant: "s + strerror(-r));
+
+        auto rc = sd_bus_message_copy(smsg, message_->handle(), true);
+        if (rc < 0)
+            throw std::runtime_error("could not copy variant data into message: "s + strerror(-r));
+
+        r = sd_bus_message_close_container(smsg);
+        if (r < 0)
+            throw std::runtime_error("could not close variant: "s + strerror(-r));
+
+        return rc;
     }
 //#####################################################################################################################
     std::string typeToComprehensible(char type)

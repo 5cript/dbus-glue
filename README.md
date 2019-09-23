@@ -216,6 +216,76 @@ unless you actually want that like so:
 } // asynchronous call is made here.
 ```
 
+#### Variants
+Variants are containers that can contain a number of types.
+In order to read out of a variant, you have to know its stored type first. Luckily sdbus can deliver this information.
+One small note: due to implementation restrictions, loading and storing a value from a variant can only be done by a free function and not by a member function.
+This would look like follows:
+
+```C++
+// Example for reading a variant.
+
+#include <dbus-mockery/dbus_interface.hpp>
+#include <dbus-mockery/bindings/variant_helpers.hpp>
+#include <iostream>
+
+int main()
+{
+    auto bus = open_system_bus();
+
+    // a variant dictionary is a map of variants.
+    variant_dictionary<std::map> dict;
+    bus.read_properties
+    (
+        "org.freedesktop.Accounts",
+        "/org/freedesktop/Accounts",
+        "org.freedesktop.Accounts",
+        dict
+    );
+
+    // In case that you dont know the type beforehand, but have to test first:
+    auto descriptor = dict["DaemonVersion"].type();
+
+    // print it in a somewhat readable way.
+    std::cout << descriptor.string() << "\n";
+
+    std::string ver, ver2;
+    variant_load<std::string>(dict["DaemonVersion"], ver);
+    std::cout << ver << "\n";
+
+    // You do NOT need to rewind a variant before rereading it, this is done for you.
+    // dict["DaemonVersion"].rewind();
+    variant_load<std::string>(dict["DaemonVersion"], ver2);
+    std::cout << ver2 << "\n";
+}
+```
+
+```C++
+// Example for writing to a variant.
+
+#include <dbus-mockery/dbus_interface.hpp>
+#include <dbus-mockery/bindings/variant_helpers.hpp>
+#include <iostream>
+
+using namespace std::string_literals;
+
+int main()
+{
+    auto bus = open_system_bus();
+
+    variant var;
+    // has to be non-member unfortunately
+    variant_store(bus, var, "hello"s);
+
+    std::string val;
+    variant_load(var, val);
+    std::cout << val << "\n"; // -> hello
+
+    std::cout << std::flush;
+    return 0;
+}
+```
+
 
 ## Examples
 More examples are in the example directory

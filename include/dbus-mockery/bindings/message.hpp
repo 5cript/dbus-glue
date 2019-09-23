@@ -16,11 +16,25 @@ namespace DBusMock
     class message
 	{
 	public:
+		friend message_variant;
+
+	public:
 		/**
 		 * @brief message Creates a message object. Must be passed a valid sdbus message.
 		 * @param messagePointer A valid sdbus message.
 		 */
 		explicit message(sd_bus_message* messagePointer);
+
+		/**
+		 * @brief message Creates a fresh empty message.
+		 * @param bus The bus to create it on.
+		 * @param type A type for the message.
+		 * It must be one of SD_BUS_MESSAGE_METHOD_CALL — a method call,
+		 * SD_BUS_MESSAGE_METHOD_RETURN — a method call reply,
+		 * SD_BUS_MESSAGE_METHOD_ERROR — an error reply to a method call,
+		 * SD_BUS_MESSAGE_SIGNAL — a broadcast message with no reply.
+		 */
+		explicit message(sd_bus* bus, uint8_t type);
 
 		/**
 		 *	Frees the sdbus message.
@@ -60,6 +74,19 @@ namespace DBusMock
 		 */
 		type_descriptor type() const;
 
+		/**
+		 * @brief message_type Returns a type of message itself, not what is within (what type() does).
+		 *					   Note: sdbus message types are semi worthless information.
+		 * @return
+		 */
+		uint8_t message_type() const;
+
+		/**
+		 * @brief bus Returns a pointer to the bus this message is on.
+		 * @return A bust pointer.
+		 */
+		sd_bus* bus() const;
+
 		template <typename T, typename Specializer = void>
 		struct append_proxy{};
 
@@ -67,6 +94,25 @@ namespace DBusMock
 		void append(T const& value)
 		{
 			append_proxy<T>::write(*this, value);
+		}
+
+		/**
+		 *	Appends a value as a variant. Used by variants, so consider to not use this directly.
+		 */
+		template <typename T>
+		void append_variant(T const& value)
+		{
+			using namespace std::string_literals;
+
+			auto r = sd_bus_message_open_container(msg, SD_BUS_TYPE_VARIANT, type_detect <T>::value);
+			if (r < 0)
+				throw std::runtime_error("could not open variant: "s + strerror(-r));
+
+			append(value);
+
+			r = sd_bus_message_close_container(msg);
+			if (r < 0)
+				throw std::runtime_error("could not close variant: "s + strerror(-r));
 		}
 
 		/**
@@ -121,14 +167,29 @@ namespace DBusMock
 		 * @param r Outwars parameter showing if something was read or not.
 		 * @return A new message.
 		 */
-		message clone(int& r, bool full = true);
+		message clone(int& r, bool full = true) const;
 
 		/**
 		 * @brief clone Same as clone with r parameter, but doesn't have the carry out.
 		 * @param full
 		 * @return
 		 */
-		message clone(bool full = true);
+		message clone(bool full = true) const;
+
+		/**
+		 * @brief copy_into Copy this message into another
+		 * @param msg Another message.
+		 * @param full Copy all, or just current variable?
+		 */
+		int copy_into(message& msg, bool full) const;
+
+		/**
+		 * @brief seal Seals a message.
+		 * @param cookie A cookie is a unique id (not globally unique, but transaction-unique).
+		 *				 ...whatever that means. For variant purposes probably irrelevant, and mostly for calls.
+		 * @return
+		 */
+		int seal(uint64_t cookie = 1);
 
 		/**
 		 * @brief handle Returns the handle directly. Do not close obviously.
@@ -143,7 +204,7 @@ namespace DBusMock
 		 * @brief rewind Rewinds the read ptr back to the beginning.
 		 * @param full Rewind full message if true, only currently open container if false.
 		 */
-		void rewind(bool full = true);
+		int rewind(bool full = true) const;
 
 	private:
 		template <typename FunctionT>
@@ -168,7 +229,7 @@ namespace DBusMock
 		}
 
 	private:
-		sd_bus_message* msg;
+		mutable sd_bus_message* msg;
 	};
 
 	//-----------------------------------------------------------------------------------------------------------------
@@ -271,7 +332,7 @@ namespace DBusMock
 			    r = sd_bus_message_read_basic(smsg, type_detect <T>::value[0], &value);
 
 				if (r < 0)
-				throw std::runtime_error("could not read string from message: "s + strerror(-r));
+				throw std::runtime_error("could not read fundamental from message: "s + strerror(-r));
 
 			return r;
 		}
@@ -343,8 +404,10 @@ namespace DBusMock
 
 				variant var;
 				r = msg.read_variant(var);
+				if (r < 0)
+					throw std::runtime_error("could not read variant from message: "s + strerror(-r));
 
-				dict.emplace(name, var);
+				dict.emplace(name, var.release());
 
 				r = sd_bus_message_exit_container(smsg);
 				if (r < 0)
@@ -618,6 +681,16 @@ namespace DBusMock
 			return r;
 		}
 	};
+
+	template <>
+	struct message::append_proxy <message_variant, void>
+	{
+		static int write(message& msg, message_variant const& value)
+		{
+			return value.append_to(msg);
+		}
+	};
+
 
 	template <template <typename, typename...> typename ContainerT, template <typename> typename AllocatorT, typename ValueT>
 	struct message::append_proxy <ContainerT <ValueT, AllocatorT <ValueT>>, void>

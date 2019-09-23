@@ -353,4 +353,16 @@ namespace DBusMock
 	{
 		return Mocks::interface_mock <T>{bus, service, path, interface};
 	}
+
+	template <typename T>
+	auto create_interface
+	(
+	    dbus& bus,
+	    std::string const& service,
+	    object_path const& path,
+	    std::string const& interface
+	)
+	{
+		return create_interface<T>(bus, service, path.string(), interface);
+	}
 }

@@ -14,6 +14,8 @@
 #include <stdexcept>
 #include <utility>
 #include <type_traits>
+#include <sstream>
+#include <iomanip>
 #include <vector>
 #include <memory>
 
@@ -46,15 +48,35 @@ namespace DBusMock
 
 	struct type_descriptor
 	{
-		char type;
-		std::string_view contained;
+		char type{'\0'};
+		std::string_view contained{};
 
 		std::string string() const
 		{
 			std::string s;
-			s.resize(1 + contained.size());
-			s[0] = type;
-			memcpy(&s[1], contained.data(), contained.size());
+			bool noContain = false;
+			if (contained.size() == 0 || (contained.size() == 1 && contained.front() == '\0'))
+			{
+				noContain = true;
+			}
+			if (type > 32)
+			{
+				s.resize(1);
+				s[0] = type;
+			}
+			else
+			{
+				auto tval = static_cast <int> (type);
+				if (tval < 0)
+					tval += 255;
+				std::stringstream sstr;
+				sstr << "\\x" << std::hex << std::setw(2) << std::setfill('0') << tval;
+				s = sstr.str();
+			}
+			if (noContain)
+				s += "\\x00";
+			else
+				s += contained.data();
 			return s;
 		}
 	};
@@ -146,13 +168,24 @@ namespace DBusMock
 	/**
 	 * @brief The message_variant struct is a variant that can only be read by hand and cannot be autoresolved like
 	 *		  the resolvable variant, which automagically reads the contained type into a variable.
-	 *		  Since recursion in the resolve mechanism will lead to infinite recursion in the compiler.
+	 *		  This class was neccessary after I realized that the autoresolve mechanic will instantiate every possible
+	 *		  type in the universe for non trivial types, so this class was made.
 	 */
 	struct message_variant
 	{
 	public:
-		message_variant(type_descriptor descr, class message& msg);
+		friend class message_variant_resolver;
+
+	public:
+		explicit message_variant(class message& msg);
+		explicit message_variant(class message&& msg);
 		message_variant() = default;
+
+		/**
+		 * @brief message_variant Takes ownership of an owning message pointer.
+		 * @param msg An owning message pointer.
+		 */
+		explicit message_variant(class message* msg);
 
 		message_variant(message_variant&&) = default;
 		message_variant& operator=(message_variant&&) = default;
@@ -169,14 +202,40 @@ namespace DBusMock
 		 */
 		message_variant& operator=(message_variant const&);
 
+		/**
+		 * @brief assign this is not meant to be used directly by the user. It takes a variant off of msg and assings
+		 *				 it to *this.
+		 * @param msg A message that has a variant to read next.
+		 * @return A sdbus result value.
+		 */
 		int assign(message& msg);
+
+		/**
+		 * @brief clear	Destroys the variants value.
+		 */
 		void clear();
 
-		type_descriptor descriptor();
+		/**
+		 * @brief release Releases ownership of the held message.
+		 * @return
+		 */
+		message* release();
+
+		/**
+		 * @brief rewind Rewinds read pointer of variant to front.
+		 */
+		void rewind(bool complete = false);
+
+		/**
+		 * @brief append_to Append this variant to another message.
+		 * @param other Another message.
+		 * @return
+		 */
+		int append_to(message& other) const;
+
+		type_descriptor type() const;
 
 	private:
-		type_descriptor descriptor_;
-
 		/// Contains the variant data. Can be anything
 		std::unique_ptr <message> message_;
 	};
@@ -218,7 +277,7 @@ namespace DBusMock
 	};
 
 	template <typename T>
-	resolvable_variant make_variant(T const& val)
+	resolvable_variant make_resolvable_variant(T const& val)
 	{
 		resolvable_variant vari;
 		vari.descriptor.contained = type_detect <T>::value;
