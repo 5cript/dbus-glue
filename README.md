@@ -15,8 +15,8 @@ This library only enables interfacing with existant DBus APIs. Creating one your
 
 Example interfaces / Predefined interfaces can be found in my repository [dbus-mockery-system]("https://github.com/5cript/dbus-mockery-system").
 
-## Documentation
-!! Todo here, will be doxygen generated and served with github.
+## Documentation (Doxygen)
+https://5cript.github.io/dbus-mockery/
 
 ## Roadmap
 Here is a checkbox list of all the tings to come and all that are done so far.
