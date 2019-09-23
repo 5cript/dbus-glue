@@ -1,0 +1,7 @@
+<map id="DBusMock::async_context&lt; CallbackSignatureT, ErrorCallbackSignatureT &gt;" name="DBusMock::async_context&lt; CallbackSignatureT, ErrorCallbackSignatureT &gt;">
+<area shape="rect" id="node1" title="The async_context class is used to manage asynchronous callbacks and their lifetimes." alt="" coords="597,49,776,105"/>
+<area shape="rect" id="node2" href="$classDBusMock_1_1async__context__base.html" title=" " alt="" coords="289,5,503,32"/>
+<area shape="rect" id="node3" href="$classDBusMock_1_1function__wrapper.html" title=" " alt="" coords="290,57,502,98"/>
+<area shape="rect" id="node4" href="$classDBusMock_1_1dbus.html" title=" " alt="" coords="335,123,457,149"/>
+<area shape="rect" id="node5" href="$classDBusMock_1_1detail_1_1slot__holder.html" title="The slot_holder class holds slots for at least as long as the bus lives, but allows for releasing slo..." alt="" coords="5,115,160,157"/>
+</map>
