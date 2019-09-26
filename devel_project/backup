@@ -1,0 +1,80 @@
+#include <dbus-mockery/dbus_interface.hpp>
+#include <dbus-mockery/bindings/bus.hpp>
+#include <dbus-mockery/bindings/busy_loop.hpp>
+#include <dbus-mockery/bindings/variant_helpers.hpp>
+#include <dbus-mockery/generator/generator.hpp>
+
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <map>
+
+#include <thread>
+#include <chrono>
+
+using namespace DBusMock;
+using namespace std::chrono_literals;
+using namespace std::string_literals;
+
+extern "C" {
+    static int myMeth(sd_bus_message *m, void *userdata, [[maybe_unused]] sd_bus_error *error) {
+		printf("Got called with userdata=%p\n", userdata);
+		return 1;
+	}
+}
+
+struct object {
+  char *name;
+  uint32_t number;
+};
+
+
+
+int main()
+{
+	auto bus = open_user_bus();
+
+	const sd_bus_vtable vtable[] = {
+	    SD_BUS_VTABLE_START(0),
+	    SD_BUS_METHOD("Method1", "s", "s", myMeth, 0),
+	    SD_BUS_VTABLE_END
+	};
+
+	object obj;
+	obj.name = strdup("Server");
+	obj.number = 3;
+
+	sd_bus_slot *slot = nullptr;
+
+	int r = sd_bus_add_object_vtable(
+	    static_cast <sd_bus*> (bus),
+	    &slot,
+	    "/ela/server",
+	    "de.iwsmesstechnik.ela",
+	    vtable,
+	    &obj
+	);
+	std::cout << r << "\n";
+	if (r < 0)
+		std::cout << strerror(-r) << "\n";
+
+	make_busy_loop(&bus);
+
+	//interface_generator gen;
+	//gen.write_introspected_xml_to("introspected.xml", bus, "de.iwsmesstechnik.ela", "/ela/server");
+
+	/* Take a well-known service name so that clients can find us */
+	r = sd_bus_request_name(static_cast <sd_bus*> (bus), "de.iwsmesstechnik.ela", 0);
+	if (r < 0) {
+		    fprintf(stderr, "Failed to acquire service name: %s\n", strerror(-r));
+			goto finish;
+	}
+
+	while(true){std::this_thread::sleep_for(1ms);}
+
+finish:
+	free(obj.name);
+	sd_bus_slot_unref(slot);
+
+	return 0;
+}
