@@ -22,8 +22,9 @@ namespace DBusMock
 		/**
 		 * @brief message Creates a message object. Must be passed a valid sdbus message.
 		 * @param messagePointer A valid sdbus message.
+		 * @param view If true => This message is only a view and does not own the message.
 		 */
-		explicit message(sd_bus_message* messagePointer);
+		explicit message(sd_bus_message* messagePointer, bool view = false);
 
 		/**
 		 * @brief message Creates a fresh empty message.
@@ -230,6 +231,7 @@ namespace DBusMock
 
 	private:
 		mutable sd_bus_message* msg;
+		bool view;
 	};
 
 	//-----------------------------------------------------------------------------------------------------------------

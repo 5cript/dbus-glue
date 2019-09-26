@@ -8,15 +8,7 @@
 
 namespace DBusMock
 {
-    template <typename T>
-    message_variant make_variant(DBusMock::dbus& bus, T&& val)
-	{
-		message msg(static_cast <sd_bus*> (bus), SD_BUS_MESSAGE_METHOD_RETURN);
-		msg.append_variant(val);
-		return message_variant(std::move(msg));
-	}
-
-	class message_variant_resolver
+    class message_variant_resolver
 	{
 	public:
 		template <typename T>
@@ -39,6 +31,14 @@ namespace DBusMock
 			var.rewind(true);
 		}
 	};
+
+	template <typename T>
+	message_variant make_variant(DBusMock::dbus& bus, T&& val)
+	{
+		message_variant v;
+		message_variant_resolver::store(bus, v, val);
+		return v;
+	}
 
 	template <typename T>
 	void resolve(resolvable_variant var, T& val)

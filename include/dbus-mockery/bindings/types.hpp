@@ -17,7 +17,12 @@
 #include <sstream>
 #include <iomanip>
 #include <vector>
+#include <deque>
+#include <list>
+#include <forward_list>
 #include <memory>
+#include <map>
+#include <unordered_map>
 
 // https://dbus.freedesktop.org/doc/dbus-specification.html#type-system
 
@@ -44,6 +49,7 @@ namespace DBusMock
 	template <typename T, typename SFINAE = void>
 	struct type_converter
 	{
+		static constexpr bool ok = false;
 	};
 
 	struct type_descriptor
@@ -303,90 +309,105 @@ namespace DBusMock
 	template <>
 	struct type_detect <uint8_t>
 	{
+		static constexpr bool ok = true;
 		constexpr static char const* value = "y";
 	};
 
 	template <>
 	struct type_detect <bool>
 	{
+		static constexpr bool ok = true;
 		constexpr static char const* value = "b";
 	};
 
 	template <>
 	struct type_detect <int16_t>
 	{
+		static constexpr bool ok = true;
 		constexpr static char const* value = "n";
 	};
 
 	template <>
 	struct type_detect <uint16_t>
 	{
+		static constexpr bool ok = true;
 		constexpr static char const* value = "q";
 	};
 
 	template <>
 	struct type_detect <int32_t>
 	{
+		static constexpr bool ok = true;
 		constexpr static char const* value = "i";
 	};
 
 	template <>
 	struct type_detect <uint32_t>
 	{
+		static constexpr bool ok = true;
 		constexpr static char const* value = "u";
 	};
 
 	template <>
 	struct type_detect <int64_t>
 	{
+		static constexpr bool ok = true;
 		constexpr static char const* value = "x";
 	};
 
 	template <>
 	struct type_detect <uint64_t>
 	{
+		static constexpr bool ok = true;
 		constexpr static char const* value = "t";
 	};
 
 	template <>
 	struct type_detect <double>
 	{
+		static constexpr bool ok = true;
 		constexpr static char const* value = "d";
 	};
 
 	template <>
 	struct type_detect <object_path>
 	{
+		static constexpr bool ok = true;
 		constexpr static char const* value = "o";
 	};
 
 	template <>
 	struct type_detect <signature>
 	{
+		static constexpr bool ok = true;
 		constexpr static char const* value = "g";
 	};
 
 	template <>
 	struct type_detect <file_descriptor>
 	{
+		static constexpr bool ok = true;
 		constexpr static char const* value = "h";
 	};
 
 	template <>
 	struct type_detect <std::string>
 	{
+		static constexpr bool ok = true;
 		constexpr static char const* value = "s";
 	};
 
 	template <>
 	struct type_detect <char const*>
 	{
+		static constexpr bool ok = true;
 		constexpr static char const* value = "s";
 	};
 
 	template <typename T>
 	struct type_detect <T, std::enable_if_t <std::is_class_v <T> && AdaptedStructs::struct_as_tuple <T>::is_adapted>>
 	{
+		static constexpr bool ok = true;
 		constexpr static char const* value = "r";
 	};
 
@@ -417,4 +438,147 @@ namespace DBusMock
 			return orig;
 		}
 	};
+
+	namespace detail
+	{
+	    [[maybe_unused]] static std::string vector_flatten(std::vector <std::string> const& vec)
+	    {
+		    std::string res{};
+			for (auto const& v : vec)
+				res += v;
+			return res;
+	    }
+
+	    template <typename... Arguments>
+	    struct argument_signature_factory;
+
+		struct nil_type
+		{
+		};
+
+		struct invalid_type
+		{
+			constexpr static char const* value = "#invalid";
+		};
+
+		template <bool Unpack, typename TypeDetect>
+		struct conditional_detect
+		{
+		};
+
+		template <typename TypeDetect>
+		struct conditional_detect <true, TypeDetect>
+		    : TypeDetect
+		{
+		};
+
+		template <typename TypeDetect>
+		struct conditional_detect <false, TypeDetect>
+		    : invalid_type
+		{
+		};
+
+		template <typename T, typename SFINAE = void>
+		struct complex_detect
+		{
+			static std::vector <std::string> build()
+			{
+				return {};
+			}
+		};
+
+		template <typename... Params>
+		struct complex_detect <std::vector <Params...>, void>
+		{
+			static auto build() {
+				std::vector <std::string> parts = {
+				    "a",
+				    vector_flatten(argument_signature_factory <Params...>::build())
+				};
+			}
+		};
+
+		template <typename... Params>
+		struct complex_detect <std::deque <Params...>>
+		    : public complex_detect <std::vector <Params...>, void>
+		{};
+
+		template <typename... Params>
+		struct complex_detect <std::list <Params...>>
+		    : public complex_detect <std::vector <Params...>, void>
+		{};
+
+		template <typename... Params>
+		struct complex_detect <std::forward_list <Params...>, void>
+		    : public complex_detect <std::vector <Params...>, void>
+		{};
+
+		template <>
+		struct complex_detect <variant, void>
+		{
+			static auto build() {
+				std::vector <std::string> parts = {
+				    "v"
+				};
+			}
+		};
+
+		template <typename T>
+		struct complex_detect <T, std::void_t <decltype(T::signature)>>
+		{
+		    static auto build() {
+		        std::vector <std::string> parts = {
+		            "(",
+		            std::string {T::signature},
+		            ")"
+	            };
+	        }
+	    };
+
+		template <typename Key, typename Value, typename... Params>
+		struct complex_detect <std::map <Key, Value, Params...>>
+		{
+			static auto build() {
+				std::vector <std::string> parts = {
+				    "{",
+				    type_detect <Key>::value,
+				    argument_signature_factory <Value>::build(),
+				    "}"
+				};
+				return parts;
+			}
+		};
+
+		template <typename Key, typename Value, typename... Params>
+		struct complex_detect <std::unordered_map <Key, Value, Params...>>
+		    : public complex_detect <std::map <Key, Value, Params...>>
+		{
+		};
+
+		template <typename... Arguments>
+		struct argument_signature_factory
+		{
+			static auto build()
+			{
+				// Fills vector with known types, or '#' if not.
+				std::vector <std::string> parts = {
+				    (
+				        type_detect <std::decay_t <Arguments>>::ok ?
+				        std::string{conditional_detect <type_detect <std::decay_t <Arguments>>::ok, type_detect <std::decay_t <Arguments>>>::value} :
+				        vector_flatten(complex_detect <std::decay_t <Arguments>>::build())
+				    )...
+				};
+				return parts;
+			}
+		};
+
+		template <>
+		struct argument_signature_factory <void>
+		{
+			static auto build()
+			{
+				return std::vector <std::string> {};
+			}
+		};
+	}
 }

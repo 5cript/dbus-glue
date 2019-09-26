@@ -29,6 +29,8 @@ add_library(${PROJECT_NAME} STATIC
    "source/dbus-mockery/bindings/event_loop.cpp"
    "source/dbus-mockery/bindings/busy_loop.cpp"
    "source/dbus-mockery/bindings/detail/slot_holder.cpp"
+   "source/dbus-mockery/exposable_interface.cpp"
+   "source/dbus-mockery/bindings/exposed_method.cpp"
 )
 
 # Include Dirs

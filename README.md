@@ -11,14 +11,14 @@
 ## Summary
 The DBus Mockery library wants to make interfacing with a DBus Service / Interface almost as simple as defining a C++ interface.
 The DBus protocol is almost entirely hidden from the user. 
-This library only enables interfacing with existant DBus APIs. Creating one yourself with this library is currently not planned.
+This library only enables interfacing with existant DBus APIs. Creating one yourself with this library **is** ~~not~~ planned!
 
 Example interfaces / Predefined interfaces can be found in my repository [dbus-mockery-system]("https://github.com/5cript/dbus-mockery-system").
 
 ## Documentation (Doxygen)
 https://5cript.github.io/dbus-mockery/
 
-## Roadmap
+## Roadmap / Features
 Here is a checkbox list of all the tings to come and all that are done so far.
 
 - [x] A bus object for all necessary bus related tasks.
@@ -39,6 +39,13 @@ On a created interface, linked to a given DBus interface, you can:
 - [x] Connect to slots and listen for signals.
 - [x] Call methods and get the results asnchronously.
 - [x] Read and Write Properties asynchronously.
+
+With your own registered interface you can:
+- [ ] Declare your interface
+- [ ] Expose the interface
+- [ ] Expose a method
+- [ ] Expose a property
+- [ ] Expose a signal
 
 ##### Improvements not planed, but sensible:
 - [ ] Wrap sd_event in another library and make it interact with this.

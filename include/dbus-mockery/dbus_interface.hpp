@@ -3,6 +3,8 @@
 #include "methods.hpp"
 #include "properties.hpp"
 #include "signals.hpp"
+#include "detail/preprocessor.hpp"
+#include "bindings/detail/dissect.hpp"
 
 #include <iostream>
 #include <boost/type_index.hpp>
@@ -24,23 +26,7 @@
 
 namespace DBusMock::Mocks
 {
-    namespace detail
-	{
-	    template <typename>
-	    struct method_dissect
-		{
-		};
-
-		template <typename R, typename IFace, typename... Parameters>
-		struct method_dissect <R(IFace::*)(Parameters...)>
-		{
-			using interface_type = IFace;
-			using return_type = R;
-			using parameters = std::tuple <Parameters...>;
-		};
-	}
-
-	struct interface_mock_n_dummy
+    struct interface_mock_n_dummy
 	{
 		virtual ~interface_mock_n_dummy() = default;
 	};
@@ -51,44 +37,6 @@ namespace DBusMock::Mocks
 	template <typename InterfaceT>
 	struct interface_mock{};
 }
-
-/// Namespace Utility
-#define DBUS_MOCK_NAMESPACE_COLON_SEQ_EACH(r, data, i, elem) \
-	BOOST_PP_IF(i, ::, BOOST_PP_EMPTY()) elem
-
-#define DBUS_MOCK_NAMESPACE_COLON_DASH_SEQ_EACH(r, data, i, elem) \
-	BOOST_PP_IF(i, ::, BOOST_PP_EMPTY()) BOOST_PP_CAT(elem, _)
-
-#define DBUS_MOCK_NAMESPACE_COLON_SEQ(nspace) \
-	BOOST_PP_SEQ_FOR_EACH_I(DBUS_MOCK_NAMESPACE_COLON_SEQ_EACH, ::, nspace)
-
-#define DBUS_MOCK_NAMESPACE_COLON_SEQ_DASH(nspace) \
-	BOOST_PP_SEQ_FOR_EACH_I(DBUS_MOCK_NAMESPACE_COLON_DASH_SEQ_EACH, ::, nspace)
-
-#define DBUS_MOCK_EXPAND_NSPACE_RIGHT(nspace) \
-	BOOST_PP_IF(BOOST_PP_SEQ_HEAD(nspace),, DBUS_MOCK_NAMESPACE_COLON_SEQ(BOOST_PP_SEQ_POP_FRONT(nspace))::)
-
-#define DBUS_MOCK_EXPAND_NSPACE_LEFT(nspace) \
-	BOOST_PP_IF(BOOST_PP_SEQ_HEAD(nspace),, ::DBUS_MOCK_NAMESPACE_COLON_SEQ(BOOST_PP_SEQ_POP_FRONT(nspace)))
-
-#define DBUS_MOCK_EXPAND_NSPACE_LEFT_DASH(nspace) \
-	BOOST_PP_IF(BOOST_PP_SEQ_HEAD(nspace),, ::DBUS_MOCK_NAMESPACE_COLON_SEQ_DASH(BOOST_PP_SEQ_POP_FRONT(nspace)))
-
-#define DBUS_MOCK_EXPAND_NSPACE_RIGHT_DASH(nspace) \
-	BOOST_PP_IF(BOOST_PP_SEQ_HEAD(nspace),, DBUS_MOCK_NAMESPACE_COLON_SEQ_DASH(BOOST_PP_SEQ_POP_FRONT(nspace))::)
-
-#define DBUS_MOCK_EXPAND_NSPACE_INTERMEDIARY(nspace) \
-	BOOST_PP_IF(BOOST_PP_SEQ_HEAD(nspace),, ::DBUS_MOCK_NAMESPACE_COLON_SEQ(BOOST_PP_SEQ_POP_FRONT(nspace))::)
-
-#define DBUS_MOCK_EXPAND_NSPACE_INTERMEDIARY_DASH(nspace) \
-	BOOST_PP_IF(BOOST_PP_SEQ_HEAD(nspace),::, ::DBUS_MOCK_NAMESPACE_COLON_SEQ_DASH(BOOST_PP_SEQ_POP_FRONT(nspace))::)
-
-#define DBUS_MOCK_SEQUENCE_FACTORY_0(...) \
-	 ((__VA_ARGS__)) DBUS_MOCK_SEQUENCE_FACTORY_1
-#define DBUS_MOCK_SEQUENCE_FACTORY_1(...) \
-	 ((__VA_ARGS__)) DBUS_MOCK_SEQUENCE_FACTORY_0
-#define DBUS_MOCK_SEQUENCE_FACTORY_0_END
-#define DBUS_MOCK_SEQUENCE_FACTORY_1_END
 
 #define DBUS_MOCK_METHOD_DISSECT(IFace, Method) method_dissect<decltype(&IFace::Method)>
 

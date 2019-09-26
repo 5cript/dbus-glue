@@ -21,7 +21,6 @@ int main()
 	catch (std::exception const& exc)
 	{
 		std::cout << exc.what() << "\n";
-		std::cout << exc.what() << "\n";
 	}
 
 	return 0;

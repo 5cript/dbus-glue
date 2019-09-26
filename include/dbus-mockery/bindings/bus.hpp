@@ -7,6 +7,7 @@
 #include "bus_fwd.hpp"
 #include "event_loop.hpp"
 #include "async_context.hpp"
+#include "basic_exposable_interface.hpp"
 #include "detail/slot_holder.hpp"
 
 #include <string_view>
@@ -211,6 +212,19 @@ namespace DBusMock
 		void install_event_loop(std::unique_ptr <event_loop> esys);
 
 		/**
+		 * @brief event_loop retrieve the currently installed event loop
+		 * @return A handle to the event loop.
+		 */
+		template <typename LoopType>
+		LoopType* loop()
+		{
+			if (!event_loop_)
+				return nullptr;
+			else
+				return dynamic_cast <LoopType*> (event_loop_.get());
+		}
+
+		/**
 		 * @brief operator sd_bus * this is castable directly to the handle.
 		 */
 		explicit operator sd_bus*()
@@ -287,7 +301,7 @@ namespace DBusMock
 			message msg{m};
 			msg.append(interface.data());
 			msg.append(property_name.data());
-			msg.append(make_variant(prop));
+			msg.append_variant(prop);
 
 			auto error = SD_BUS_ERROR_NULL;
 			sd_bus_message* reply{};
@@ -506,6 +520,8 @@ namespace DBusMock
 		 */
 		dbus& operator=(dbus&&) = delete;
 
+		int expose_interface(std::shared_ptr <basic_exposable_interface> exposable);
+
 	private:
 		/**
 		 * @brief free_async_concext Removes an async context from the store. Dont use manually.
@@ -524,6 +540,7 @@ namespace DBusMock
 	private:
 		sd_bus* bus_;
 		std::vector <std::unique_ptr <slot_base>> unnamed_slots_;
+		std::vector <std::shared_ptr <basic_exposable_interface>> exposed_interfaces_;
 		std::recursive_mutex sdbus_lock_;
 		std::unique_ptr <event_loop> event_loop_;
 		detail::slot_holder async_slots_;
