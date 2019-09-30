@@ -4,6 +4,7 @@
 #include "detail/dissect.hpp"
 #include "types.hpp"
 #include "message.hpp"
+#include "basic_exposed_method.hpp"
 
 #include <string>
 #include <vector>
@@ -27,33 +28,46 @@ namespace DBusMock
 		    : Function <List...>
 		{
 		};
+
+
+		template <typename Tuple>
+		struct message_tuple_reader { };
+
+		template <typename... TupleParams>
+		struct message_tuple_reader <std::tuple <TupleParams...>>
+		{
+			static std::tuple <TupleParams...> exec(message& msg)
+			{
+				return {
+					msg.read_value <std::decay_t <TupleParams>>()...
+				};
+			}
+		};
 	}
 
-	class basic_exposed_method
+	template <typename FunctionT>
+	class exposed_method : public basic_exposed_method
 	{
 	public:
-		virtual sd_bus_vtable make_vtable_entry(std::size_t offset) const	= 0;
-		virtual void call(message& msg) = 0;
-		virtual ~basic_exposed_method() = default;
-	};
+		using owner_type = typename detail::method_dissect <FunctionT>::interface_type;
 
-	template <typename FunctionT>
-	struct exposed_method : public basic_exposed_method
-	{
 	private:
 		// will be generated, but must be stored to survive interface registration.
 		mutable std::string signature_;
 		mutable std::string result_signature_;
 		mutable std::string io_name_combined_;
 		mutable std::size_t offset_;
+		owner_type* owner;
 
 	public:
+		// setable values from related functions
 		std::string method_name;
 		std::string out_name;
 		std::vector <std::string> in_names;
 		uint64_t flags;
 		FunctionT func;
 
+		// methods
 		exposed_method() = default;
 		~exposed_method() = default;
 
@@ -61,6 +75,11 @@ namespace DBusMock
 		exposed_method& operator=(exposed_method const&) = default;
 		exposed_method(exposed_method&&) = default;
 		exposed_method& operator=(exposed_method&&) = default;
+
+		void set_owner(owner_type* own)
+		{
+			owner = own;
+		}
 
 		template <typename... StringTypes>
 		exposed_method
@@ -74,25 +93,6 @@ namespace DBusMock
 		    , in_names{std::forward <StringTypes&&>(in_names)...} // move on ptr is copy
 		    , func{nullptr}
 		{
-		}
-
-		void call(message& msg) override
-		{
-			auto resTuple = typename detail::method_dissect <FunctionT>::parameters{};
-
-			std::apply([&msg](auto&... args) {
-				(msg.read(args), ...);
-			}, resTuple);
-
-			if constexpr (!std::is_same_v <typename detail::method_dissect <FunctionT>::return_type, void>)
-			{
-				sd_bus_reply_method_return
-				(
-				    msg.handle(),
-				    result_signature_.c_str(),
-				    std::apply(func, resTuple)
-				);
-			}
 		}
 
 	private:
@@ -124,6 +124,30 @@ namespace DBusMock
 		}
 
 	public:
+		int call(message& msg) override
+		{
+			using tuple_type = typename detail::method_dissect <FunctionT>::parameters;
+
+			[[maybe_unused]] auto res_tuple = detail::message_tuple_reader <tuple_type>::exec(msg);
+
+			if constexpr (!std::is_same_v <typename detail::method_dissect <FunctionT>::return_type, void>)
+			{
+				return sd_bus_reply_method_return
+				(
+				    msg.handle(),
+				    result_signature_.c_str(),
+				    std::apply([this](auto&&... params){
+					    return (owner->*func)(std::forward <decltype(params)> (params)...);
+				    }, res_tuple)
+				);
+			}
+			else
+			{
+				sd_bus_reply_method_return(msg.handle(), result_signature_.c_str());
+			}
+			return 0;
+		}
+
 		sd_bus_vtable make_vtable_entry(std::size_t offset) const
 		{
 			prepare_for_expose();

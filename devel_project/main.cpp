@@ -36,7 +36,7 @@ public:
 
 public: // Methods
     auto DisplayText([[maybe_unused]] std::string const& text) -> void {}
-    auto Multiply([[maybe_unused]] int lhs, [[maybe_unused]] int rhs) -> int {return 0;}
+    auto Multiply([[maybe_unused]] int lhs, [[maybe_unused]] int rhs) -> int {return lhs * rhs;}
 
 public: // Properties
     bool IsThisCool;
@@ -48,12 +48,6 @@ public: // Signals
 int main()
 {
     auto bus = open_user_bus();
-
-    make_busy_loop(&bus, 200ms);
-    bus.loop <busy_loop>()->error_callback([](int r, std::string const& msg){
-        std::cout << msg << std::endl;
-        return true;
-    });
 
     using namespace DBusMock;
     using namespace ExposeHelpers;
@@ -78,6 +72,7 @@ int main()
     anyErr = r < 0;
     if (r < 0)
         std::cout << "Could not expose interface: " << strerror(-r) << "\n";
+    std::cout << r << "\n";
 
     std::cout << "requesting name: \n";
     r = sd_bus_request_name(static_cast <sd_bus*> (bus), "de.iwsmesstechnik.ela", 0);
@@ -87,6 +82,12 @@ int main()
 
     if (!anyErr)
         std::cout << "interface exposed\n";
+
+    make_busy_loop(&bus, 200ms);
+    bus.loop <busy_loop>()->error_callback([](int r, std::string const& msg){
+        std::cout << msg << std::endl;
+        return true;
+    });
 
     //while(true){std::this_thread::sleep_for(10ms);}
     std::cout << "exposition complete!" << std::endl;

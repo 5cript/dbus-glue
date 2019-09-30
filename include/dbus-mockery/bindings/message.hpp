@@ -135,6 +135,16 @@ namespace DBusMock
 			return result;
 		}
 
+		template <typename T, typename... ConstructionParams>
+		T read_value(ConstructionParams&&... params)
+		{
+			T value{std::forward <ConstructionParams>(params)...};
+			int r = read(value);
+			if (r < 0)
+				throw std::runtime_error("coud not read from message");
+			return value;
+		}
+
 		/**
 		 * @brief read_variant Reads a variant where the variant type is unknown
 		 * @param resolvable A variant

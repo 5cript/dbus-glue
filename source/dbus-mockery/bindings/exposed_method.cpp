@@ -3,6 +3,7 @@
 #include <dbus-mockery/bindings/detail/table_entry.hpp>
 
 #include <iostream>
+#include <iomanip>
 
 namespace {
     template<class... Ts> struct overloaded : Ts... { using Ts::operator()...; };
@@ -18,18 +19,20 @@ int dbus_mock_exposed_method_handler
 {
     using namespace DBusMock;
 
-    auto* entry = reinterpret_cast <detail::table_entry*>(userdata);
+    [[maybe_unused]] auto* entry = reinterpret_cast <detail::table_entry*>(userdata);
+    int ret = 0;
     std::visit(
         overloaded{
             [](std::monostate const&){
                 std::cout << "std::monostate? shouldn't be\n";
             },
-            [m](basic_exposed_method* method) {
+            [m, &ret](basic_exposed_method* method) {
                 message msg{m, true};
-                std::cout << "method!\n";
+                ret = method->call(msg);
             }
         },
         entry->entry
     );
-    return sd_bus_reply_method_return(m, "i", 2 * 3);
+    //return sd_bus_reply_method_return(m, "i", 2 * 3);
+    return ret;
 }

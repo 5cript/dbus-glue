@@ -1,12 +1,14 @@
 #pragma once
 
+#include "exposable_interface_fwd.hpp"
 #include "sdbus_core.hpp"
-#include "exposed_method.hpp"
+#include "basic_exposed_method.hpp"
 #include "detail/table_entry.hpp"
 #include "basic_exposable_interface.hpp"
 
 #include <memory>
 #include <variant>
+#include <iomanip>
 
 namespace DBusMock
 {
@@ -46,19 +48,18 @@ namespace DBusMock
 			// Start
 			vtable_ = {SD_BUS_VTABLE_START(SD_BUS_VTABLE_UNPRIVILEGED)};
 
-			// Methods
-			{
-				std::cout << reinterpret_cast <int64_t> (methods_.data()) << std::endl;
+			// Reserve size
+			table_.reserve(methods_.size());
 
-				int offset = 0;
-				for (auto const& m : methods_)
-				{
-					table_.push_back({
-					    m.get()
-					});
-					vtable_.push_back(std::move(m->make_vtable_entry(offset)));
-					offset += sizeof(decltype (methods_)::pointer);
-				}
+			// Methods
+			for (auto const& m : methods_)
+			{
+				table_.emplace_back(m.get());
+				auto offset =
+				    reinterpret_cast <uint64_t> (&table_.back()) -
+				    reinterpret_cast <uint64_t> (&table_.front())
+				;
+				vtable_.push_back(m->make_vtable_entry(offset));
 			}
 
 			// End
@@ -69,7 +70,8 @@ namespace DBusMock
 
 			int r = sd_bus_add_object_vtable(
 			    static_cast <sd_bus*> (bus),
-			    &slot_,
+			    /*&slot_,*/
+			    nullptr,
 			    p.c_str(),
 			    s.c_str(),
 			    vtable_.data(),

@@ -94,6 +94,7 @@ namespace DBusMock
 			template <typename InterfaceT>
 			static void add(InterfaceT* iface, std::unique_ptr <exposed_method<T>> method)
 			{
+				method->set_owner(iface);
 				iface->add_method(std::move(method));
 			}
 		};
