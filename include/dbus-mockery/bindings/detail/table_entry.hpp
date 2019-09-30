@@ -1,7 +1,8 @@
 #pragma once
 
 #include <variant>
-#include "../exposed_method.hpp"
+#include "../exposables/basic_exposable_method.hpp"
+#include "../exposables/basic_exposable_property.hpp"
 
 namespace DBusMock::detail
 {
@@ -9,11 +10,16 @@ namespace DBusMock::detail
 	{
 		std::variant <
 		    std::monostate,
-		    basic_exposed_method*
+		    basic_exposable_method*,
+		    basic_exposable_property*
 		> entry;
 
-		table_entry(basic_exposed_method* method)
+		table_entry(basic_exposable_method* method)
 		    : entry{method}
+		{}
+
+		table_entry(basic_exposable_property* property)
+		    : entry{property}
 		{}
 	};
 }

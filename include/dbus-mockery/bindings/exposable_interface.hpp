@@ -2,9 +2,11 @@
 
 #include "exposable_interface_fwd.hpp"
 #include "sdbus_core.hpp"
-#include "basic_exposed_method.hpp"
 #include "detail/table_entry.hpp"
 #include "basic_exposable_interface.hpp"
+
+#include "exposables/basic_exposable_method.hpp"
+#include "exposables/basic_exposable_property.hpp"
 
 #include <memory>
 #include <variant>
@@ -40,6 +42,12 @@ namespace DBusMock
 			methods_.push_back(std::move(method));
 		}
 
+		template <typename T>
+		void add_property(std::unique_ptr <T> property)
+		{
+			methods_.push_back(std::move(property));
+		}
+
 		template <typename BusT>
 		int expose(BusT& bus)
 		{
@@ -51,15 +59,28 @@ namespace DBusMock
 			// Reserve size
 			table_.reserve(methods_.size());
 
+			auto calculate_offset = [this]()
+			{
+				return
+				    reinterpret_cast <uint64_t> (&table_.back()) -
+				    reinterpret_cast <uint64_t> (&table_.front())
+				;
+			};
+
 			// Methods
 			for (auto const& m : methods_)
 			{
 				table_.emplace_back(m.get());
-				auto offset =
-				    reinterpret_cast <uint64_t> (&table_.back()) -
-				    reinterpret_cast <uint64_t> (&table_.front())
-				;
+				auto offset = calculate_offset();
 				vtable_.push_back(m->make_vtable_entry(offset));
+			}
+
+			// Properties
+			for (auto const& p : properties_)
+			{
+				table_.emplace_back(p.get());
+				auto offset = calculate_offset();
+				vtable_.push_back(p->make_vtable_entry(offset));
 			}
 
 			// End
@@ -83,7 +104,8 @@ namespace DBusMock
 
 	private:
 		sd_bus_slot* slot_;
-		std::vector <std::unique_ptr <basic_exposed_method>> methods_;
+		std::vector <std::unique_ptr <basic_exposable_method>> methods_;
+		std::vector <std::unique_ptr <basic_exposable_property>> properties_;
 		std::vector <sd_bus_vtable> vtable_;
 
 		// my personal table

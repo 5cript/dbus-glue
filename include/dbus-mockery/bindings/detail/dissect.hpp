@@ -16,4 +16,16 @@ namespace DBusMock::detail
 		using return_type = R;
 		using parameters = std::tuple <Parameters...>;
 	};
+
+	template <typename>
+	struct member_dissect
+	{
+	};
+
+	template <typename IFace, typename T>
+	struct member_dissect <T IFace::*>
+	{
+		using interface_type = IFace;
+		using member_type = T;
+	};
 }

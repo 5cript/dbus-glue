@@ -1,4 +1,4 @@
-#include <dbus-mockery/bindings/exposed_method.hpp>
+#include <dbus-mockery/bindings/exposables/exposable_method.hpp>
 #include <dbus-mockery/bindings/message.hpp>
 #include <dbus-mockery/bindings/detail/table_entry.hpp>
 
@@ -23,12 +23,15 @@ int dbus_mock_exposed_method_handler
     int ret = 0;
     std::visit(
         overloaded{
-            [](std::monostate const&){
-                std::cout << "std::monostate? shouldn't be\n";
+            [&ret](std::monostate const&){
+                ret = -EINVAL;
             },
-            [m, &ret](basic_exposed_method* method) {
+            [m, &ret](basic_exposable_method* method) {
                 message msg{m, true};
                 ret = method->call(msg);
+            },
+            [&ret](basic_exposable_property*) {
+                ret = -EINVAL;
             }
         },
         entry->entry

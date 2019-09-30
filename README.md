@@ -5,7 +5,8 @@
 * [Documentation](#Documentation)
 * [Roadmap](#Roadmap)
 * [Build](#Build)
-* [Tutorial](#Tutorial)
+* [Tutorial (Remote Interfaces)](#Tutorial_Remote)
+* [Tutorial (Local Interfaces)](#Tutorial_Local)
 * [Examples](#Examples)
 
 ## Summary
@@ -43,7 +44,7 @@ On a created interface, linked to a given DBus interface, you can:
 With your own registered interface you can:
 - [ ] Declare your interface
 - [ ] Expose the interface
-- [ ] Expose a method
+- [x] Expose a method
 - [ ] Expose a property
 - [ ] Expose a signal
 
@@ -61,8 +62,8 @@ This project uses cmake.
 - libsystemd, because the systemd sd-bus library is used underneath.
 - boost preprocessor
 
-## Tutorial
-This is a short tutorial for using the library.
+## Tutorial_Remote
+This is a short tutorial for declaring external interfaces, attaching to them and using them.
 
 #### Getting started
 1. clone the library using git clone
@@ -290,6 +291,101 @@ int main()
 
     std::cout << std::flush;
     return 0;
+}
+```
+
+## Tutorial_Local
+This is the tutorial for declaring your own dbus interface.
+
+On contrary to interfaces that are externally supplied, there
+is no adapt macro to use. The reason is that a macro to provide all
+the parameter and return value names on top of method names etc. would be very verbose and hard to debug on errors.
+
+#### Declaring an interface
+Here we have an interface that we want to expose to the world:
+```C++
+#include <dbus-mockery/bindings/exposable_interface.hpp>
+
+// Your interface to export has to derive from exposable_interface.
+class MyInterface : public DBusMock::exposable_interface
+{
+public:
+    // these members determine the path and service name
+    // for registration, do not need to be const literals.
+    std::string path() const override
+    {
+        return "/bluetooth";
+    }
+    std::string service() const override
+    {
+        return "com.bla.my";
+    }
+
+public: // Methods
+    auto DisplayText(std::string const& text) -> void {}
+    auto Multiply(int lhs, int rhs) -> int {return lhs * rhs;}
+
+public: // Properties
+    bool IsThisCool;
+
+public: // Signals
+    auto FireMe(int) -> void;
+};
+```
+
+#### Exposing / Registering the interface on the bus
+```C++
+#include <dbus-mockery/interface_builder.hpp>
+
+int main()
+{
+    auto bus = open_user_bus();
+
+    using namespace DBusMock;
+    using namespace ExposeHelpers;    
+
+    // creates an instance of MyInterface that can be used.
+    auto shared_ptr_to_interface = make_interface <MyInterface>(
+        DBusMock::exposed_method_factory{} <<
+            name("Multiply") << // Method name
+            result("Product") << // Name can only be a single word!
+            parameter(0, "a") << // Name can only be a single word!
+            parameter(1, "b") << // Parameter number is optional, but if supplied, all should have it supplied. 
+            as(&MyInterface::Multiply),
+        DBusMock::exposed_method_factory{} <<
+            name("DisplayText") <<
+            result("Nothing") <<
+            parameter("text") <<
+            as(&MyInterface::DisplayText)
+    );
+
+    // Documentation for properties FOLLOWS
+
+    // The bus takes a share to hold the interface and exposes it on the bus.
+    auto result = bus.expose_interface(shared_ptr_to_interface);
+
+    if (result < 0)
+    {
+        std::cerr << strerror(-result);
+        return 1;
+    }
+
+    result = sd_bus_request_name(static_cast <sd_bus*> (bus), "com.bla.my", 0);
+
+    if (result < 0)
+    {
+        std::cerr << strerror(-result);
+        return 1;
+    }
+
+    make_busy_loop(&bus, 200ms);
+    bus.loop <busy_loop>()->error_callback([](int, std::string const& msg){
+        std::cerr << msg << std::endl;
+        return true;
+    });
+
+    // prevent immediate exit here however you like.
+    std::cin.get();
 }
 ```
 

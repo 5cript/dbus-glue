@@ -1,10 +1,10 @@
 #pragma once
 
-#include "sdbus_core.hpp"
-#include "detail/dissect.hpp"
-#include "types.hpp"
-#include "message.hpp"
-#include "basic_exposed_method.hpp"
+#include "../sdbus_core.hpp"
+#include "../detail/dissect.hpp"
+#include "../types.hpp"
+#include "../message.hpp"
+#include "basic_exposable_method.hpp"
 
 #include <string>
 #include <vector>
@@ -46,7 +46,7 @@ namespace DBusMock
 	}
 
 	template <typename FunctionT>
-	class exposed_method : public basic_exposed_method
+	class exposable_method : public basic_exposable_method
 	{
 	public:
 		using owner_type = typename detail::method_dissect <FunctionT>::interface_type;
@@ -68,13 +68,13 @@ namespace DBusMock
 		FunctionT func;
 
 		// methods
-		exposed_method() = default;
-		~exposed_method() = default;
+		exposable_method() = default;
+		~exposable_method() = default;
 
-		exposed_method(exposed_method const&) = default;
-		exposed_method& operator=(exposed_method const&) = default;
-		exposed_method(exposed_method&&) = default;
-		exposed_method& operator=(exposed_method&&) = default;
+		exposable_method(exposable_method const&) = default;
+		exposable_method& operator=(exposable_method const&) = default;
+		exposable_method(exposable_method&&) = default;
+		exposable_method& operator=(exposable_method&&) = default;
 
 		void set_owner(owner_type* own)
 		{
@@ -82,7 +82,7 @@ namespace DBusMock
 		}
 
 		template <typename... StringTypes>
-		exposed_method
+		exposable_method
 		(
 		    std::string method_name,
 		    std::string out_name,

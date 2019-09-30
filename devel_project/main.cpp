@@ -3,7 +3,6 @@
 #include <dbus-mockery/bindings/busy_loop.hpp>
 #include <dbus-mockery/bindings/variant_helpers.hpp>
 #include <dbus-mockery/generator/generator.hpp>
-#include <dbus-mockery/bindings/detail/dissect.hpp>
 
 #include <dbus-mockery/bindings/exposable_interface.hpp>
 #include <dbus-mockery/interface_builder.hpp>
@@ -57,13 +56,13 @@ int main()
     bool anyErr = false;
 
     r = bus.expose_interface(make_interface <MyInterface> (
-        DBusMock::exposed_method_factory{} <<
+        DBusMock::exposable_method_factory{} <<
             name("Multiply") <<
             result("Product") <<
             parameter(0, "a") <<
             parameter(1, "b") <<
             as(&MyInterface::Multiply),
-        DBusMock::exposed_method_factory{} <<
+        DBusMock::exposable_method_factory{} <<
             name("DisplayText") <<
             result("Nothing") <<
             parameter("text") <<

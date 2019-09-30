@@ -1,7 +1,9 @@
 #pragma once
 
 #include "bindings/bus.hpp"
-#include "bindings/exposed_method.hpp"
+#include "bindings/exposable_interface.hpp"
+#include "bindings/exposables/exposable_method.hpp"
+#include "bindings/exposables/exposable_property.hpp"
 
 #include <string>
 #include <map>
@@ -11,7 +13,7 @@
 
 namespace DBusMock
 {
-    struct exposed_method_factory
+    struct exposable_method_factory
 	{
 		std::string method_name;
 		std::string result_name;
@@ -27,18 +29,27 @@ namespace DBusMock
 			return max + 1;
 		}
 
-		exposed_method_factory() = default;
+		exposable_method_factory() = default;
+	};
+
+	struct exposable_property_factory
+	{
+		std::string name = "";
+		bool writeable = false;
+		property_change_behaviour change_behaviour = property_change_behaviour::emits_change;
+
+		exposable_property_factory() = default;
 	};
 
 	namespace ExposeHelpers
 	{
-	    struct method_name_t
+	    struct member_name_t
 		{
 			std::string_view name;
 		};
-		method_name_t name(std::string_view view)
+		member_name_t name(std::string_view view)
 		{
-			return method_name_t{view};
+			return member_name_t{view};
 		}
 		struct result_name_t
 		{
@@ -64,7 +75,7 @@ namespace DBusMock
 		template <typename T>
 		struct as_t
 		{
-			T fptr;
+			T ptr;
 		};
 		template <typename T>
 		as_t<T> as(T f)
@@ -89,36 +100,53 @@ namespace DBusMock
 		};
 
 		template <typename T>
-		struct decide_add_method <std::unique_ptr <exposed_method<T>>>
+		struct decide_add_method <std::unique_ptr <exposable_method<T>>>
 		{
 			template <typename InterfaceT>
-			static void add(InterfaceT* iface, std::unique_ptr <exposed_method<T>> method)
+			static void add(InterfaceT* iface, std::unique_ptr <exposable_method<T>> method)
 			{
 				method->set_owner(iface);
 				iface->add_method(std::move(method));
 			}
 		};
+
+		template <typename T>
+		struct decide_add_method <std::unique_ptr <exposable_property<T>>>
+		{
+			template <typename InterfaceT>
+			static void add(InterfaceT* iface, std::unique_ptr <exposable_property<T>> property)
+			{
+				property->set_owner(iface);
+				iface->add_property(std::move(property));
+			}
+		};
 	}
 
-	exposed_method_factory& operator<<(exposed_method_factory&& lhs, ExposeHelpers::method_name_t&& name)
+	exposable_property_factory& operator<<(exposable_property_factory&& lhs, ExposeHelpers::member_name_t&& name)
+	{
+		lhs.name = name.name;
+		return lhs;
+	}
+
+	exposable_method_factory& operator<<(exposable_method_factory&& lhs, ExposeHelpers::member_name_t&& name)
 	{
 		lhs.method_name = name.name;
 		return lhs;
 	}
 
-	exposed_method_factory& operator<<(exposed_method_factory& lhs, ExposeHelpers::result_name_t&& name)
+	exposable_method_factory& operator<<(exposable_method_factory& lhs, ExposeHelpers::result_name_t&& name)
 	{
 		lhs.result_name = name.name;
 		return lhs;
 	}
 
-	exposed_method_factory& operator<<(exposed_method_factory& lhs, ExposeHelpers::flags_t&& flags)
+	exposable_method_factory& operator<<(exposable_method_factory& lhs, ExposeHelpers::flags_t&& flags)
 	{
 		lhs.flags = flags.flags;
 		return lhs;
 	}
 
-	exposed_method_factory& operator<<(exposed_method_factory& lhs, ExposeHelpers::parameter_name_t&& name)
+	exposable_method_factory& operator<<(exposable_method_factory& lhs, ExposeHelpers::parameter_name_t&& name)
 	{
 		if (name.which == -1)
 			lhs.in_names[name.which] = name.name;
@@ -127,15 +155,24 @@ namespace DBusMock
 		return lhs;
 	}
 	template <typename T>
-	std::unique_ptr <exposed_method<T>> operator<<(exposed_method_factory& lhs, ExposeHelpers::as_t<T>&& as)
+	std::unique_ptr <exposable_method<T>> operator<<(exposable_method_factory& lhs, ExposeHelpers::as_t<T>&& as)
 	{
-		auto method = std::make_unique <exposed_method <T>>();
+		auto method = std::make_unique <exposable_method <T>>();
 		method->method_name = std::move(lhs.method_name);
 		method->out_name = std::move(lhs.result_name);
 		for (auto const& [k, v] : lhs.in_names)
 			method->in_names.emplace_back(std::move(v));
-		method->func = as.fptr;
+		method->func = as.ptr;
 		method->flags = std::move(lhs.flags);
+		return method;
+	}
+
+	template <typename T>
+	std::unique_ptr <exposable_property<T>> operator<<(exposable_property_factory& lhs, ExposeHelpers::as_t<T>&& as)
+	{
+		auto method = std::make_unique <exposable_property <T>>();
+		method->name = std::move(lhs.name);
+		method->property = as.ptr;
 		return method;
 	}
 
