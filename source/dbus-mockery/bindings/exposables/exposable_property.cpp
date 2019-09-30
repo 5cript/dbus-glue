@@ -1,4 +1,4 @@
-#include <dbus-mockery/bindings/exposables/basic_exposable_property.hpp>
+#include <dbus-mockery/bindings/exposables/exposable_property.hpp>
 #include <dbus-mockery/bindings/detail/table_entry.hpp>
 
 #include <iostream>
@@ -14,13 +14,15 @@ int dbus_mock_exposable_property_read
     sd_bus_error* error
 )
 {
-	using namespace DBusMock;
-	[[maybe_unused]] auto* entry = reinterpret_cast <detail::table_entry*>(userdata);
+    using namespace DBusMock;
+    [[maybe_unused]] auto* entry = reinterpret_cast <detail::table_entry*>(userdata);
 
-	std::cout << path << std::endl;
-	std::cout << interface << std::endl;
-	std::cout << property << std::endl;
-	return 0;
+    std::cout << path << std::endl;
+    std::cout << interface << std::endl;
+    std::cout << property << std::endl;
+
+    std::cout << r << "\n";
+    return 1;
 }
 
 int dbus_mock_exposable_property_write
@@ -34,11 +36,11 @@ int dbus_mock_exposable_property_write
     sd_bus_error* error
 )
 {
-	using namespace DBusMock;
-	[[maybe_unused]] auto* entry = reinterpret_cast <detail::table_entry*>(userdata);
+    using namespace DBusMock;
+    [[maybe_unused]] auto* entry = reinterpret_cast <detail::table_entry*>(userdata);
 
-	std::cout << path << std::endl;
-	std::cout << interface << std::endl;
-	std::cout << property << std::endl;
-	return 0;
+    std::cout << path << std::endl;
+    std::cout << interface << std::endl;
+    std::cout << property << std::endl;
+    return 0;
 }

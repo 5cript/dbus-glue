@@ -31,6 +31,7 @@ add_library(${PROJECT_NAME} STATIC
    "source/dbus-mockery/bindings/detail/slot_holder.cpp"
    "source/dbus-mockery/exposable_interface.cpp"
    "source/dbus-mockery/bindings/exposables/exposable_method.cpp"
+   "source/dbus-mockery/bindings/exposables/exposable_property.cpp"
 )
 
 # Include Dirs

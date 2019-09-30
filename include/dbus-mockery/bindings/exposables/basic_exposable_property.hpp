@@ -8,7 +8,8 @@ namespace DBusMock
 	{
 		always_constant, // property NEVER changes for the entire lifetime of the object.
 		emits_change, // emits a change signal whenever changed
-		emits_invalidation // emits a change signal, but without the new value
+		emits_invalidation, // emits a change signal, but without the new value
+		explicit_invocation // require explicit request to get value
 	};
 
 	class basic_exposable_property

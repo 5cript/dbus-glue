@@ -35,26 +35,29 @@ namespace DBusMock
 	{
 	public:
 		using owner_type = typename detail::member_dissect <T>::interface_type;
+		using value_type = typename detail::member_dissect <T>::member_type;
 
 	private:
 		mutable std::string signature_;
 		mutable uint64_t offset_;
-		mutable int change_behaviour_;
+		mutable uint64_t flags_;
 
 		void prepare_for_expose() const
 		{
 			signature_.clear();
 
 			signature_ = detail::vector_flatten(
-			    detail::argument_signature_factory <T>::build()
+			    detail::argument_signature_factory <value_type>::build()
 			);
 
 			if (change_behaviour == property_change_behaviour::always_constant)
-				change_behaviour_ = SD_BUS_VTABLE_PROPERTY_CONST;
+				flags_ = SD_BUS_VTABLE_PROPERTY_CONST;
 			else if (change_behaviour == property_change_behaviour::emits_change)
-				change_behaviour = SD_BUS_VTABLE_PROPERTY_EMITS_CHANGE;
+				flags_ = SD_BUS_VTABLE_PROPERTY_EMITS_CHANGE;
 			else if (change_behaviour == property_change_behaviour::emits_invalidation)
-				change_behaviour = SD_BUS_VTABLE_PROPERTY_EMITS_INVALIDATION;
+				flags_ = SD_BUS_VTABLE_PROPERTY_EMITS_INVALIDATION;
+			else if (change_behaviour == property_change_behaviour::explicit_invocation)
+				flags_ = SD_BUS_VTABLE_PROPERTY_EXPLICIT;
 		}
 
 	public:
@@ -79,10 +82,10 @@ namespace DBusMock
 				return SD_BUS_WRITABLE_PROPERTY(
 				    name.c_str(),
 				    signature_.c_str(),
-				    dbus_mock_exposable_property_read, // TO CHANGE
-				    dbus_mock_exposable_property_write, // TO CHANGE
+				    &::dbus_mock_exposable_property_read, // TO CHANGE
+				    &::dbus_mock_exposable_property_write, // TO CHANGE
 				    offset,
-				    change_behaviour_
+				    flags_
 				);
 			}
 			else
@@ -90,9 +93,9 @@ namespace DBusMock
 				return SD_BUS_PROPERTY(
 				    name.c_str(),
 				    signature_.c_str(),
-				    &dbus_mock_exposable_property_read, // TO CHANGE
+				    &::dbus_mock_exposable_property_read, // TO CHANGE
 				    offset,
-				    change_behaviour_
+				    flags_
 				);
 			}
 		}

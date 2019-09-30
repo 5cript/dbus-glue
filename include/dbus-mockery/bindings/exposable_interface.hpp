@@ -45,7 +45,7 @@ namespace DBusMock
 		template <typename T>
 		void add_property(std::unique_ptr <T> property)
 		{
-			methods_.push_back(std::move(property));
+			properties_.push_back(std::move(property));
 		}
 
 		template <typename BusT>

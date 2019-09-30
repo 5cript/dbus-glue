@@ -38,7 +38,7 @@ public: // Methods
     auto Multiply([[maybe_unused]] int lhs, [[maybe_unused]] int rhs) -> int {return lhs * rhs;}
 
 public: // Properties
-    bool IsThisCool;
+    int IsThisCool;
 
 public: // Signals
     auto FireMe(int) -> void;
@@ -66,7 +66,10 @@ int main()
             name("DisplayText") <<
             result("Nothing") <<
             parameter("text") <<
-            as(&MyInterface::DisplayText)
+            as(&MyInterface::DisplayText),
+        DBusMock::exposable_property_factory{} <<
+            name("IsThisCool") <<
+            as(&MyInterface::IsThisCool)
     ));
     anyErr = r < 0;
     if (r < 0)
