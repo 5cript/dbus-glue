@@ -42,14 +42,12 @@ On a created interface, linked to a given DBus interface, you can:
 - [x] Read and Write Properties asynchronously.
 
 With your own registered interface you can:
-- [ ] Declare your interface
-- [ ] Expose the interface
+- [x] Declare your interface
+- [x] Expose the interface
 - [x] Expose a method
-- [ ] Expose a property
-- [ ] Expose a signal
-
-##### Improvements not planed, but sensible:
-- [ ] Wrap sd_event in another library and make it interact with this.
+- [x] Expose a property (read, read/write)
+- [x] Expose a signal
+- [ ] Make exposed signal emittable
 
 ## Build
 This project uses cmake.
@@ -346,20 +344,34 @@ int main()
 
     // creates an instance of MyInterface that can be used.
     auto shared_ptr_to_interface = make_interface <MyInterface>(
-        DBusMock::exposed_method_factory{} <<
+        // Multiply Method
+        DBusMock::exposable_method_factory{} <<
             name("Multiply") << // Method name
             result("Product") << // Name can only be a single word!
             parameter(0, "a") << // Name can only be a single word!
             parameter(1, "b") << // Parameter number is optional, but if supplied, all should have it supplied. 
             as(&MyInterface::Multiply),
-        DBusMock::exposed_method_factory{} <<
+
+        // Display Text Method
+        DBusMock::exposable_method_factory{} <<
             name("DisplayText") <<
             result("Nothing") <<
             parameter("text") <<
-            as(&MyInterface::DisplayText)
-    );
+            as(&MyInterface::DisplayText),
 
-    // Documentation for properties FOLLOWS
+        // IsThisCool Property
+        DBusMock::exposable_property_factory{} <<
+            name("IsThisCool") <<
+            writeable(true) <<
+            as(&MyInterface::IsThisCool),
+
+        // FireMe Signal
+        DBusMock::exposable_signal_factory{} <<
+            name("FireMe") <<
+            // d-feet does not show signal parameter names
+            parameter("integral") <<
+            as <decltype(&MyInterface::FireMe)>()        
+    );
 
     // The bus takes a share to hold the interface and exposes it on the bus.
     auto result = bus.expose_interface(shared_ptr_to_interface);
