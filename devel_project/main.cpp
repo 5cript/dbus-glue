@@ -34,7 +34,10 @@ public:
     }
 
 public: // Methods
-    auto DisplayText([[maybe_unused]] std::string const& text) -> void {}
+    auto DisplayText([[maybe_unused]] std::string const& text) -> void {
+        std::cout << "message from bus: " << text << "\n";
+        ++IsThisCool;
+    }
     auto Multiply([[maybe_unused]] int lhs, [[maybe_unused]] int rhs) -> int {return lhs * rhs;}
 
 public: // Properties
@@ -69,6 +72,8 @@ int main()
             as(&MyInterface::DisplayText),
         DBusMock::exposable_property_factory{} <<
             name("IsThisCool") <<
+            flags(property_change_behaviour::emits_change) <<
+            writeable(true) <<
             as(&MyInterface::IsThisCool)
     ));
     anyErr = r < 0;

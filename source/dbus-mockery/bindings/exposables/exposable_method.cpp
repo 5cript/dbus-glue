@@ -1,14 +1,10 @@
 #include <dbus-mockery/bindings/exposables/exposable_method.hpp>
 #include <dbus-mockery/bindings/message.hpp>
 #include <dbus-mockery/bindings/detail/table_entry.hpp>
+#include <dbus-mockery/bindings/detail/lambda_overload.hpp>
 
 #include <iostream>
 #include <iomanip>
-
-namespace {
-    template<class... Ts> struct overloaded : Ts... { using Ts::operator()...; };
-    template<class... Ts> overloaded(Ts...) -> overloaded<Ts...>;
-}
 
 int dbus_mock_exposed_method_handler
 (
@@ -22,7 +18,7 @@ int dbus_mock_exposed_method_handler
     [[maybe_unused]] auto* entry = reinterpret_cast <detail::table_entry*>(userdata);
     int ret = 0;
     std::visit(
-        overloaded{
+        detail::overloaded{
             [&ret](std::monostate const&){
                 ret = -EINVAL;
             },

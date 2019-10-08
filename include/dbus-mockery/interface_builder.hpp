@@ -90,6 +90,18 @@ namespace DBusMock
 		{
 			return flags_t{flag};
 		}
+		flags_t flags(property_change_behaviour prop_change)
+		{
+			return flags_t{static_cast <uint64_t> (prop_change)};
+		}
+		struct writeable_t
+		{
+			bool writeable;
+		};
+		writeable_t writeable(bool writeable)
+		{
+			return writeable_t{writeable};
+		}
 	}
 
 	namespace detail
@@ -125,6 +137,18 @@ namespace DBusMock
 	exposable_property_factory& operator<<(exposable_property_factory&& lhs, ExposeHelpers::member_name_t&& name)
 	{
 		lhs.name = name.name;
+		return lhs;
+	}
+
+	exposable_property_factory& operator<<(exposable_property_factory& lhs, ExposeHelpers::flags_t&& flags)
+	{
+		lhs.change_behaviour = static_cast <property_change_behaviour> (flags.flags);
+		return lhs;
+	}
+
+	exposable_property_factory& operator<<(exposable_property_factory& lhs, ExposeHelpers::writeable_t&& writeable)
+	{
+		lhs.writeable = writeable.writeable;
 		return lhs;
 	}
 
@@ -170,10 +194,12 @@ namespace DBusMock
 	template <typename T>
 	std::unique_ptr <exposable_property<T>> operator<<(exposable_property_factory& lhs, ExposeHelpers::as_t<T>&& as)
 	{
-		auto method = std::make_unique <exposable_property <T>>();
-		method->name = std::move(lhs.name);
-		method->property = as.ptr;
-		return method;
+		auto prop = std::make_unique <exposable_property <T>>();
+		prop->name = std::move(lhs.name);
+		prop->property = as.ptr;
+		prop->change_behaviour = std::move(lhs.change_behaviour);
+		prop->writeable = lhs.writeable;
+		return prop;
 	}
 
 	template <typename InterfaceT, typename... List>

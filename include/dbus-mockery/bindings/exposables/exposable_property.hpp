@@ -22,7 +22,7 @@ extern "C" {
 	    char const* path,
 	    char const* interface,
 	    char const* property,
-	    sd_bus_message* reply,
+	    sd_bus_message* value,
 	    void* userdata,
 	    sd_bus_error* error
 	);
@@ -99,13 +99,28 @@ namespace DBusMock
 				);
 			}
 		}
+
+		/**
+		 * @brief read Read in this context means: read held value out to send it out to the client.
+		 * @param msg A message to WRITE INTO.
+		 * @return An sd-bus error code.
+		 */
 		int read(message& msg) override
 		{
-			return 0;
+			// FIXME
+			int ret = msg.append(owner->*property);
+			msg.seal();
+			return ret;
 		}
+
+		/**
+		 * @brief read Write in this context means: read value from msg.
+		 * @param msg A message to READ FROM.
+		 * @return An sd-bus error code.
+		 */
 		int write(message& msg) override
 		{
-			return 0;
+			return msg.read(owner->*property);
 		}
 	};
 }

@@ -92,9 +92,9 @@ namespace DBusMock
 		struct append_proxy{};
 
 		template <typename T>
-		void append(T const& value)
+		int append(T const& value)
 		{
-			append_proxy<T>::write(*this, value);
+			return append_proxy<T>::write(*this, value);
 		}
 
 		/**
@@ -138,7 +138,8 @@ namespace DBusMock
 		template <typename T, typename... ConstructionParams>
 		T read_value(ConstructionParams&&... params)
 		{
-			T value{std::forward <ConstructionParams>(params)...};
+			//T value{std::forward <ConstructionParams>(params)...};
+			T value{};
 			int r = read(value);
 			if (r < 0)
 				throw std::runtime_error("coud not read from message");

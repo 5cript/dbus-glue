@@ -29,6 +29,15 @@ namespace DBusMock
 		{
 		};
 
+		template <typename Tuple>
+		struct tuple_parameter_decay
+		{ };
+
+		template <typename... TupleParams>
+		struct tuple_parameter_decay <std::tuple <TupleParams...>>
+		{
+			using type = std::tuple <std::decay_t <TupleParams>...>;
+		};
 
 		template <typename Tuple>
 		struct message_tuple_reader { };
@@ -38,7 +47,7 @@ namespace DBusMock
 		{
 			static std::tuple <TupleParams...> exec(message& msg)
 			{
-				return {
+				return std::tuple <TupleParams...> {
 					msg.read_value <std::decay_t <TupleParams>>()...
 				};
 			}
@@ -126,9 +135,11 @@ namespace DBusMock
 	public:
 		int call(message& msg) override
 		{
-			using tuple_type = typename detail::method_dissect <FunctionT>::parameters;
+			using tuple_type = typename detail::tuple_parameter_decay <
+			    typename detail::method_dissect <FunctionT>::parameters
+			>::type;
 
-			[[maybe_unused]] auto res_tuple = detail::message_tuple_reader <tuple_type>::exec(msg);
+			auto res_tuple = detail::message_tuple_reader <tuple_type>::exec(msg);
 
 			if constexpr (!std::is_same_v <typename detail::method_dissect <FunctionT>::return_type, void>)
 			{
@@ -143,6 +154,9 @@ namespace DBusMock
 			}
 			else
 			{
+				std::apply([this](auto&&... params){
+					return (owner->*func)(std::forward <decltype(params)> (params)...);
+				}, res_tuple);
 				sd_bus_reply_method_return(msg.handle(), result_signature_.c_str());
 			}
 			return 0;
