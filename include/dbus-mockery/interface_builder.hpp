@@ -4,6 +4,7 @@
 #include "bindings/exposable_interface.hpp"
 #include "bindings/exposables/exposable_method.hpp"
 #include "bindings/exposables/exposable_property.hpp"
+#include "bindings/exposables/exposable_signal.hpp"
 
 #include <string>
 #include <map>
@@ -13,12 +14,14 @@
 
 namespace DBusMock
 {
-    struct exposable_method_factory
+    struct factory_for_parameterized_members
 	{
-		std::string method_name;
-		std::string result_name;
+		std::string name;
 		std::map <int, std::string> in_names;
 		uint64_t flags;
+
+		factory_for_parameterized_members() = default;
+
 		int nextParm()
 		{
 			int max = 0;
@@ -28,8 +31,20 @@ namespace DBusMock
 			}
 			return max + 1;
 		}
+	};
+
+	struct exposable_method_factory
+	    : factory_for_parameterized_members
+	{
+		std::string result_name;
 
 		exposable_method_factory() = default;
+	};
+
+	struct exposable_signal_factory
+	    : factory_for_parameterized_members
+	{
+		exposable_signal_factory() = default;
 	};
 
 	struct exposable_property_factory
@@ -82,6 +97,11 @@ namespace DBusMock
 		{
 			return {f};
 		}
+		template <typename T>
+		as_t<T> as()
+		{
+			return {nullptr};
+		}
 		struct flags_t
 		{
 			uint64_t flags;
@@ -115,7 +135,7 @@ namespace DBusMock
 		struct decide_add_method <std::unique_ptr <exposable_method<T>>>
 		{
 			template <typename InterfaceT>
-			static void add(InterfaceT* iface, std::unique_ptr <exposable_method<T>> method)
+			static void add(InterfaceT* iface, std::unique_ptr <exposable_method<T>>&& method)
 			{
 				method->set_owner(iface);
 				iface->add_method(std::move(method));
@@ -126,10 +146,21 @@ namespace DBusMock
 		struct decide_add_method <std::unique_ptr <exposable_property<T>>>
 		{
 			template <typename InterfaceT>
-			static void add(InterfaceT* iface, std::unique_ptr <exposable_property<T>> property)
+			static void add(InterfaceT* iface, std::unique_ptr <exposable_property<T>>&& property)
 			{
 				property->set_owner(iface);
 				iface->add_property(std::move(property));
+			}
+		};
+
+		template <typename T>
+		struct decide_add_method <std::unique_ptr <exposable_signal<T>>>
+		{
+			template <typename InterfaceT>
+			static void add(InterfaceT* iface, std::unique_ptr <exposable_signal<T>>&& signal)
+			{
+				//signal->set_owner(iface);
+				iface->add_signal(std::move(signal));
 			}
 		};
 	}
@@ -154,7 +185,7 @@ namespace DBusMock
 
 	exposable_method_factory& operator<<(exposable_method_factory&& lhs, ExposeHelpers::member_name_t&& name)
 	{
-		lhs.method_name = name.name;
+		lhs.name = name.name;
 		return lhs;
 	}
 
@@ -178,11 +209,33 @@ namespace DBusMock
 			lhs.in_names[lhs.nextParm()] = name.name;
 		return lhs;
 	}
+
+	exposable_signal_factory& operator<<(exposable_signal_factory&& lhs, ExposeHelpers::member_name_t&& name)
+	{
+		lhs.name = name.name;
+		return lhs;
+	}
+
+	exposable_signal_factory& operator<<(exposable_signal_factory& lhs, ExposeHelpers::flags_t&& flags)
+	{
+		lhs.flags = flags.flags;
+		return lhs;
+	}
+
+	exposable_signal_factory& operator<<(exposable_signal_factory& lhs, ExposeHelpers::parameter_name_t&& name)
+	{
+		if (name.which == -1)
+			lhs.in_names[name.which] = name.name;
+		else
+			lhs.in_names[lhs.nextParm()] = name.name;
+		return lhs;
+	}
+
 	template <typename T>
 	std::unique_ptr <exposable_method<T>> operator<<(exposable_method_factory& lhs, ExposeHelpers::as_t<T>&& as)
 	{
 		auto method = std::make_unique <exposable_method <T>>();
-		method->method_name = std::move(lhs.method_name);
+		method->method_name = std::move(lhs.name);
 		method->out_name = std::move(lhs.result_name);
 		for (auto const& [k, v] : lhs.in_names)
 			method->in_names.emplace_back(std::move(v));
@@ -200,6 +253,17 @@ namespace DBusMock
 		prop->change_behaviour = std::move(lhs.change_behaviour);
 		prop->writeable = lhs.writeable;
 		return prop;
+	}
+
+	template <typename T>
+	std::unique_ptr <exposable_signal<T>> operator<<(exposable_signal_factory& lhs, ExposeHelpers::as_t<T>&&)
+	{
+		auto signal = std::make_unique <exposable_signal <T>>();
+		signal->signal_name = std::move(lhs.name);
+		for (auto const& [k, v] : lhs.in_names)
+			signal->in_names.emplace_back(std::move(v));
+		signal->flags = std::move(lhs.flags);
+		return signal;
 	}
 
 	template <typename InterfaceT, typename... List>

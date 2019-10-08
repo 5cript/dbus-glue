@@ -7,6 +7,7 @@
 
 #include "exposables/basic_exposable_method.hpp"
 #include "exposables/basic_exposable_property.hpp"
+#include "exposables/basic_exposable_signal.hpp"
 
 #include <memory>
 #include <variant>
@@ -37,15 +38,21 @@ namespace DBusMock
 		virtual std::string service() const = 0;
 
 		template <typename T>
-		void add_method(std::unique_ptr <T> method)
+		void add_method(std::unique_ptr <T>&& method)
 		{
 			methods_.push_back(std::move(method));
 		}
 
 		template <typename T>
-		void add_property(std::unique_ptr <T> property)
+		void add_property(std::unique_ptr <T>&& property)
 		{
 			properties_.push_back(std::move(property));
+		}
+
+		template <typename T>
+		void add_signal(std::unique_ptr <T>&& signal)
+		{
+			signals_.push_back(std::move(signal));
 		}
 
 		template <typename BusT>
@@ -83,6 +90,14 @@ namespace DBusMock
 				vtable_.push_back(p->make_vtable_entry(offset));
 			}
 
+			// Signals
+			for (auto const& s : signals_)
+			{
+				table_.emplace_back(s.get());
+				auto offset = calculate_offset();
+				vtable_.push_back(s->make_vtable_entry(offset));
+			}
+
 			// End
 			vtable_.push_back(SD_BUS_VTABLE_END);
 
@@ -106,6 +121,7 @@ namespace DBusMock
 		sd_bus_slot* slot_;
 		std::vector <std::unique_ptr <basic_exposable_method>> methods_;
 		std::vector <std::unique_ptr <basic_exposable_property>> properties_;
+		std::vector <std::unique_ptr <basic_exposable_signal>> signals_;
 		std::vector <sd_bus_vtable> vtable_;
 
 		// my personal table

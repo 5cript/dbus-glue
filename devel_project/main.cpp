@@ -74,7 +74,11 @@ int main()
             name("IsThisCool") <<
             flags(property_change_behaviour::emits_change) <<
             writeable(true) <<
-            as(&MyInterface::IsThisCool)
+            as(&MyInterface::IsThisCool),
+        DBusMock::exposable_signal_factory{} <<
+            name("FireMe") <<
+            parameter("integral") <<
+            as <decltype(&MyInterface::FireMe)>()
     ));
     anyErr = r < 0;
     if (r < 0)

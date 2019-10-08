@@ -1,10 +1,13 @@
 #pragma once
 
 #include "../sdbus_core.hpp"
-#include "../detail/dissect.hpp"
 #include "../types.hpp"
 #include "../message.hpp"
 #include "basic_exposable_method.hpp"
+
+#include "../detail/dissect.hpp"
+#include "../detail/tuple_apply.hpp"
+#include "../detail/tuple_parameter_decay.hpp"
 
 #include <string>
 #include <vector>
@@ -19,28 +22,8 @@ namespace DBusMock
 {
     namespace detail
 	{
-	    template <typename Tuple, template <typename...> class Function>
-	    struct tuple_apply
-		{ };
-
-		template <template <typename...> class Function, typename... List>
-		struct tuple_apply <std::tuple <List...>, Function>
-		    : Function <List...>
-		{
-		};
-
-		template <typename Tuple>
-		struct tuple_parameter_decay
-		{ };
-
-		template <typename... TupleParams>
-		struct tuple_parameter_decay <std::tuple <TupleParams...>>
-		{
-			using type = std::tuple <std::decay_t <TupleParams>...>;
-		};
-
-		template <typename Tuple>
-		struct message_tuple_reader { };
+	    template <typename Tuple>
+	    struct message_tuple_reader { };
 
 		template <typename... TupleParams>
 		struct message_tuple_reader <std::tuple <TupleParams...>>

@@ -30,6 +30,9 @@ int dbus_mock_exposable_property_read
             [reply, &ret](basic_exposable_property* property) {
                 message msg{reply, true};
                 ret = property->read(msg);
+            },
+            [&ret](basic_exposable_signal*) {
+                ret = -EINVAL;
             }
         },
         entry->entry
@@ -64,6 +67,9 @@ int dbus_mock_exposable_property_write
             [value, &ret](basic_exposable_property* property) {
                 message msg{value, true};
                 ret = property->write(msg);
+            },
+            [&ret](basic_exposable_signal*) {
+                ret = -EINVAL;
             }
         },
         entry->entry

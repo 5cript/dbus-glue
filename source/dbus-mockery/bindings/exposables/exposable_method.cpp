@@ -28,6 +28,9 @@ int dbus_mock_exposed_method_handler
             },
             [&ret](basic_exposable_property*) {
                 ret = -EINVAL;
+            },
+            [&ret](basic_exposable_signal*) {
+                ret = -EINVAL;
             }
         },
         entry->entry

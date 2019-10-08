@@ -3,6 +3,7 @@
 #include <variant>
 #include "../exposables/basic_exposable_method.hpp"
 #include "../exposables/basic_exposable_property.hpp"
+#include "../exposables/basic_exposable_signal.hpp"
 
 namespace DBusMock::detail
 {
@@ -11,7 +12,8 @@ namespace DBusMock::detail
 		std::variant <
 		    std::monostate,
 		    basic_exposable_method*,
-		    basic_exposable_property*
+		    basic_exposable_property*,
+		    basic_exposable_signal*
 		> entry;
 
 		table_entry(basic_exposable_method* method)
@@ -20,6 +22,10 @@ namespace DBusMock::detail
 
 		table_entry(basic_exposable_property* property)
 		    : entry{property}
+		{}
+
+		table_entry(basic_exposable_signal* signal)
+		    : entry{signal}
 		{}
 	};
 }
