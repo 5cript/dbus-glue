@@ -87,46 +87,48 @@ $(function() {
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
 <div class="line"><a name="l00017"></a><span class="lineno"><a class="line" href="namespaceDBusMock.html#af830e9d528bd52a9c6bf3c6a37939c1d">   17</a></span>&#160;    constexpr <span class="keyword">static</span> <span class="keyword">auto</span> <a class="code" href="namespaceDBusMock.html#af830e9d528bd52a9c6bf3c6a37939c1d">release_slot</a> = <a class="code" href="structDBusMock_1_1release__slot__t.html">release_slot_t</a>{<span class="keyword">true</span>};</div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160; </div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Args&gt;</div>
-<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="structDBusMock_1_1signal_3_01void_07Args_8_8_8_08_4.html">   20</a></span>&#160;    <span class="keyword">struct </span><a class="code" href="structDBusMock_1_1signal.html">signal</a> &lt;void(Args...)&gt;</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    {</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        <span class="keyword">auto</span>* listen</div>
-<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="structDBusMock_1_1signal_3_01void_07Args_8_8_8_08_4.html#a2e725ccf6e3bf45419bc25b4a0da6462">   23</a></span>&#160;        (</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;            std::function &lt;<span class="keywordtype">void</span>(Args <span class="keyword">const</span>&amp;...)&gt; cb,</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;            std::function &lt;<span class="keywordtype">void</span>(<a class="code" href="classDBusMock_1_1message.html">message</a>&amp;, std::string <span class="keyword">const</span>&amp;)&gt; <span class="keyword">const</span>&amp; err,</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;            <a class="code" href="structDBusMock_1_1release__slot__t.html">release_slot_t</a> release = <a class="code" href="structDBusMock_1_1release__slot__t.html">release_slot_t</a>{<span class="keyword">false</span>}</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        )</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        {</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;            <span class="keywordflow">return</span> base_-&gt;install_signal_listener(</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;                name_,</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;                cb,</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;                err,</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;                release.do_release</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;            );</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        }</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
-<div class="line"><a name="l00037"></a><span class="lineno"><a class="line" href="structDBusMock_1_1signal_3_01void_07Args_8_8_8_08_4.html#a144f2e2b9984df59e4c56509fb23cb26">   37</a></span>&#160;        <a class="code" href="structDBusMock_1_1signal_3_01void_07Args_8_8_8_08_4.html#a144f2e2b9984df59e4c56509fb23cb26">signal</a>(<a class="code" href="classDBusMock_1_1Mocks_1_1interface__mock__base.html">Mocks::interface_mock_base</a>* base, <span class="keywordtype">char</span> <span class="keyword">const</span>* name)</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;            : base_{base}</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;            , name_{name}</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        {</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        }</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="structDBusMock_1_1signal_3_01void_07Args_8_8_8_08_4.html#a48565d3c1fb7424a844553c1730935f8">   44</a></span>&#160;        <a class="code" href="classDBusMock_1_1Mocks_1_1interface__mock__base.html">Mocks::interface_mock_base</a>* <a class="code" href="structDBusMock_1_1signal_3_01void_07Args_8_8_8_08_4.html#a48565d3c1fb7424a844553c1730935f8">base_</a>;</div>
-<div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="structDBusMock_1_1signal_3_01void_07Args_8_8_8_08_4.html#a74fab5b4f083202298a85a8d92e11c8e">   45</a></span>&#160;        <span class="keywordtype">char</span> <span class="keyword">const</span>* <a class="code" href="structDBusMock_1_1signal_3_01void_07Args_8_8_8_08_4.html#a74fab5b4f083202298a85a8d92e11c8e">name_</a>;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    };</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;}</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Args&gt;</div>
+<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="classDBusMock_1_1signal_3_01void_07Args_8_8_8_08_4.html">   23</a></span>&#160;    <span class="keyword">class </span><a class="code" href="structDBusMock_1_1signal.html">signal</a> &lt;void(Args...)&gt;</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    {</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        <span class="keyword">auto</span>* listen</div>
+<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="classDBusMock_1_1signal_3_01void_07Args_8_8_8_08_4.html#a2e725ccf6e3bf45419bc25b4a0da6462">   27</a></span>&#160;        (</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;            std::function &lt;<span class="keywordtype">void</span>(Args <span class="keyword">const</span>&amp;...)&gt; cb,</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;            std::function &lt;<span class="keywordtype">void</span>(<a class="code" href="classDBusMock_1_1message.html">message</a>&amp;, std::string <span class="keyword">const</span>&amp;)&gt; <span class="keyword">const</span>&amp; err,</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;            <a class="code" href="structDBusMock_1_1release__slot__t.html">release_slot_t</a> release = <a class="code" href="structDBusMock_1_1release__slot__t.html">release_slot_t</a>{<span class="keyword">false</span>}</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        )</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        {</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;            <span class="keywordflow">return</span> base_-&gt;install_signal_listener(</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;                name_,</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;                cb,</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;                err,</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;                release.do_release</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;            );</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        }</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
+<div class="line"><a name="l00041"></a><span class="lineno"><a class="line" href="classDBusMock_1_1signal_3_01void_07Args_8_8_8_08_4.html#a144f2e2b9984df59e4c56509fb23cb26">   41</a></span>&#160;        <a class="code" href="classDBusMock_1_1signal_3_01void_07Args_8_8_8_08_4.html#a144f2e2b9984df59e4c56509fb23cb26">signal</a>(<a class="code" href="classDBusMock_1_1Mocks_1_1interface__mock__base.html">Mocks::interface_mock_base</a>* base, <span class="keywordtype">char</span> <span class="keyword">const</span>* <a class="code" href="namespaceDBusMock_1_1ExposeHelpers.html#a35f85341fcdfcffdd74b529b29a2c4f9">name</a>)</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;            : base_{base}</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;            , name_{<a class="code" href="namespaceDBusMock_1_1ExposeHelpers.html#a35f85341fcdfcffdd74b529b29a2c4f9">name</a>}</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        {</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        }</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="classDBusMock_1_1signal_3_01void_07Args_8_8_8_08_4.html#a48565d3c1fb7424a844553c1730935f8">   48</a></span>&#160;        <a class="code" href="classDBusMock_1_1Mocks_1_1interface__mock__base.html">Mocks::interface_mock_base</a>* <a class="code" href="classDBusMock_1_1signal_3_01void_07Args_8_8_8_08_4.html#a48565d3c1fb7424a844553c1730935f8">base_</a>;</div>
+<div class="line"><a name="l00049"></a><span class="lineno"><a class="line" href="classDBusMock_1_1signal_3_01void_07Args_8_8_8_08_4.html#a74fab5b4f083202298a85a8d92e11c8e">   49</a></span>&#160;        <span class="keywordtype">char</span> <span class="keyword">const</span>* <a class="code" href="classDBusMock_1_1signal_3_01void_07Args_8_8_8_08_4.html#a74fab5b4f083202298a85a8d92e11c8e">name_</a>;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    };</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;}</div>
 </div><!-- fragment --></div><!-- contents -->
+<div class="ttc" id="aclassDBusMock_1_1signal_3_01void_07Args_8_8_8_08_4_html_a144f2e2b9984df59e4c56509fb23cb26"><div class="ttname"><a href="classDBusMock_1_1signal_3_01void_07Args_8_8_8_08_4.html#a144f2e2b9984df59e4c56509fb23cb26">DBusMock::signal&lt; void(Args...)&gt;::signal</a></div><div class="ttdeci">signal(Mocks::interface_mock_base *base, char const *name)</div><div class="ttdef"><b>Definition:</b> signals.hpp:41</div></div>
 <div class="ttc" id="adbus__interface__base_8hpp_html"><div class="ttname"><a href="dbus__interface__base_8hpp.html">dbus_interface_base.hpp</a></div></div>
+<div class="ttc" id="anamespaceDBusMock_1_1ExposeHelpers_html_a35f85341fcdfcffdd74b529b29a2c4f9"><div class="ttname"><a href="namespaceDBusMock_1_1ExposeHelpers.html#a35f85341fcdfcffdd74b529b29a2c4f9">DBusMock::ExposeHelpers::name</a></div><div class="ttdeci">member_name_t name(std::string_view view)</div><div class="ttdef"><b>Definition:</b> interface_builder.hpp:66</div></div>
+<div class="ttc" id="aclassDBusMock_1_1signal_3_01void_07Args_8_8_8_08_4_html_a74fab5b4f083202298a85a8d92e11c8e"><div class="ttname"><a href="classDBusMock_1_1signal_3_01void_07Args_8_8_8_08_4.html#a74fab5b4f083202298a85a8d92e11c8e">DBusMock::signal&lt; void(Args...)&gt;::name_</a></div><div class="ttdeci">char const  * name_</div><div class="ttdef"><b>Definition:</b> signals.hpp:49</div></div>
 <div class="ttc" id="aclassDBusMock_1_1Mocks_1_1interface__mock__base_html"><div class="ttname"><a href="classDBusMock_1_1Mocks_1_1interface__mock__base.html">DBusMock::Mocks::interface_mock_base</a></div><div class="ttdef"><b>Definition:</b> dbus_interface_base.hpp:38</div></div>
 <div class="ttc" id="aclassDBusMock_1_1message_html"><div class="ttname"><a href="classDBusMock_1_1message.html">DBusMock::message</a></div><div class="ttdef"><b>Definition:</b> message.hpp:16</div></div>
-<div class="ttc" id="astructDBusMock_1_1signal_3_01void_07Args_8_8_8_08_4_html_a48565d3c1fb7424a844553c1730935f8"><div class="ttname"><a href="structDBusMock_1_1signal_3_01void_07Args_8_8_8_08_4.html#a48565d3c1fb7424a844553c1730935f8">DBusMock::signal&lt; void(Args...)&gt;::base_</a></div><div class="ttdeci">Mocks::interface_mock_base * base_</div><div class="ttdef"><b>Definition:</b> signals.hpp:44</div></div>
-<div class="ttc" id="anamespaceDBusMock_html"><div class="ttname"><a href="namespaceDBusMock.html">DBusMock</a></div><div class="ttdef"><b>Definition:</b> bus.cpp:83</div></div>
+<div class="ttc" id="anamespaceDBusMock_html"><div class="ttname"><a href="namespaceDBusMock.html">DBusMock</a></div><div class="ttdef"><b>Definition:</b> bus.cpp:84</div></div>
 <div class="ttc" id="astructDBusMock_1_1release__slot__t_html_a5bd43b7aeef4bb78fbc364504811beff"><div class="ttname"><a href="structDBusMock_1_1release__slot__t.html#a5bd43b7aeef4bb78fbc364504811beff">DBusMock::release_slot_t::do_release</a></div><div class="ttdeci">bool do_release</div><div class="ttdef"><b>Definition:</b> signals.hpp:14</div></div>
 <div class="ttc" id="astructDBusMock_1_1release__slot__t_html"><div class="ttname"><a href="structDBusMock_1_1release__slot__t.html">DBusMock::release_slot_t</a></div><div class="ttdef"><b>Definition:</b> signals.hpp:12</div></div>
+<div class="ttc" id="aclassDBusMock_1_1signal_3_01void_07Args_8_8_8_08_4_html_a48565d3c1fb7424a844553c1730935f8"><div class="ttname"><a href="classDBusMock_1_1signal_3_01void_07Args_8_8_8_08_4.html#a48565d3c1fb7424a844553c1730935f8">DBusMock::signal&lt; void(Args...)&gt;::base_</a></div><div class="ttdeci">Mocks::interface_mock_base * base_</div><div class="ttdef"><b>Definition:</b> signals.hpp:48</div></div>
 <div class="ttc" id="astructDBusMock_1_1signal_html"><div class="ttname"><a href="structDBusMock_1_1signal.html">DBusMock::signal</a></div><div class="ttdef"><b>Definition:</b> signals.hpp:8</div></div>
-<div class="ttc" id="astructDBusMock_1_1signal_3_01void_07Args_8_8_8_08_4_html_a74fab5b4f083202298a85a8d92e11c8e"><div class="ttname"><a href="structDBusMock_1_1signal_3_01void_07Args_8_8_8_08_4.html#a74fab5b4f083202298a85a8d92e11c8e">DBusMock::signal&lt; void(Args...)&gt;::name_</a></div><div class="ttdeci">char const  * name_</div><div class="ttdef"><b>Definition:</b> signals.hpp:45</div></div>
-<div class="ttc" id="astructDBusMock_1_1signal_3_01void_07Args_8_8_8_08_4_html_a144f2e2b9984df59e4c56509fb23cb26"><div class="ttname"><a href="structDBusMock_1_1signal_3_01void_07Args_8_8_8_08_4.html#a144f2e2b9984df59e4c56509fb23cb26">DBusMock::signal&lt; void(Args...)&gt;::signal</a></div><div class="ttdeci">signal(Mocks::interface_mock_base *base, char const *name)</div><div class="ttdef"><b>Definition:</b> signals.hpp:37</div></div>
 <div class="ttc" id="anamespaceDBusMock_html_af830e9d528bd52a9c6bf3c6a37939c1d"><div class="ttname"><a href="namespaceDBusMock.html#af830e9d528bd52a9c6bf3c6a37939c1d">DBusMock::release_slot</a></div><div class="ttdeci">constexpr static auto release_slot</div><div class="ttdef"><b>Definition:</b> signals.hpp:17</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

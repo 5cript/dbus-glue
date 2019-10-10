@@ -77,6 +77,8 @@ $(function() {
 <div class="textblock"><code>#include &quot;<a class="el" href="methods_8hpp_source.html">methods.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="properties_8hpp_source.html">properties.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="signals_8hpp_source.html">signals.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="preprocessor_8hpp_source.html">detail/preprocessor.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="dissect_8hpp_source.html">bindings/detail/dissect.hpp</a>&quot;</code><br />
 <code>#include &lt;iostream&gt;</code><br />
 <code>#include &lt;boost/type_index.hpp&gt;</code><br />
 <code>#include &lt;boost/preprocessor/variadic/to_seq.hpp&gt;</code><br />
@@ -97,10 +99,6 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDBusMock_1_1Mocks_1_1detail_1_1method__dissect.html">DBusMock::Mocks::detail::method_dissect&lt; typename &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDBusMock_1_1Mocks_1_1detail_1_1method__dissect_3_01R_07IFace_1_1_5_08_07Parameters_8_8_8_08_4.html">DBusMock::Mocks::detail::method_dissect&lt; R(IFace::*)(Parameters...)&gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDBusMock_1_1Mocks_1_1interface__mock__n__dummy.html">DBusMock::Mocks::interface_mock_n_dummy</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDBusMock_1_1Mocks_1_1interface__mock__n.html">DBusMock::Mocks::interface_mock_n&lt; InterfaceT, Index &gt;</a></td></tr>
@@ -114,40 +112,9 @@ Namespaces</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespaceDBusMock_1_1Mocks"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDBusMock_1_1Mocks.html">DBusMock::Mocks</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:namespaceDBusMock_1_1Mocks_1_1detail"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDBusMock_1_1Mocks_1_1detail.html">DBusMock::Mocks::detail</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:a7b8d053b33bbd9e60f3889b10ddcbdd0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dbus__interface_8hpp.html#a7b8d053b33bbd9e60f3889b10ddcbdd0">DBUS_MOCK_NAMESPACE_COLON_SEQ_EACH</a>(r,  data,  i,  elem)&#160;&#160;&#160;BOOST_PP_IF(i, ::, BOOST_PP_EMPTY()) elem</td></tr>
-<tr class="memdesc:a7b8d053b33bbd9e60f3889b10ddcbdd0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Namespace Utility.  <a href="dbus__interface_8hpp.html#a7b8d053b33bbd9e60f3889b10ddcbdd0">More...</a><br /></td></tr>
-<tr class="separator:a7b8d053b33bbd9e60f3889b10ddcbdd0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a56542cd4056905968668f405c6392a40"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dbus__interface_8hpp.html#a56542cd4056905968668f405c6392a40">DBUS_MOCK_NAMESPACE_COLON_DASH_SEQ_EACH</a>(r,  data,  i,  elem)&#160;&#160;&#160;BOOST_PP_IF(i, ::, BOOST_PP_EMPTY()) BOOST_PP_CAT(elem, _)</td></tr>
-<tr class="separator:a56542cd4056905968668f405c6392a40"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4cd0f8e27471aaac76593214d5bf6b1f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dbus__interface_8hpp.html#a4cd0f8e27471aaac76593214d5bf6b1f">DBUS_MOCK_NAMESPACE_COLON_SEQ</a>(nspace)&#160;&#160;&#160;BOOST_PP_SEQ_FOR_EACH_I(<a class="el" href="dbus__interface_8hpp.html#a7b8d053b33bbd9e60f3889b10ddcbdd0">DBUS_MOCK_NAMESPACE_COLON_SEQ_EACH</a>, ::, nspace)</td></tr>
-<tr class="separator:a4cd0f8e27471aaac76593214d5bf6b1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afa99512e0728487792bec48b7d08a1db"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dbus__interface_8hpp.html#afa99512e0728487792bec48b7d08a1db">DBUS_MOCK_NAMESPACE_COLON_SEQ_DASH</a>(nspace)&#160;&#160;&#160;BOOST_PP_SEQ_FOR_EACH_I(<a class="el" href="dbus__interface_8hpp.html#a56542cd4056905968668f405c6392a40">DBUS_MOCK_NAMESPACE_COLON_DASH_SEQ_EACH</a>, ::, nspace)</td></tr>
-<tr class="separator:afa99512e0728487792bec48b7d08a1db"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2b1ec1fa797ced3e207ff505583368df"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dbus__interface_8hpp.html#a2b1ec1fa797ced3e207ff505583368df">DBUS_MOCK_EXPAND_NSPACE_RIGHT</a>(nspace)&#160;&#160;&#160;BOOST_PP_IF(BOOST_PP_SEQ_HEAD(nspace),, <a class="el" href="dbus__interface_8hpp.html#a4cd0f8e27471aaac76593214d5bf6b1f">DBUS_MOCK_NAMESPACE_COLON_SEQ</a>(BOOST_PP_SEQ_POP_FRONT(nspace))::)</td></tr>
-<tr class="separator:a2b1ec1fa797ced3e207ff505583368df"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae71ec5bad52cec3a2a2e927acaec6289"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dbus__interface_8hpp.html#ae71ec5bad52cec3a2a2e927acaec6289">DBUS_MOCK_EXPAND_NSPACE_LEFT</a>(nspace)&#160;&#160;&#160;BOOST_PP_IF(BOOST_PP_SEQ_HEAD(nspace),, ::<a class="el" href="dbus__interface_8hpp.html#a4cd0f8e27471aaac76593214d5bf6b1f">DBUS_MOCK_NAMESPACE_COLON_SEQ</a>(BOOST_PP_SEQ_POP_FRONT(nspace)))</td></tr>
-<tr class="separator:ae71ec5bad52cec3a2a2e927acaec6289"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7e47a1c9c6776539acd305baf9216057"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dbus__interface_8hpp.html#a7e47a1c9c6776539acd305baf9216057">DBUS_MOCK_EXPAND_NSPACE_LEFT_DASH</a>(nspace)&#160;&#160;&#160;BOOST_PP_IF(BOOST_PP_SEQ_HEAD(nspace),, ::<a class="el" href="dbus__interface_8hpp.html#afa99512e0728487792bec48b7d08a1db">DBUS_MOCK_NAMESPACE_COLON_SEQ_DASH</a>(BOOST_PP_SEQ_POP_FRONT(nspace)))</td></tr>
-<tr class="separator:a7e47a1c9c6776539acd305baf9216057"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a58b096cf6b03adc1fe24f64e7413a770"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dbus__interface_8hpp.html#a58b096cf6b03adc1fe24f64e7413a770">DBUS_MOCK_EXPAND_NSPACE_RIGHT_DASH</a>(nspace)&#160;&#160;&#160;BOOST_PP_IF(BOOST_PP_SEQ_HEAD(nspace),, <a class="el" href="dbus__interface_8hpp.html#afa99512e0728487792bec48b7d08a1db">DBUS_MOCK_NAMESPACE_COLON_SEQ_DASH</a>(BOOST_PP_SEQ_POP_FRONT(nspace))::)</td></tr>
-<tr class="separator:a58b096cf6b03adc1fe24f64e7413a770"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afc978625d50ebd1ee6443d629c176df0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dbus__interface_8hpp.html#afc978625d50ebd1ee6443d629c176df0">DBUS_MOCK_EXPAND_NSPACE_INTERMEDIARY</a>(nspace)&#160;&#160;&#160;BOOST_PP_IF(BOOST_PP_SEQ_HEAD(nspace),, ::<a class="el" href="dbus__interface_8hpp.html#a4cd0f8e27471aaac76593214d5bf6b1f">DBUS_MOCK_NAMESPACE_COLON_SEQ</a>(BOOST_PP_SEQ_POP_FRONT(nspace))::)</td></tr>
-<tr class="separator:afc978625d50ebd1ee6443d629c176df0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7ccdefa9e7999dd22f9edfcf50824fc5"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dbus__interface_8hpp.html#a7ccdefa9e7999dd22f9edfcf50824fc5">DBUS_MOCK_EXPAND_NSPACE_INTERMEDIARY_DASH</a>(nspace)&#160;&#160;&#160;BOOST_PP_IF(BOOST_PP_SEQ_HEAD(nspace),::, ::<a class="el" href="dbus__interface_8hpp.html#afa99512e0728487792bec48b7d08a1db">DBUS_MOCK_NAMESPACE_COLON_SEQ_DASH</a>(BOOST_PP_SEQ_POP_FRONT(nspace))::)</td></tr>
-<tr class="separator:a7ccdefa9e7999dd22f9edfcf50824fc5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a05168e6f465419647719d9d41c537a0b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dbus__interface_8hpp.html#a05168e6f465419647719d9d41c537a0b">DBUS_MOCK_SEQUENCE_FACTORY_0</a>(...)&#160;&#160;&#160;((__VA_ARGS__)) <a class="el" href="dbus__interface_8hpp.html#a17923e21ed5efe7bca77bed027d54e19">DBUS_MOCK_SEQUENCE_FACTORY_1</a></td></tr>
-<tr class="separator:a05168e6f465419647719d9d41c537a0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a17923e21ed5efe7bca77bed027d54e19"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dbus__interface_8hpp.html#a17923e21ed5efe7bca77bed027d54e19">DBUS_MOCK_SEQUENCE_FACTORY_1</a>(...)&#160;&#160;&#160;((__VA_ARGS__)) <a class="el" href="dbus__interface_8hpp.html#a05168e6f465419647719d9d41c537a0b">DBUS_MOCK_SEQUENCE_FACTORY_0</a></td></tr>
-<tr class="separator:a17923e21ed5efe7bca77bed027d54e19"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a772aed1e5ebba2c84bac6554484965be"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dbus__interface_8hpp.html#a772aed1e5ebba2c84bac6554484965be">DBUS_MOCK_SEQUENCE_FACTORY_0_END</a></td></tr>
-<tr class="separator:a772aed1e5ebba2c84bac6554484965be"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0ec63aa1a002cbe12de65f399df2b7b8"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dbus__interface_8hpp.html#a0ec63aa1a002cbe12de65f399df2b7b8">DBUS_MOCK_SEQUENCE_FACTORY_1_END</a></td></tr>
-<tr class="separator:a0ec63aa1a002cbe12de65f399df2b7b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6d104bf40d3bc8f1e4d7aea716e10698"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dbus__interface_8hpp.html#a6d104bf40d3bc8f1e4d7aea716e10698">DBUS_MOCK_METHOD_DISSECT</a>(IFace,  Method)&#160;&#160;&#160;method_dissect&lt;decltype(&amp;IFace::Method)&gt;</td></tr>
 <tr class="separator:a6d104bf40d3bc8f1e4d7aea716e10698"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acd76c7fcf87073557a345ebffc54da8f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dbus__interface_8hpp.html#acd76c7fcf87073557a345ebffc54da8f">DBUS_MOCK_METHOD_RETURN</a>(IFace,  Method)&#160;&#160;&#160;<a class="el" href="dbus__interface_8hpp.html#a6d104bf40d3bc8f1e4d7aea716e10698">DBUS_MOCK_METHOD_DISSECT</a>(IFace, Method)::return_type</td></tr>
@@ -338,114 +305,6 @@ Functions</h2></td></tr>
           <td class="paramtype">&#160;</td>
           <td class="paramname"><em>...</em></td><td>)</td>
           <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="afc978625d50ebd1ee6443d629c176df0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afc978625d50ebd1ee6443d629c176df0">&#9670;&nbsp;</a></span>DBUS_MOCK_EXPAND_NSPACE_INTERMEDIARY</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DBUS_MOCK_EXPAND_NSPACE_INTERMEDIARY</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">nspace</td><td>)</td>
-          <td>&#160;&#160;&#160;BOOST_PP_IF(BOOST_PP_SEQ_HEAD(nspace),, ::<a class="el" href="dbus__interface_8hpp.html#a4cd0f8e27471aaac76593214d5bf6b1f">DBUS_MOCK_NAMESPACE_COLON_SEQ</a>(BOOST_PP_SEQ_POP_FRONT(nspace))::)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a7ccdefa9e7999dd22f9edfcf50824fc5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7ccdefa9e7999dd22f9edfcf50824fc5">&#9670;&nbsp;</a></span>DBUS_MOCK_EXPAND_NSPACE_INTERMEDIARY_DASH</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DBUS_MOCK_EXPAND_NSPACE_INTERMEDIARY_DASH</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">nspace</td><td>)</td>
-          <td>&#160;&#160;&#160;BOOST_PP_IF(BOOST_PP_SEQ_HEAD(nspace),::, ::<a class="el" href="dbus__interface_8hpp.html#afa99512e0728487792bec48b7d08a1db">DBUS_MOCK_NAMESPACE_COLON_SEQ_DASH</a>(BOOST_PP_SEQ_POP_FRONT(nspace))::)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ae71ec5bad52cec3a2a2e927acaec6289"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae71ec5bad52cec3a2a2e927acaec6289">&#9670;&nbsp;</a></span>DBUS_MOCK_EXPAND_NSPACE_LEFT</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DBUS_MOCK_EXPAND_NSPACE_LEFT</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">nspace</td><td>)</td>
-          <td>&#160;&#160;&#160;BOOST_PP_IF(BOOST_PP_SEQ_HEAD(nspace),, ::<a class="el" href="dbus__interface_8hpp.html#a4cd0f8e27471aaac76593214d5bf6b1f">DBUS_MOCK_NAMESPACE_COLON_SEQ</a>(BOOST_PP_SEQ_POP_FRONT(nspace)))</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a7e47a1c9c6776539acd305baf9216057"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7e47a1c9c6776539acd305baf9216057">&#9670;&nbsp;</a></span>DBUS_MOCK_EXPAND_NSPACE_LEFT_DASH</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DBUS_MOCK_EXPAND_NSPACE_LEFT_DASH</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">nspace</td><td>)</td>
-          <td>&#160;&#160;&#160;BOOST_PP_IF(BOOST_PP_SEQ_HEAD(nspace),, ::<a class="el" href="dbus__interface_8hpp.html#afa99512e0728487792bec48b7d08a1db">DBUS_MOCK_NAMESPACE_COLON_SEQ_DASH</a>(BOOST_PP_SEQ_POP_FRONT(nspace)))</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a2b1ec1fa797ced3e207ff505583368df"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2b1ec1fa797ced3e207ff505583368df">&#9670;&nbsp;</a></span>DBUS_MOCK_EXPAND_NSPACE_RIGHT</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DBUS_MOCK_EXPAND_NSPACE_RIGHT</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">nspace</td><td>)</td>
-          <td>&#160;&#160;&#160;BOOST_PP_IF(BOOST_PP_SEQ_HEAD(nspace),, <a class="el" href="dbus__interface_8hpp.html#a4cd0f8e27471aaac76593214d5bf6b1f">DBUS_MOCK_NAMESPACE_COLON_SEQ</a>(BOOST_PP_SEQ_POP_FRONT(nspace))::)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a58b096cf6b03adc1fe24f64e7413a770"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a58b096cf6b03adc1fe24f64e7413a770">&#9670;&nbsp;</a></span>DBUS_MOCK_EXPAND_NSPACE_RIGHT_DASH</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DBUS_MOCK_EXPAND_NSPACE_RIGHT_DASH</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">nspace</td><td>)</td>
-          <td>&#160;&#160;&#160;BOOST_PP_IF(BOOST_PP_SEQ_HEAD(nspace),, <a class="el" href="dbus__interface_8hpp.html#afa99512e0728487792bec48b7d08a1db">DBUS_MOCK_NAMESPACE_COLON_SEQ_DASH</a>(BOOST_PP_SEQ_POP_FRONT(nspace))::)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -788,10 +647,10 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">detail <a class="code" href="dbus__interface_8hpp.html#a7ccdefa9e7999dd22f9edfcf50824fc5">DBUS_MOCK_EXPAND_NSPACE_INTERMEDIARY_DASH</a>(BOOST_PP_TUPLE_ELEM(0, Data)) \</div>
+<b>Value:</b><div class="fragment"><div class="line">detail <a class="code" href="preprocessor_8hpp.html#a7ccdefa9e7999dd22f9edfcf50824fc5">DBUS_MOCK_EXPAND_NSPACE_INTERMEDIARY_DASH</a>(BOOST_PP_TUPLE_ELEM(0, Data)) \</div>
 <div class="line">    BOOST_PP_CAT(BOOST_PP_TUPLE_ELEM(1, Data), BOOST_PP_CAT(_mock_help_, Method)) \</div>
 <div class="line">    &lt;BOOST_PP_TUPLE_ELEM(2, Data), BOOST_PP_TUPLE_ELEM(3, Data), \</div>
-<div class="line">        decltype(&amp;<a class="code" href="dbus__interface_8hpp.html#a2b1ec1fa797ced3e207ff505583368df">DBUS_MOCK_EXPAND_NSPACE_RIGHT</a>(BOOST_PP_TUPLE_ELEM(0, Data)) BOOST_PP_TUPLE_ELEM(1, Data)::Method)&gt;</div>
+<div class="line">        decltype(&amp;<a class="code" href="preprocessor_8hpp.html#a2b1ec1fa797ced3e207ff505583368df">DBUS_MOCK_EXPAND_NSPACE_RIGHT</a>(BOOST_PP_TUPLE_ELEM(0, Data)) BOOST_PP_TUPLE_ELEM(1, Data)::Method)&gt;</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -905,124 +764,6 @@ Functions</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line"><a class="code" href="dbus__interface_8hpp.html#a69a4f9055f9b50c75a5fba651ccd076b">DBUS_MOCK_IMPL</a>(0, BOOST_PP_SEQ_PUSH_FRONT(NSpace, 0), IFace, Methods, Properties, Signals) \</div>
 <div class="line">    DBUS_MOCK_ZIP(BOOST_PP_SEQ_PUSH_FRONT(NSpace, 0), IFace, 0)</div>
 </div><!-- fragment -->
-</div>
-</div>
-<a id="a56542cd4056905968668f405c6392a40"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a56542cd4056905968668f405c6392a40">&#9670;&nbsp;</a></span>DBUS_MOCK_NAMESPACE_COLON_DASH_SEQ_EACH</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DBUS_MOCK_NAMESPACE_COLON_DASH_SEQ_EACH</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">r, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">data, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">i, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">elem&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td>&#160;&#160;&#160;BOOST_PP_IF(i, ::, BOOST_PP_EMPTY()) BOOST_PP_CAT(elem, _)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a4cd0f8e27471aaac76593214d5bf6b1f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4cd0f8e27471aaac76593214d5bf6b1f">&#9670;&nbsp;</a></span>DBUS_MOCK_NAMESPACE_COLON_SEQ</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DBUS_MOCK_NAMESPACE_COLON_SEQ</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">nspace</td><td>)</td>
-          <td>&#160;&#160;&#160;BOOST_PP_SEQ_FOR_EACH_I(<a class="el" href="dbus__interface_8hpp.html#a7b8d053b33bbd9e60f3889b10ddcbdd0">DBUS_MOCK_NAMESPACE_COLON_SEQ_EACH</a>, ::, nspace)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="afa99512e0728487792bec48b7d08a1db"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afa99512e0728487792bec48b7d08a1db">&#9670;&nbsp;</a></span>DBUS_MOCK_NAMESPACE_COLON_SEQ_DASH</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DBUS_MOCK_NAMESPACE_COLON_SEQ_DASH</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">nspace</td><td>)</td>
-          <td>&#160;&#160;&#160;BOOST_PP_SEQ_FOR_EACH_I(<a class="el" href="dbus__interface_8hpp.html#a56542cd4056905968668f405c6392a40">DBUS_MOCK_NAMESPACE_COLON_DASH_SEQ_EACH</a>, ::, nspace)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a7b8d053b33bbd9e60f3889b10ddcbdd0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7b8d053b33bbd9e60f3889b10ddcbdd0">&#9670;&nbsp;</a></span>DBUS_MOCK_NAMESPACE_COLON_SEQ_EACH</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DBUS_MOCK_NAMESPACE_COLON_SEQ_EACH</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">r, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">data, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">i, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">elem&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td>&#160;&#160;&#160;BOOST_PP_IF(i, ::, BOOST_PP_EMPTY()) elem</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Namespace Utility. </p>
-
 </div>
 </div>
 <a id="a67b0c62ed5412602701db333bad285c7"></a>
@@ -1205,70 +946,6 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a05168e6f465419647719d9d41c537a0b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a05168e6f465419647719d9d41c537a0b">&#9670;&nbsp;</a></span>DBUS_MOCK_SEQUENCE_FACTORY_0</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DBUS_MOCK_SEQUENCE_FACTORY_0</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>...</em></td><td>)</td>
-          <td>&#160;&#160;&#160;((__VA_ARGS__)) <a class="el" href="dbus__interface_8hpp.html#a17923e21ed5efe7bca77bed027d54e19">DBUS_MOCK_SEQUENCE_FACTORY_1</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a772aed1e5ebba2c84bac6554484965be"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a772aed1e5ebba2c84bac6554484965be">&#9670;&nbsp;</a></span>DBUS_MOCK_SEQUENCE_FACTORY_0_END</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DBUS_MOCK_SEQUENCE_FACTORY_0_END</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a17923e21ed5efe7bca77bed027d54e19"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a17923e21ed5efe7bca77bed027d54e19">&#9670;&nbsp;</a></span>DBUS_MOCK_SEQUENCE_FACTORY_1</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DBUS_MOCK_SEQUENCE_FACTORY_1</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>...</em></td><td>)</td>
-          <td>&#160;&#160;&#160;((__VA_ARGS__)) <a class="el" href="dbus__interface_8hpp.html#a05168e6f465419647719d9d41c537a0b">DBUS_MOCK_SEQUENCE_FACTORY_0</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a0ec63aa1a002cbe12de65f399df2b7b8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0ec63aa1a002cbe12de65f399df2b7b8">&#9670;&nbsp;</a></span>DBUS_MOCK_SEQUENCE_FACTORY_1_END</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DBUS_MOCK_SEQUENCE_FACTORY_1_END</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="ac5f107bc2600d20261568cb3180bb4b1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac5f107bc2600d20261568cb3180bb4b1">&#9670;&nbsp;</a></span>DBUS_MOCK_SIGNALS</h2>
 
@@ -1355,14 +1032,14 @@ Functions</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line"><span class="keyword">namespace </span><a class="code" href="namespaceDBusMock_1_1Mocks.html">DBusMock::Mocks</a> \</div>
 <div class="line">{ \</div>
 <div class="line">    template &lt;&gt; \</div>
-<div class="line">    struct interface_mock &lt;<a class="code" href="dbus__interface_8hpp.html#a2b1ec1fa797ced3e207ff505583368df">DBUS_MOCK_EXPAND_NSPACE_RIGHT</a>(NSpace) IFace&gt; \</div>
+<div class="line">    struct interface_mock &lt;<a class="code" href="preprocessor_8hpp.html#a2b1ec1fa797ced3e207ff505583368df">DBUS_MOCK_EXPAND_NSPACE_RIGHT</a>(NSpace) IFace&gt; \</div>
 <div class="line">        : BOOST_PP_SEQ_FOR_EACH( \</div>
 <div class="line">            <a class="code" href="dbus__interface_8hpp.html#a47ec6cfb51c93d538300ccfdc73dba90">DBUS_MOCK_DERIVE_ZIP_SEQ_EACH</a>, \</div>
-<div class="line">            <a class="code" href="dbus__interface_8hpp.html#a2b1ec1fa797ced3e207ff505583368df">DBUS_MOCK_EXPAND_NSPACE_RIGHT</a>(NSpace) IFace, \</div>
+<div class="line">            <a class="code" href="preprocessor_8hpp.html#a2b1ec1fa797ced3e207ff505583368df">DBUS_MOCK_EXPAND_NSPACE_RIGHT</a>(NSpace) IFace, \</div>
 <div class="line">            SEQ \</div>
 <div class="line">        ) interface_mock_n_dummy \</div>
 <div class="line">    { \</div>
-<div class="line">        using interface_type = <a class="code" href="dbus__interface_8hpp.html#a2b1ec1fa797ced3e207ff505583368df">DBUS_MOCK_EXPAND_NSPACE_RIGHT</a>(NSpace) IFace; \</div>
+<div class="line">        using interface_type = <a class="code" href="preprocessor_8hpp.html#a2b1ec1fa797ced3e207ff505583368df">DBUS_MOCK_EXPAND_NSPACE_RIGHT</a>(NSpace) IFace; \</div>
 <div class="line">        \</div>
 <div class="line">        interface_mock( \</div>
 <div class="line">            dbus&amp; bus, \</div>
@@ -1373,7 +1050,7 @@ Functions</h2></td></tr>
 <div class="line">            : interface_mock_base{bus, service, path, interface} \</div>
 <div class="line">            , BOOST_PP_SEQ_FOR_EACH( \</div>
 <div class="line">                <a class="code" href="dbus__interface_8hpp.html#a904bfb252b5c393eacf62bc1f219b23f">DBUS_MOCK_CTOR_ZIP_SEQ_EACH</a>, \</div>
-<div class="line">                <a class="code" href="dbus__interface_8hpp.html#a2b1ec1fa797ced3e207ff505583368df">DBUS_MOCK_EXPAND_NSPACE_RIGHT</a>(NSpace) IFace, \</div>
+<div class="line">                <a class="code" href="preprocessor_8hpp.html#a2b1ec1fa797ced3e207ff505583368df">DBUS_MOCK_EXPAND_NSPACE_RIGHT</a>(NSpace) IFace, \</div>
 <div class="line">                SEQ \</div>
 <div class="line">            ) interface_mock_n_dummy{} \</div>
 <div class="line">        { \</div>
@@ -1427,13 +1104,13 @@ Functions</h2></td></tr>
 </div>
 </div>
 </div><!-- contents -->
-<div class="ttc" id="adbus__interface_8hpp_html_a904bfb252b5c393eacf62bc1f219b23f"><div class="ttname"><a href="dbus__interface_8hpp.html#a904bfb252b5c393eacf62bc1f219b23f">DBUS_MOCK_CTOR_ZIP_SEQ_EACH</a></div><div class="ttdeci">#define DBUS_MOCK_CTOR_ZIP_SEQ_EACH(r, data, elem)</div><div class="ttdef"><b>Definition:</b> dbus_interface.hpp:285</div></div>
-<div class="ttc" id="adbus__interface_8hpp_html_a69a4f9055f9b50c75a5fba651ccd076b"><div class="ttname"><a href="dbus__interface_8hpp.html#a69a4f9055f9b50c75a5fba651ccd076b">DBUS_MOCK_IMPL</a></div><div class="ttdeci">#define DBUS_MOCK_IMPL(NUMERATOR, NSpace, IFace, Methods, Properties, Signals)</div><div class="ttdef"><b>Definition:</b> dbus_interface.hpp:229</div></div>
-<div class="ttc" id="anamespaceDBusMock_1_1Mocks_html"><div class="ttname"><a href="namespaceDBusMock_1_1Mocks.html">DBusMock::Mocks</a></div><div class="ttdef"><b>Definition:</b> dbus_interface.hpp:25</div></div>
-<div class="ttc" id="adbus__interface_8hpp_html_a7ccdefa9e7999dd22f9edfcf50824fc5"><div class="ttname"><a href="dbus__interface_8hpp.html#a7ccdefa9e7999dd22f9edfcf50824fc5">DBUS_MOCK_EXPAND_NSPACE_INTERMEDIARY_DASH</a></div><div class="ttdeci">#define DBUS_MOCK_EXPAND_NSPACE_INTERMEDIARY_DASH(nspace)</div><div class="ttdef"><b>Definition:</b> dbus_interface.hpp:83</div></div>
-<div class="ttc" id="adbus__interface_8hpp_html_a47ec6cfb51c93d538300ccfdc73dba90"><div class="ttname"><a href="dbus__interface_8hpp.html#a47ec6cfb51c93d538300ccfdc73dba90">DBUS_MOCK_DERIVE_ZIP_SEQ_EACH</a></div><div class="ttdeci">#define DBUS_MOCK_DERIVE_ZIP_SEQ_EACH(r, data, elem)</div><div class="ttdef"><b>Definition:</b> dbus_interface.hpp:282</div></div>
-<div class="ttc" id="adbus__interface_8hpp_html_a2b1ec1fa797ced3e207ff505583368df"><div class="ttname"><a href="dbus__interface_8hpp.html#a2b1ec1fa797ced3e207ff505583368df">DBUS_MOCK_EXPAND_NSPACE_RIGHT</a></div><div class="ttdeci">#define DBUS_MOCK_EXPAND_NSPACE_RIGHT(nspace)</div><div class="ttdef"><b>Definition:</b> dbus_interface.hpp:68</div></div>
-<div class="ttc" id="adbus__interface_8hpp_html_a3eeecd0e58b052a4b563facded2243f0"><div class="ttname"><a href="dbus__interface_8hpp.html#a3eeecd0e58b052a4b563facded2243f0">DBUS_MOCK_METHOD_SINGLE_IMPL</a></div><div class="ttdeci">#define DBUS_MOCK_METHOD_SINGLE_IMPL(NSpace, IFace, Method)</div><div class="ttdef"><b>Definition:</b> dbus_interface.hpp:110</div></div>
+<div class="ttc" id="adbus__interface_8hpp_html_a904bfb252b5c393eacf62bc1f219b23f"><div class="ttname"><a href="dbus__interface_8hpp.html#a904bfb252b5c393eacf62bc1f219b23f">DBUS_MOCK_CTOR_ZIP_SEQ_EACH</a></div><div class="ttdeci">#define DBUS_MOCK_CTOR_ZIP_SEQ_EACH(r, data, elem)</div><div class="ttdef"><b>Definition:</b> dbus_interface.hpp:233</div></div>
+<div class="ttc" id="adbus__interface_8hpp_html_a69a4f9055f9b50c75a5fba651ccd076b"><div class="ttname"><a href="dbus__interface_8hpp.html#a69a4f9055f9b50c75a5fba651ccd076b">DBUS_MOCK_IMPL</a></div><div class="ttdeci">#define DBUS_MOCK_IMPL(NUMERATOR, NSpace, IFace, Methods, Properties, Signals)</div><div class="ttdef"><b>Definition:</b> dbus_interface.hpp:177</div></div>
+<div class="ttc" id="apreprocessor_8hpp_html_a7ccdefa9e7999dd22f9edfcf50824fc5"><div class="ttname"><a href="preprocessor_8hpp.html#a7ccdefa9e7999dd22f9edfcf50824fc5">DBUS_MOCK_EXPAND_NSPACE_INTERMEDIARY_DASH</a></div><div class="ttdeci">#define DBUS_MOCK_EXPAND_NSPACE_INTERMEDIARY_DASH(nspace)</div><div class="ttdef"><b>Definition:</b> preprocessor.hpp:31</div></div>
+<div class="ttc" id="anamespaceDBusMock_1_1Mocks_html"><div class="ttname"><a href="namespaceDBusMock_1_1Mocks.html">DBusMock::Mocks</a></div><div class="ttdef"><b>Definition:</b> dbus_interface.hpp:27</div></div>
+<div class="ttc" id="adbus__interface_8hpp_html_a47ec6cfb51c93d538300ccfdc73dba90"><div class="ttname"><a href="dbus__interface_8hpp.html#a47ec6cfb51c93d538300ccfdc73dba90">DBUS_MOCK_DERIVE_ZIP_SEQ_EACH</a></div><div class="ttdeci">#define DBUS_MOCK_DERIVE_ZIP_SEQ_EACH(r, data, elem)</div><div class="ttdef"><b>Definition:</b> dbus_interface.hpp:230</div></div>
+<div class="ttc" id="apreprocessor_8hpp_html_a2b1ec1fa797ced3e207ff505583368df"><div class="ttname"><a href="preprocessor_8hpp.html#a2b1ec1fa797ced3e207ff505583368df">DBUS_MOCK_EXPAND_NSPACE_RIGHT</a></div><div class="ttdeci">#define DBUS_MOCK_EXPAND_NSPACE_RIGHT(nspace)</div><div class="ttdef"><b>Definition:</b> preprocessor.hpp:16</div></div>
+<div class="ttc" id="adbus__interface_8hpp_html_a3eeecd0e58b052a4b563facded2243f0"><div class="ttname"><a href="dbus__interface_8hpp.html#a3eeecd0e58b052a4b563facded2243f0">DBUS_MOCK_METHOD_SINGLE_IMPL</a></div><div class="ttdeci">#define DBUS_MOCK_METHOD_SINGLE_IMPL(NSpace, IFace, Method)</div><div class="ttdef"><b>Definition:</b> dbus_interface.hpp:58</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

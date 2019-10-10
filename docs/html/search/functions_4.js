@@ -1,7 +1,18 @@
 var searchData=
 [
-  ['erase_552',['erase',['../classDBusMock_1_1detail_1_1slot__holder.html#aa9b1552e80e5c5105e49826672aee13d',1,'DBusMock::detail::slot_holder']]],
-  ['error_553',['error',['../classDBusMock_1_1Mocks_1_1interface__async__base.html#a5d6549fa102fc0bc9f7c98dd2a88be02',1,'DBusMock::Mocks::interface_async_base']]],
-  ['error_5fcallback_554',['error_callback',['../classDBusMock_1_1busy__loop.html#ae64d7e93fb674ffaf983e1b44c901e85',1,'DBusMock::busy_loop']]],
-  ['event_5floop_555',['event_loop',['../classDBusMock_1_1event__loop.html#ad57f3f763bb9118029a9b248f377260d',1,'DBusMock::event_loop']]]
+  ['emit_771',['emit',['../classDBusMock_1_1emitable_3_01R_07_5_08_07Parameters_8_8_8_08_4.html#a00cfd5da69634f2b20e42ea32bc7ba94',1,'DBusMock::emitable&lt; R(*)(Parameters...)&gt;']]],
+  ['emitable_772',['emitable',['../classDBusMock_1_1emitable_3_01R_07_5_08_07Parameters_8_8_8_08_4.html#a0e8622f85c168a8ee40dfefca4984d5d',1,'DBusMock::emitable&lt; R(*)(Parameters...)&gt;']]],
+  ['erase_773',['erase',['../classDBusMock_1_1detail_1_1slot__holder.html#aa9b1552e80e5c5105e49826672aee13d',1,'DBusMock::detail::slot_holder']]],
+  ['error_774',['error',['../classDBusMock_1_1Mocks_1_1interface__async__base.html#a5d6549fa102fc0bc9f7c98dd2a88be02',1,'DBusMock::Mocks::interface_async_base']]],
+  ['error_5fcallback_775',['error_callback',['../classDBusMock_1_1busy__loop.html#ae64d7e93fb674ffaf983e1b44c901e85',1,'DBusMock::busy_loop']]],
+  ['event_5floop_776',['event_loop',['../classDBusMock_1_1event__loop.html#ad57f3f763bb9118029a9b248f377260d',1,'DBusMock::event_loop']]],
+  ['exec_777',['exec',['../structDBusMock_1_1detail_1_1message__tuple__reader_3_01std_1_1tuple_3_01TupleParams_8_8_8_01_4_01_4.html#a36e7efac9fe08de768f5a602008a3904',1,'DBusMock::detail::message_tuple_reader&lt; std::tuple&lt; TupleParams... &gt; &gt;']]],
+  ['exposable_5finterface_778',['exposable_interface',['../classDBusMock_1_1exposable__interface.html#a83b2223b917370c25f1e4f029935527a',1,'DBusMock::exposable_interface']]],
+  ['exposable_5fmethod_779',['exposable_method',['../classDBusMock_1_1exposable__method.html#a719184d012364b1a8523e3126b23fce1',1,'DBusMock::exposable_method::exposable_method()=default'],['../classDBusMock_1_1exposable__method.html#a4da4dfd74dec7ec8c940bd74e3cb3653',1,'DBusMock::exposable_method::exposable_method(exposable_method const &amp;)=default'],['../classDBusMock_1_1exposable__method.html#a4bc2612d3bdb63e65edf260992981122',1,'DBusMock::exposable_method::exposable_method(exposable_method &amp;&amp;)=default'],['../classDBusMock_1_1exposable__method.html#aca98f71e4ed8764d257d4e37cc89a38d',1,'DBusMock::exposable_method::exposable_method(std::string method_name, std::string out_name, StringTypes &amp;&amp;... in_names)']]],
+  ['exposable_5fmethod_5ffactory_780',['exposable_method_factory',['../structDBusMock_1_1exposable__method__factory.html#af48245a0cfa4835981ab5aa1df9ee284',1,'DBusMock::exposable_method_factory']]],
+  ['exposable_5fproperty_5ffactory_781',['exposable_property_factory',['../structDBusMock_1_1exposable__property__factory.html#a9d7647a9181b3056826f99760a1d60a3',1,'DBusMock::exposable_property_factory']]],
+  ['exposable_5fsignal_782',['exposable_signal',['../classDBusMock_1_1exposable__signal.html#ab6ad209e90dbbd55fa3709ead80a15bb',1,'DBusMock::exposable_signal::exposable_signal()=default'],['../classDBusMock_1_1exposable__signal.html#a1f64b5675ed7c5a6af85421fad7c1c6f',1,'DBusMock::exposable_signal::exposable_signal(exposable_signal const &amp;)=default'],['../classDBusMock_1_1exposable__signal.html#ac206ded3782d12173e2e87e6d2f76650',1,'DBusMock::exposable_signal::exposable_signal(exposable_signal &amp;&amp;)=default'],['../classDBusMock_1_1exposable__signal.html#a7df58f91aadc8ec48f4c9f2b077afb9d',1,'DBusMock::exposable_signal::exposable_signal(std::string signal_name, StringTypes &amp;&amp;... in_names)']]],
+  ['exposable_5fsignal_5ffactory_783',['exposable_signal_factory',['../structDBusMock_1_1exposable__signal__factory.html#a0e2c56d614e928f6e298d098a1aabac7',1,'DBusMock::exposable_signal_factory']]],
+  ['expose_784',['expose',['../classDBusMock_1_1exposable__interface.html#a618b4def190e4702c96e58b30327e5de',1,'DBusMock::exposable_interface']]],
+  ['expose_5finterface_785',['expose_interface',['../classDBusMock_1_1dbus.html#a000044b83672a34508c90e94b41fbaae',1,'DBusMock::dbus']]]
 ];

@@ -145,7 +145,7 @@ int main()
 Now lets change a little bit of the program. We now dont want to do the call synchronously, but asynchronously. Note that as soon as an event handling loop is attached to the bus, even the synchronous calls get processed by the loop and block while its not their turn to be executed, which, in bad cases, can result in "long" wait times at these functions, which may be undersirable.
 I therefore recommend to switch to an entirely asynchronous architecture when you use any asynchronous methods/signals on the bus.
 
-Asynchronous functions use "continuation" style. Which means that when ever an asynchronous function finishes, a callback is called from which on execution can be resumed.
+Asynchronous functions use "continuation" style. Which means that whenever an asynchronous function finishes, a callback is called from which execution can be resumed.
 
 Properties can also be read and written asynchronously, by calling get/set on them with the async flag, just the same as with methods.
 

@@ -90,7 +90,12 @@ $(function() {
 <code>#include &lt;sstream&gt;</code><br />
 <code>#include &lt;iomanip&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
+<code>#include &lt;deque&gt;</code><br />
+<code>#include &lt;list&gt;</code><br />
+<code>#include &lt;forward_list&gt;</code><br />
 <code>#include &lt;memory&gt;</code><br />
+<code>#include &lt;map&gt;</code><br />
+<code>#include &lt;unordered_map&gt;</code><br />
 </div>
 <p><a href="types_8hpp_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -147,10 +152,46 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDBusMock_1_1type__converter_3_01char_01const_01_5_00_01void_01_4.html">DBusMock::type_converter&lt; char const *, void &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDBusMock_1_1detail_1_1argument__signature__factory.html">DBusMock::detail::argument_signature_factory&lt; Arguments &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDBusMock_1_1detail_1_1nil__type.html">DBusMock::detail::nil_type</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDBusMock_1_1detail_1_1invalid__type.html">DBusMock::detail::invalid_type</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDBusMock_1_1detail_1_1conditional__detect.html">DBusMock::detail::conditional_detect&lt; Unpack, TypeDetect &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDBusMock_1_1detail_1_1conditional__detect_3_01true_00_01TypeDetect_01_4.html">DBusMock::detail::conditional_detect&lt; true, TypeDetect &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDBusMock_1_1detail_1_1conditional__detect_3_01false_00_01TypeDetect_01_4.html">DBusMock::detail::conditional_detect&lt; false, TypeDetect &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDBusMock_1_1detail_1_1complex__detect.html">DBusMock::detail::complex_detect&lt; T, SFINAE &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDBusMock_1_1detail_1_1complex__detect_3_01std_1_1vector_3_01Params_8_8_8_01_4_00_01void_01_4.html">DBusMock::detail::complex_detect&lt; std::vector&lt; Params... &gt;, void &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDBusMock_1_1detail_1_1complex__detect_3_01std_1_1deque_3_01Params_8_8_8_01_4_01_4.html">DBusMock::detail::complex_detect&lt; std::deque&lt; Params... &gt; &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDBusMock_1_1detail_1_1complex__detect_3_01std_1_1list_3_01Params_8_8_8_01_4_01_4.html">DBusMock::detail::complex_detect&lt; std::list&lt; Params... &gt; &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDBusMock_1_1detail_1_1complex__detect_3_01std_1_1forward__list_3_01Params_8_8_8_01_4_00_01void_01_4.html">DBusMock::detail::complex_detect&lt; std::forward_list&lt; Params... &gt;, void &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDBusMock_1_1detail_1_1complex__detect_3_01variant_00_01void_01_4.html">DBusMock::detail::complex_detect&lt; variant, void &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDBusMock_1_1detail_1_1complex__detect_3_01T_00_01std_1_1void__t_3_01decltype_07T_1_1signature_08_4_01_4.html">DBusMock::detail::complex_detect&lt; T, std::void_t&lt; decltype(T::signature)&gt; &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDBusMock_1_1detail_1_1complex__detect_3_01std_1_1map_3_01Key_00_01Value_00_01Params_8_8_8_01_4_01_4.html">DBusMock::detail::complex_detect&lt; std::map&lt; Key, Value, Params... &gt; &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDBusMock_1_1detail_1_1complex__detect_3_01std_1_1unordered__map_3_01Key_00_01Value_00_01Params_8_8_8_01_4_01_4.html">DBusMock::detail::complex_detect&lt; std::unordered_map&lt; Key, Value, Params... &gt; &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDBusMock_1_1detail_1_1argument__signature__factory.html">DBusMock::detail::argument_signature_factory&lt; Arguments &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDBusMock_1_1detail_1_1argument__signature__factory_3_01void_01_4.html">DBusMock::detail::argument_signature_factory&lt; void &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
 Namespaces</h2></td></tr>
 <tr class="memitem:namespaceDBusMock"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDBusMock.html">DBusMock</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:namespaceDBusMock_1_1detail"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDBusMock_1_1detail.html">DBusMock::detail</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
@@ -180,6 +221,8 @@ Functions</h2></td></tr>
 <tr class="memitem:a24ed7b9144d9fecd2778372aec0fcdf9"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDBusMock.html#a24ed7b9144d9fecd2778372aec0fcdf9">DBusMock::typeToCpp</a> (char type)</td></tr>
 <tr class="memdesc:a24ed7b9144d9fecd2778372aec0fcdf9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts a sdbus type into the expected type in C.  <a href="namespaceDBusMock.html#a24ed7b9144d9fecd2778372aec0fcdf9">More...</a><br /></td></tr>
 <tr class="separator:a24ed7b9144d9fecd2778372aec0fcdf9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9ac2adadd4fe8c2d0d8e748d18514e5d"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDBusMock_1_1detail.html#a9ac2adadd4fe8c2d0d8e748d18514e5d">DBusMock::detail::vector_flatten</a> (std::vector&lt; std::string &gt; const &amp;vec)</td></tr>
+<tr class="separator:a9ac2adadd4fe8c2d0d8e748d18514e5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 <!-- start footer part -->

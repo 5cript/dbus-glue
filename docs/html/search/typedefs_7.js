@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['signature_736',['signature',['../classDBusMock_1_1function__wrapper_3_01R_07List_8_8_8_08_4.html#ab6801cf88ee206f1ccd3e79f81153956',1,'DBusMock::function_wrapper&lt; R(List...)&gt;']]]
+  ['owner_5ftype_1018',['owner_type',['../classDBusMock_1_1exposable__method.html#ae4689bb1d75b862059bb3b26b1701324',1,'DBusMock::exposable_method::owner_type()'],['../classDBusMock_1_1exposable__property.html#a33a03280d550d4bdc609cf4d9730e9f5',1,'DBusMock::exposable_property::owner_type()']]]
 ];

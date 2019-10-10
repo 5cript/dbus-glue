@@ -209,9 +209,9 @@ Macros</h2></td></tr>
 <div class="line">        \</div>
 <div class="line">        static Name from_tuple(tuple_type <span class="keyword">const</span>&amp; tup) \</div>
 <div class="line">        { \</div>
-<div class="line">            Name result; \</div>
+<div class="line">            Name <a class="code" href="namespaceDBusMock_1_1ExposeHelpers.html#aaffa38d00a6099bb64d9ab699acfe14b">result</a>; \</div>
 <div class="line">            BOOST_PP_SEQ_FOR_EACH_I(<a class="code" href="struct__adapter_8hpp.html#ad76ce995ea0d0092f144626c902d619e">MAKE_DBUS_STRUCT_RETRIEVER</a>, tup, SEQ) \</div>
-<div class="line">            return result; \</div>
+<div class="line">            return <a class="code" href="namespaceDBusMock_1_1ExposeHelpers.html#aaffa38d00a6099bb64d9ab699acfe14b">result</a>; \</div>
 <div class="line">        } \</div>
 <div class="line">        \</div>
 <div class="line">        static tuple_type to_tuple(Name <span class="keyword">const</span>&amp; n) \</div>
@@ -306,6 +306,7 @@ Macros</h2></td></tr>
 </div>
 </div>
 </div><!-- contents -->
+<div class="ttc" id="anamespaceDBusMock_1_1ExposeHelpers_html_aaffa38d00a6099bb64d9ab699acfe14b"><div class="ttname"><a href="namespaceDBusMock_1_1ExposeHelpers.html#aaffa38d00a6099bb64d9ab699acfe14b">DBusMock::ExposeHelpers::result</a></div><div class="ttdeci">result_name_t result(std::string_view view)</div><div class="ttdef"><b>Definition:</b> interface_builder.hpp:74</div></div>
 <div class="ttc" id="anamespaceDBusMock_1_1AdaptedStructs_html"><div class="ttname"><a href="namespaceDBusMock_1_1AdaptedStructs.html">DBusMock::AdaptedStructs</a></div><div class="ttdef"><b>Definition:</b> struct_adapter.hpp:13</div></div>
 <div class="ttc" id="astruct__adapter_8hpp_html_ada6bada21eb5bb4028bd0b2edd366675"><div class="ttname"><a href="struct__adapter_8hpp.html#ada6bada21eb5bb4028bd0b2edd366675">MAKE_DBUS_STRUCT_DECLTYPE</a></div><div class="ttdeci">#define MAKE_DBUS_STRUCT_DECLTYPE(r, data, elem)</div><div class="ttdef"><b>Definition:</b> struct_adapter.hpp:22</div></div>
 <div class="ttc" id="astruct__adapter_8hpp_html_a66b178b2239abb76e16d75f9fdd09982"><div class="ttname"><a href="struct__adapter_8hpp.html#a66b178b2239abb76e16d75f9fdd09982">MAKE_DBUS_STRUCT_PACKER</a></div><div class="ttdeci">#define MAKE_DBUS_STRUCT_PACKER(r, data, i, elem)</div><div class="ttdef"><b>Definition:</b> struct_adapter.hpp:28</div></div>

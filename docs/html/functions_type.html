@@ -69,8 +69,16 @@ $(function() {
 : <a class="el" href="structDBusMock_1_1message_1_1append__proxy_3_01ContainerT_3_01ValueT_00_01AllocatorT_3_01ValueT_01_4_01_4_00_01void_01_4.html#a99f5b715c2703b3dfc0d19872c28dd2c">DBusMock::message::append_proxy&lt; ContainerT&lt; ValueT, AllocatorT&lt; ValueT &gt; &gt;, void &gt;</a>
 , <a class="el" href="structDBusMock_1_1message_1_1read__proxy_3_01ContainerT_3_01ValueT_00_01AllocatorT_3_01ValueT_01_4_01_4_00_01void_01_4.html#a261e413071534fb688719dfd85e70a47">DBusMock::message::read_proxy&lt; ContainerT&lt; ValueT, AllocatorT&lt; ValueT &gt; &gt;, void &gt;</a>
 </li>
+<li>emitable_type
+: <a class="el" href="classDBusMock_1_1exposable__signal.html#a1d014e595cdb89bdd15eb0e4f8a64ee9">DBusMock::exposable_signal&lt; EmitableMemberT &gt;</a>
+</li>
+<li>function_type
+: <a class="el" href="classDBusMock_1_1emitable_3_01R_07_5_08_07Parameters_8_8_8_08_4.html#adf2d6a0f13f2ef219ca779732305eac0">DBusMock::emitable&lt; R(*)(Parameters...)&gt;</a>
+, <a class="el" href="classDBusMock_1_1exposable__signal.html#afdb4e4f0ca71370cee949f24690d8dba">DBusMock::exposable_signal&lt; EmitableMemberT &gt;</a>
+</li>
 <li>interface_type
-: <a class="el" href="structDBusMock_1_1Mocks_1_1detail_1_1method__dissect_3_01R_07IFace_1_1_5_08_07Parameters_8_8_8_08_4.html#aa14e1ff6ad21ef2e1f4547a4fb714dc3">DBusMock::Mocks::detail::method_dissect&lt; R(IFace::*)(Parameters...)&gt;</a>
+: <a class="el" href="structDBusMock_1_1detail_1_1function__dissect_3_01R_07IFace_1_1_5_08_07Parameters_8_8_8_08_4.html#a525335631b090a9e1bc74581cc6c6c67">DBusMock::detail::function_dissect&lt; R(IFace::*)(Parameters...)&gt;</a>
+, <a class="el" href="structDBusMock_1_1detail_1_1member__dissect_3_01T_01IFace_1_1_5_01_4.html#a5b101250d0a8a9953d7fce87e5a53b87">DBusMock::detail::member_dissect&lt; T IFace::* &gt;</a>
 </li>
 <li>is_transparent
 : <a class="el" href="structDBusMock_1_1detail_1_1slot__holder_1_1pointer__comp.html#ad2151b5d2b64400a3e79bb7153cc61bb">DBusMock::detail::slot_holder::pointer_comp&lt; T &gt;</a>
@@ -78,22 +86,35 @@ $(function() {
 <li>map_type
 : <a class="el" href="structDBusMock_1_1message_1_1read__proxy_3_01MapT_3_01KeyT_00_01ValueT_00_01CompareOrHash_00_01A259b112a3387db9ca22e272f508fad52.html#ad5c87f798a13fda38884faddffb6f4a2">DBusMock::message::read_proxy&lt; MapT&lt; KeyT, ValueT, CompareOrHash, AllocatorOrKeyEqual, MaybeAllocator... &gt;, std::enable_if_t&lt;!std::is_same_v&lt; ValueT, variant &gt; &gt; &gt;</a>
 </li>
+<li>member_type
+: <a class="el" href="structDBusMock_1_1detail_1_1member__dissect_3_01T_01IFace_1_1_5_01_4.html#a94c6867da3d86640f7c1e8b955d72c1f">DBusMock::detail::member_dissect&lt; T IFace::* &gt;</a>
+</li>
+<li>owner_type
+: <a class="el" href="classDBusMock_1_1exposable__method.html#ae4689bb1d75b862059bb3b26b1701324">DBusMock::exposable_method&lt; FunctionT &gt;</a>
+, <a class="el" href="classDBusMock_1_1exposable__property.html#a33a03280d550d4bdc609cf4d9730e9f5">DBusMock::exposable_property&lt; T &gt;</a>
+</li>
 <li>parameters
-: <a class="el" href="structDBusMock_1_1Mocks_1_1detail_1_1method__dissect_3_01R_07IFace_1_1_5_08_07Parameters_8_8_8_08_4.html#a747ee0cba9d0b1fbcb75cd18d392cebd">DBusMock::Mocks::detail::method_dissect&lt; R(IFace::*)(Parameters...)&gt;</a>
+: <a class="el" href="structDBusMock_1_1detail_1_1function__dissect_3_01R_07_5_08_07Parameters_8_8_8_08_4.html#a2370b2806ade61ba638cba448581d9bf">DBusMock::detail::function_dissect&lt; R(*)(Parameters...)&gt;</a>
+, <a class="el" href="structDBusMock_1_1detail_1_1function__dissect_3_01R_07IFace_1_1_5_08_07Parameters_8_8_8_08_4.html#a063c2c1d683c97298fb420f48897351c">DBusMock::detail::function_dissect&lt; R(IFace::*)(Parameters...)&gt;</a>
 </li>
 <li>return_type
-: <a class="el" href="classDBusMock_1_1function__wrapper_3_01R_07List_8_8_8_08_4.html#ac0e88fb8e682cb8cd84af2fb8a43d183">DBusMock::function_wrapper&lt; R(List...)&gt;</a>
-, <a class="el" href="structDBusMock_1_1Mocks_1_1detail_1_1method__dissect_3_01R_07IFace_1_1_5_08_07Parameters_8_8_8_08_4.html#a4f7d2ca8e140d501104c56ec4e2b2180">DBusMock::Mocks::detail::method_dissect&lt; R(IFace::*)(Parameters...)&gt;</a>
+: <a class="el" href="structDBusMock_1_1detail_1_1function__dissect_3_01R_07_5_08_07Parameters_8_8_8_08_4.html#a541b642fa5f247f6f9f0d76fd83a4355">DBusMock::detail::function_dissect&lt; R(*)(Parameters...)&gt;</a>
+, <a class="el" href="structDBusMock_1_1detail_1_1function__dissect_3_01R_07IFace_1_1_5_08_07Parameters_8_8_8_08_4.html#ae3350b008581a2e86e50f1ae27c31888">DBusMock::detail::function_dissect&lt; R(IFace::*)(Parameters...)&gt;</a>
+, <a class="el" href="classDBusMock_1_1function__wrapper_3_01R_07List_8_8_8_08_4.html#ac0e88fb8e682cb8cd84af2fb8a43d183">DBusMock::function_wrapper&lt; R(List...)&gt;</a>
 </li>
 <li>signature
 : <a class="el" href="classDBusMock_1_1function__wrapper_3_01R_07List_8_8_8_08_4.html#ab6801cf88ee206f1ccd3e79f81153956">DBusMock::function_wrapper&lt; R(List...)&gt;</a>
 </li>
 <li>type
-: <a class="el" href="structDBusMock_1_1Mocks_1_1detail_1_1func__param__devoid.html#a21cccb7ba6dda143463ee636b85c2843">DBusMock::Mocks::detail::func_param_devoid&lt; R &gt;</a>
+: <a class="el" href="structDBusMock_1_1detail_1_1tuple__parameter__decay_3_01std_1_1tuple_3_01TupleParams_8_8_8_01_4_01_4.html#ae70fd2d91ac3f7246778528dec5c135c">DBusMock::detail::tuple_parameter_decay&lt; std::tuple&lt; TupleParams... &gt; &gt;</a>
+, <a class="el" href="structDBusMock_1_1Mocks_1_1detail_1_1func__param__devoid.html#a21cccb7ba6dda143463ee636b85c2843">DBusMock::Mocks::detail::func_param_devoid&lt; R &gt;</a>
 , <a class="el" href="structDBusMock_1_1Mocks_1_1detail_1_1func__param__devoid_3_01void_01_4.html#abfa54e38118b0c803c480481c8d08f6e">DBusMock::Mocks::detail::func_param_devoid&lt; void &gt;</a>
 , <a class="el" href="structDBusMock_1_1read__writeable.html#ab9511009ac093059e841a63d50343aa8">DBusMock::read_writeable&lt; T &gt;</a>
 , <a class="el" href="classDBusMock_1_1readable.html#aaccd5b4fee0d4237b56620e1958773f2">DBusMock::readable&lt; T &gt;</a>
 , <a class="el" href="classDBusMock_1_1writable.html#a1d22663b2a2c627ea6a7005c20c193bb">DBusMock::writable&lt; T &gt;</a>
+</li>
+<li>value_type
+: <a class="el" href="classDBusMock_1_1exposable__property.html#a22ed8e53baffee603fa0acd342b34026">DBusMock::exposable_property&lt; T &gt;</a>
 </li>
 </ul>
 </div><!-- contents -->

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['map_5ftype_733',['map_type',['../structDBusMock_1_1message_1_1read__proxy_3_01MapT_3_01KeyT_00_01ValueT_00_01CompareOrHash_00_01A259b112a3387db9ca22e272f508fad52.html#ad5c87f798a13fda38884faddffb6f4a2',1,'DBusMock::message::read_proxy&lt; MapT&lt; KeyT, ValueT, CompareOrHash, AllocatorOrKeyEqual, MaybeAllocator... &gt;, std::enable_if_t&lt;!std::is_same_v&lt; ValueT, variant &gt; &gt; &gt;']]]
+  ['function_5ftype_1013',['function_type',['../classDBusMock_1_1emitable_3_01R_07_5_08_07Parameters_8_8_8_08_4.html#adf2d6a0f13f2ef219ca779732305eac0',1,'DBusMock::emitable&lt; R(*)(Parameters...)&gt;::function_type()'],['../classDBusMock_1_1exposable__signal.html#afdb4e4f0ca71370cee949f24690d8dba',1,'DBusMock::exposable_signal::function_type()']]]
 ];

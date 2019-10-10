@@ -108,9 +108,16 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a1c88744bbcb21a3cc91d2eceae2cde47"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBusMock_1_1dbus.html#a1c88744bbcb21a3cc91d2eceae2cde47">install_event_loop</a> (std::unique_ptr&lt; <a class="el" href="classDBusMock_1_1event__loop.html">event_loop</a> &gt; esys)</td></tr>
 <tr class="memdesc:a1c88744bbcb21a3cc91d2eceae2cde47"><td class="mdescLeft">&#160;</td><td class="mdescRight">install_event_loop Install some event loop implementation into the bus connection.  <a href="classDBusMock_1_1dbus.html#a1c88744bbcb21a3cc91d2eceae2cde47">More...</a><br /></td></tr>
 <tr class="separator:a1c88744bbcb21a3cc91d2eceae2cde47"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a51880654b341ce741c7ae98e8f85a180"><td class="memTemplParams" colspan="2">template&lt;typename LoopType &gt; </td></tr>
+<tr class="memitem:a51880654b341ce741c7ae98e8f85a180"><td class="memTemplItemLeft" align="right" valign="top">LoopType *&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classDBusMock_1_1dbus.html#a51880654b341ce741c7ae98e8f85a180">loop</a> ()</td></tr>
+<tr class="memdesc:a51880654b341ce741c7ae98e8f85a180"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDBusMock_1_1event__loop.html" title="The event_loop interface has to be implemented by a custom event loop system, so it can be passed to ...">event_loop</a> retrieve the currently installed event loop  <a href="classDBusMock_1_1dbus.html#a51880654b341ce741c7ae98e8f85a180">More...</a><br /></td></tr>
+<tr class="separator:a51880654b341ce741c7ae98e8f85a180"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad34ab029219895ef799b7441a3bec2bc"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBusMock_1_1dbus.html#ad34ab029219895ef799b7441a3bec2bc">operator sd_bus *</a> ()</td></tr>
 <tr class="memdesc:ad34ab029219895ef799b7441a3bec2bc"><td class="mdescLeft">&#160;</td><td class="mdescRight">operator sd_bus * this is castable directly to the handle.  <a href="classDBusMock_1_1dbus.html#ad34ab029219895ef799b7441a3bec2bc">More...</a><br /></td></tr>
 <tr class="separator:ad34ab029219895ef799b7441a3bec2bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a37dc67f74b7ce769847ede8b0d4481c9"><td class="memItemLeft" align="right" valign="top">sd_bus *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBusMock_1_1dbus.html#a37dc67f74b7ce769847ede8b0d4481c9">handle</a> ()</td></tr>
+<tr class="memdesc:a37dc67f74b7ce769847ede8b0d4481c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the internal held handle.  <a href="classDBusMock_1_1dbus.html#a37dc67f74b7ce769847ede8b0d4481c9">More...</a><br /></td></tr>
+<tr class="separator:a37dc67f74b7ce769847ede8b0d4481c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1c0ccf82f8fdfff183511d44f52efc08"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a1c0ccf82f8fdfff183511d44f52efc08"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classDBusMock_1_1dbus.html#a1c0ccf82f8fdfff183511d44f52efc08">read_property</a> (std::string_view service, std::string_view path, std::string_view interface, std::string_view property_name, T &amp;prop)</td></tr>
 <tr class="memdesc:a1c0ccf82f8fdfff183511d44f52efc08"><td class="mdescLeft">&#160;</td><td class="mdescRight">read_property Retrieves a single property  <a href="classDBusMock_1_1dbus.html#a1c0ccf82f8fdfff183511d44f52efc08">More...</a><br /></td></tr>
@@ -153,6 +160,8 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aae31fe2a6e565c0e439e153a01ae7cab"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDBusMock_1_1dbus.html">dbus</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBusMock_1_1dbus.html#aae31fe2a6e565c0e439e153a01ae7cab">operator=</a> (<a class="el" href="classDBusMock_1_1dbus.html">dbus</a> &amp;&amp;)=delete</td></tr>
 <tr class="memdesc:aae31fe2a6e565c0e439e153a01ae7cab"><td class="mdescLeft">&#160;</td><td class="mdescRight">dbus A dbus connection cannot be moved  <a href="classDBusMock_1_1dbus.html#aae31fe2a6e565c0e439e153a01ae7cab">More...</a><br /></td></tr>
 <tr class="separator:aae31fe2a6e565c0e439e153a01ae7cab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a000044b83672a34508c90e94b41fbaae"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBusMock_1_1dbus.html#a000044b83672a34508c90e94b41fbaae">expose_interface</a> (std::shared_ptr&lt; <a class="el" href="classDBusMock_1_1basic__exposable__interface.html">basic_exposable_interface</a> &gt; exposable)</td></tr>
+<tr class="separator:a000044b83672a34508c90e94b41fbaae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
@@ -169,6 +178,8 @@ Private Attributes</h2></td></tr>
 <tr class="separator:a2141d4385a7887aab3e4f7f1df0eb6cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acee2fff3efb90637fa740885315ce8f0"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::unique_ptr&lt; <a class="el" href="classDBusMock_1_1slot__base.html">slot_base</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBusMock_1_1dbus.html#acee2fff3efb90637fa740885315ce8f0">unnamed_slots_</a></td></tr>
 <tr class="separator:acee2fff3efb90637fa740885315ce8f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a44c4368a4439ef8f6487f22ab46182c5"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::shared_ptr&lt; <a class="el" href="classDBusMock_1_1basic__exposable__interface.html">basic_exposable_interface</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBusMock_1_1dbus.html#a44c4368a4439ef8f6487f22ab46182c5">exposed_interfaces_</a></td></tr>
+<tr class="separator:a44c4368a4439ef8f6487f22ab46182c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac2c432344e51b458895ee67a0dfd2267"><td class="memItemLeft" align="right" valign="top">std::recursive_mutex&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBusMock_1_1dbus.html#ac2c432344e51b458895ee67a0dfd2267">sdbus_lock_</a></td></tr>
 <tr class="separator:ac2c432344e51b458895ee67a0dfd2267"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad66b2783b73a8800125afe393961d9f3"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classDBusMock_1_1event__loop.html">event_loop</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBusMock_1_1dbus.html#ad66b2783b73a8800125afe393961d9f3">event_loop_</a></td></tr>
@@ -481,6 +492,24 @@ template&lt;typename CallbackSignature , typename... ParametersT&gt; </div>
 
 </div>
 </div>
+<a id="a000044b83672a34508c90e94b41fbaae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a000044b83672a34508c90e94b41fbaae">&#9670;&nbsp;</a></span>expose_interface()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int DBusMock::dbus::expose_interface </td>
+          <td>(</td>
+          <td class="paramtype">std::shared_ptr&lt; <a class="el" href="classDBusMock_1_1basic__exposable__interface.html">basic_exposable_interface</a> &gt;&#160;</td>
+          <td class="paramname"><em>exposable</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a5112b7ff61e1ac395b2b87f19bb9d774"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5112b7ff61e1ac395b2b87f19bb9d774">&#9670;&nbsp;</a></span>flush()</h2>
 
@@ -531,6 +560,33 @@ template&lt;typename CallbackSignature , typename... ParametersT&gt; </div>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="a37dc67f74b7ce769847ede8b0d4481c9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a37dc67f74b7ce769847ede8b0d4481c9">&#9670;&nbsp;</a></span>handle()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">sd_bus* DBusMock::dbus::handle </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns the internal held handle. </p>
 
 </div>
 </div>
@@ -673,6 +729,36 @@ template&lt;typename FunctionT &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="a51880654b341ce741c7ae98e8f85a180"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a51880654b341ce741c7ae98e8f85a180">&#9670;&nbsp;</a></span>loop()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename LoopType &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">LoopType* DBusMock::dbus::loop </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><a class="el" href="classDBusMock_1_1event__loop.html" title="The event_loop interface has to be implemented by a custom event loop system, so it can be passed to ...">event_loop</a> retrieve the currently installed event loop </p>
+<dl class="section return"><dt>Returns</dt><dd>A handle to the event loop. </dd></dl>
 
 </div>
 </div>
@@ -1322,6 +1408,28 @@ template&lt;typename T &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">std::unique_ptr&lt;<a class="el" href="classDBusMock_1_1event__loop.html">event_loop</a>&gt; DBusMock::dbus::event_loop_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a44c4368a4439ef8f6487f22ab46182c5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a44c4368a4439ef8f6487f22ab46182c5">&#9670;&nbsp;</a></span>exposed_interfaces_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;std::shared_ptr &lt;<a class="el" href="classDBusMock_1_1basic__exposable__interface.html">basic_exposable_interface</a>&gt; &gt; DBusMock::dbus::exposed_interfaces_</td>
         </tr>
       </table>
   </td>

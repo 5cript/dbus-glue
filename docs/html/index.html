@@ -72,18 +72,19 @@ Table of Contents</h1>
 <li><a href="#Documentation">Documentation</a></li>
 <li><a href="#Roadmap">Roadmap</a></li>
 <li><a href="#Build">Build</a></li>
-<li><a href="#Tutorial">Tutorial</a></li>
+<li><a href="#Tutorial_Remote">Tutorial (Remote Interfaces)</a></li>
+<li><a href="#Tutorial_Local">Tutorial (Local Interfaces)</a></li>
 <li><a href="#Examples">Examples</a></li>
 </ul>
 <h1><a class="anchor" id="autotoc_md2"></a>
 Summary</h1>
-<p>The DBus Mockery library wants to make interfacing with a DBus Service / Interface almost as simple as defining a C++ interface. The DBus protocol is almost entirely hidden from the user. This library only enables interfacing with existant DBus APIs. Creating one yourself with this library is currently not planned.</p>
+<p>The DBus Mockery library wants to make interfacing with a DBus Service / Interface almost as simple as defining a C++ interface. The DBus protocol is almost entirely hidden from the user. This library only enables interfacing with existant DBus APIs. Creating one yourself with this library <b>is</b> <strike>not</strike> planned!</p>
 <p>Example interfaces / Predefined interfaces can be found in my repository [dbus-mockery-system]("https://github.com/5cript/dbus-mockery-system").</p>
 <h1><a class="anchor" id="autotoc_md3"></a>
-Documentation</h1>
-<p>!! Todo here, will be doxygen generated and served with github.</p>
+Documentation (Doxygen)</h1>
+<p><a href="https://5cript.github.io/dbus-mockery/">https://5cript.github.io/dbus-mockery/</a></p>
 <h1><a class="anchor" id="autotoc_md4"></a>
-Roadmap</h1>
+Roadmap / Features</h1>
 <p>Here is a checkbox list of all the tings to come and all that are done so far.</p>
 <ul>
 <li>[x] A bus object for all necessary bus related tasks.<ul>
@@ -106,12 +107,15 @@ Roadmap</h1>
 <li>[x] Call methods and get the results asnchronously.</li>
 <li>[x] Read and Write Properties asynchronously.</li>
 </ul>
-<h4><a class="anchor" id="autotoc_md5"></a>
-Improvements not planed, but sensible:</h4>
-<ul>
-<li>[ ] Wrap sd_event in another library and make it interact with this.</li>
+<p>With your own registered interface you can:</p><ul>
+<li>[x] Declare your interface</li>
+<li>[x] Expose the interface</li>
+<li>[x] Expose a method</li>
+<li>[x] Expose a property (read, read/write)</li>
+<li>[x] Expose a signal</li>
+<li>[x] Make exposed signal emitable</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md6"></a>
+<h1><a class="anchor" id="autotoc_md5"></a>
 Build</h1>
 <p>This project uses cmake.</p><ul>
 <li>cd dbus-mockery</li>
@@ -120,23 +124,23 @@ Build</h1>
 <li>make -j4 (or more/less cores)</li>
 <li>make install (if you want) </li>
 </ul>
-<h4><a class="anchor" id="autotoc_md7"></a>
+<h4><a class="anchor" id="autotoc_md6"></a>
 Dependencies:</h4>
 <ul>
 <li>libsystemd, because the systemd sd-bus library is used underneath.</li>
 <li>boost preprocessor</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md8"></a>
-Tutorial</h1>
-<p>This is a short tutorial for using the library.</p>
-<h3><a class="anchor" id="autotoc_md9"></a>
+<h1><a class="anchor" id="autotoc_md7"></a>
+Tutorial_Remote</h1>
+<p>This is a short tutorial for declaring external interfaces, attaching to them and using them.</p>
+<h3><a class="anchor" id="autotoc_md8"></a>
 Getting started</h3>
 <ol type="1">
 <li>clone the library using git clone</li>
 <li>create a building directory somewhere and build the library, see the build chapter.</li>
 <li>now you can add the "include" directory to your projects search path and link the lib. Alternatively use make install. I personally advocate for a project structure where all git dependecies are parallel in the filesystem to the dependent project.</li>
 </ol>
-<h3><a class="anchor" id="autotoc_md10"></a>
+<h3><a class="anchor" id="autotoc_md9"></a>
 Hello World</h3>
 <p>A very simple program to start off with. First the includes required for basic mocking: </p><div class="fragment"><div class="line"> {C++}</div>
 <div class="line">#include &lt;dbus-mockery/dbus_interface.hpp&gt;</div>
@@ -194,10 +198,10 @@ Hello World</h3>
 <div class="line"> </div>
 <div class="line">    return 0;</div>
 <div class="line">}</div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md11"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md10"></a>
 Asynchronous calls</h3>
 <p>Now lets change a little bit of the program. We now dont want to do the call synchronously, but asynchronously. Note that as soon as an event handling loop is attached to the bus, even the synchronous calls get processed by the loop and block while its not their turn to be executed, which, in bad cases, can result in "long" wait times at these functions, which may be undersirable. I therefore recommend to switch to an entirely asynchronous architecture when you use any asynchronous methods/signals on the bus.</p>
-<p>Asynchronous functions use "continuation" style. Which means that when ever an asynchronous function finishes, a callback is called from which on execution can be resumed.</p>
+<p>Asynchronous functions use "continuation" style. Which means that whenever an asynchronous function finishes, a callback is called from which execution can be resumed.</p>
 <p>Properties can also be read and written asynchronously, by calling get/set on them with the async flag, just the same as with methods.</p>
 <p>Only showing relevant differences to before: </p><div class="fragment"><div class="line"> {C++}</div>
 <div class="line">// new required header for the event loop</div>
@@ -263,7 +267,7 @@ Asynchronous calls</h3>
 <div class="line">        std::cout &lt;&lt; &quot;callback!\n&quot;;</div>
 <div class="line">    });</div>
 <div class="line">} // asynchronous call is made here.</div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md12"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md11"></a>
 Variants</h3>
 <p>Variants are containers that can contain a number of types. In order to read out of a variant, you have to know its stored type first. Luckily sdbus can deliver this information. One small note: due to implementation restrictions, loading and storing a value from a variant can only be done by a free function and not by a member function. This would look like follows:</p>
 <div class="fragment"><div class="line"> {C++}</div>
@@ -326,10 +330,117 @@ Variants</h3>
 <div class="line">    std::cout &lt;&lt; std::flush;</div>
 <div class="line">    return 0;</div>
 <div class="line">}</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md13"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md12"></a>
+Tutorial_Local</h1>
+<p>This is the tutorial for declaring your own dbus interface.</p>
+<p>On contrary to interfaces that are externally supplied, there is no adapt macro to use. The reason is that a macro to provide all the parameter and return value names on top of method names etc. would be very verbose and hard to debug on errors.</p>
+<h3><a class="anchor" id="autotoc_md13"></a>
+Declaring an interface</h3>
+<p>Here we have an interface that we want to expose to the world: </p><div class="fragment"><div class="line"> {C++}</div>
+<div class="line">#include &lt;dbus-mockery/bindings/exposable_interface.hpp&gt;</div>
+<div class="line"> </div>
+<div class="line">// Your interface to export has to derive from exposable_interface.</div>
+<div class="line">class MyInterface : public DBusMock::exposable_interface</div>
+<div class="line">{</div>
+<div class="line">public:</div>
+<div class="line">    // these members determine the path and service name</div>
+<div class="line">    // for registration, do not need to be const literals.</div>
+<div class="line">    std::string path() const override</div>
+<div class="line">    {</div>
+<div class="line">        return &quot;/bluetooth&quot;;</div>
+<div class="line">    }</div>
+<div class="line">    std::string service() const override</div>
+<div class="line">    {</div>
+<div class="line">        return &quot;com.bla.my&quot;;</div>
+<div class="line">    }</div>
+<div class="line"> </div>
+<div class="line">public: // Methods</div>
+<div class="line">    auto DisplayText(std::string const&amp; text) -&gt; void {}</div>
+<div class="line">    auto Multiply(int lhs, int rhs) -&gt; int {return lhs * rhs;}</div>
+<div class="line"> </div>
+<div class="line">public: // Properties</div>
+<div class="line">    bool IsThisCool;</div>
+<div class="line"> </div>
+<div class="line">public: // Signals</div>
+<div class="line">    // this is called emitable, not signal as in adapted interfaces.</div>
+<div class="line">    emitable &lt;void(*)(int)&gt; FireMe{this, &quot;FireMe&quot;};</div>
+<div class="line">};</div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md14"></a>
+Exposing / Registering the interface on the bus</h3>
+<div class="fragment"><div class="line"> {C++}</div>
+<div class="line">#include &lt;dbus-mockery/interface_builder.hpp&gt;</div>
+<div class="line"> </div>
+<div class="line">int main()</div>
+<div class="line">{</div>
+<div class="line">    auto bus = open_user_bus();</div>
+<div class="line"> </div>
+<div class="line">    using namespace DBusMock;</div>
+<div class="line">    using namespace ExposeHelpers;    </div>
+<div class="line"> </div>
+<div class="line">    // creates an instance of MyInterface that can be used.</div>
+<div class="line">    auto shared_ptr_to_interface = make_interface &lt;MyInterface&gt;(</div>
+<div class="line">        // Multiply Method</div>
+<div class="line">        DBusMock::exposable_method_factory{} &lt;&lt;</div>
+<div class="line">            name(&quot;Multiply&quot;) &lt;&lt; // Method name</div>
+<div class="line">            result(&quot;Product&quot;) &lt;&lt; // Name can only be a single word!</div>
+<div class="line">            parameter(0, &quot;a&quot;) &lt;&lt; // Name can only be a single word!</div>
+<div class="line">            parameter(1, &quot;b&quot;) &lt;&lt; // Parameter number is optional, but if supplied, all should have it supplied. </div>
+<div class="line">            as(&amp;MyInterface::Multiply),</div>
+<div class="line"> </div>
+<div class="line">        // Display Text Method</div>
+<div class="line">        DBusMock::exposable_method_factory{} &lt;&lt;</div>
+<div class="line">            name(&quot;DisplayText&quot;) &lt;&lt;</div>
+<div class="line">            result(&quot;Nothing&quot;) &lt;&lt;</div>
+<div class="line">            parameter(&quot;text&quot;) &lt;&lt;</div>
+<div class="line">            as(&amp;MyInterface::DisplayText),</div>
+<div class="line"> </div>
+<div class="line">        // IsThisCool Property</div>
+<div class="line">        DBusMock::exposable_property_factory{} &lt;&lt;</div>
+<div class="line">            name(&quot;IsThisCool&quot;) &lt;&lt;</div>
+<div class="line">            writeable(true) &lt;&lt;</div>
+<div class="line">            as(&amp;MyInterface::IsThisCool),</div>
+<div class="line"> </div>
+<div class="line">        // FireMe Signal</div>
+<div class="line">        DBusMock::exposable_signal_factory{} &lt;&lt;</div>
+<div class="line">            // name is in emitable constructor, not needed here.</div>
+<div class="line">            // d-feet does not show signal parameter names</div>
+<div class="line">            parameter(&quot;integral&quot;) &lt;&lt;</div>
+<div class="line">            as(&amp;MyInterface::FireMe)   </div>
+<div class="line">    );</div>
+<div class="line"> </div>
+<div class="line">    // The bus takes a share to hold the interface and exposes it on the bus.</div>
+<div class="line">    auto result = bus.expose_interface(shared_ptr_to_interface);</div>
+<div class="line"> </div>
+<div class="line">    if (result &lt; 0)</div>
+<div class="line">    {</div>
+<div class="line">        std::cerr &lt;&lt; strerror(-result);</div>
+<div class="line">        return 1;</div>
+<div class="line">    }</div>
+<div class="line"> </div>
+<div class="line">    result = sd_bus_request_name(static_cast &lt;sd_bus*&gt; (bus), &quot;com.bla.my&quot;, 0);</div>
+<div class="line"> </div>
+<div class="line">    if (result &lt; 0)</div>
+<div class="line">    {</div>
+<div class="line">        std::cerr &lt;&lt; strerror(-result);</div>
+<div class="line">        return 1;</div>
+<div class="line">    }</div>
+<div class="line"> </div>
+<div class="line">    make_busy_loop(&amp;bus, 200ms);</div>
+<div class="line">    bus.loop &lt;busy_loop&gt;()-&gt;error_callback([](int, std::string const&amp; msg){</div>
+<div class="line">        std::cerr &lt;&lt; msg &lt;&lt; std::endl;</div>
+<div class="line">        return true;</div>
+<div class="line">    });</div>
+<div class="line"> </div>
+<div class="line">    // emit signal</div>
+<div class="line">    exposed-&gt;FireMe.emit(5);</div>
+<div class="line"> </div>
+<div class="line">    // prevent immediate exit here however you like.</div>
+<div class="line">    std::cin.get();</div>
+<div class="line">}</div>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md15"></a>
 Examples</h1>
 <p>More examples are in the example directory </p>
-<h2><a class="anchor" id="autotoc_md14"></a>
+<h2><a class="anchor" id="autotoc_md16"></a>
 Introductory example (User Accounts)</h2>
 <p>Here is the first example, to show a basis of what this library wants to do. </p><div class="fragment"><div class="line"> {C++}</div>
 <div class="line">#include &lt;dbus-mockery/dbus_interface.hpp&gt;</div>
@@ -414,7 +525,7 @@ Introductory example (User Accounts)</h2>
 <div class="line"> </div>
 <div class="line">    return 0;</div>
 <div class="line">}</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md15"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md17"></a>
 Connect signal with slot</h2>
 <p>Here is an example on how to listen to emitted signals. Note that signal handling requires an event loop.</p>
 <div class="fragment"><div class="line"> {C++}</div>

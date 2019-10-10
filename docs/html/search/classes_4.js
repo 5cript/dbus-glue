@@ -1,10 +1,13 @@
 var searchData=
 [
-  ['file_5fdescriptor_397',['file_descriptor',['../classDBusMock_1_1file__descriptor.html',1,'DBusMock']]],
-  ['func_5fparam_5fdevoid_398',['func_param_devoid',['../structDBusMock_1_1Mocks_1_1detail_1_1func__param__devoid.html',1,'DBusMock::Mocks::detail']]],
-  ['func_5fparam_5fdevoid_3c_20void_20_3e_399',['func_param_devoid&lt; void &gt;',['../structDBusMock_1_1Mocks_1_1detail_1_1func__param__devoid_3_01void_01_4.html',1,'DBusMock::Mocks::detail']]],
-  ['function_5fwrapper_400',['function_wrapper',['../classDBusMock_1_1function__wrapper.html',1,'DBusMock']]],
-  ['function_5fwrapper_3c_20callbacksignaturet_20_3e_401',['function_wrapper&lt; CallbackSignatureT &gt;',['../classDBusMock_1_1function__wrapper.html',1,'DBusMock']]],
-  ['function_5fwrapper_3c_20r_28list_2e_2e_2e_29_3e_402',['function_wrapper&lt; R(List...)&gt;',['../classDBusMock_1_1function__wrapper_3_01R_07List_8_8_8_08_4.html',1,'DBusMock']]],
-  ['function_5fwrapper_3c_20signaturet_20_3e_403',['function_wrapper&lt; SignatureT &gt;',['../classDBusMock_1_1function__wrapper.html',1,'DBusMock']]]
+  ['emitable_556',['emitable',['../classDBusMock_1_1emitable.html',1,'DBusMock']]],
+  ['emitable_3c_20r_28_2a_29_28parameters_2e_2e_2e_29_3e_557',['emitable&lt; R(*)(Parameters...)&gt;',['../classDBusMock_1_1emitable_3_01R_07_5_08_07Parameters_8_8_8_08_4.html',1,'DBusMock']]],
+  ['event_5floop_558',['event_loop',['../classDBusMock_1_1event__loop.html',1,'DBusMock']]],
+  ['exposable_5finterface_559',['exposable_interface',['../classDBusMock_1_1exposable__interface.html',1,'DBusMock']]],
+  ['exposable_5fmethod_560',['exposable_method',['../classDBusMock_1_1exposable__method.html',1,'DBusMock']]],
+  ['exposable_5fmethod_5ffactory_561',['exposable_method_factory',['../structDBusMock_1_1exposable__method__factory.html',1,'DBusMock']]],
+  ['exposable_5fproperty_562',['exposable_property',['../classDBusMock_1_1exposable__property.html',1,'DBusMock']]],
+  ['exposable_5fproperty_5ffactory_563',['exposable_property_factory',['../structDBusMock_1_1exposable__property__factory.html',1,'DBusMock']]],
+  ['exposable_5fsignal_564',['exposable_signal',['../classDBusMock_1_1exposable__signal.html',1,'DBusMock']]],
+  ['exposable_5fsignal_5ffactory_565',['exposable_signal_factory',['../structDBusMock_1_1exposable__signal__factory.html',1,'DBusMock']]]
 ];
