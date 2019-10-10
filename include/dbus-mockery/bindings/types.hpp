@@ -44,12 +44,14 @@ namespace DBusMock
 	 *	Converts a C++ type int a dbus char.
 	 */
     template <typename T, typename SFINAE = void>
-    struct type_detect{};
+    struct type_detect
+	{
+		static constexpr bool ok = false;
+	};
 
 	template <typename T, typename SFINAE = void>
 	struct type_converter
 	{
-		static constexpr bool ok = false;
 	};
 
 	struct type_descriptor
@@ -491,9 +493,9 @@ namespace DBusMock
 		struct complex_detect <std::vector <Params...>, void>
 		{
 			static auto build() {
-				std::vector <std::string> parts = {
-				    "a",
-				    vector_flatten(argument_signature_factory <Params...>::build())
+				return std::vector <std::string> {
+					"a",
+					vector_flatten(argument_signature_factory <Params...>::build())
 				};
 			}
 		};
@@ -517,8 +519,8 @@ namespace DBusMock
 		struct complex_detect <variant, void>
 		{
 			static auto build() {
-				std::vector <std::string> parts = {
-				    "v"
+				return std::vector <std::string> {
+					"v"
 				};
 			}
 		};
@@ -527,7 +529,7 @@ namespace DBusMock
 		struct complex_detect <T, std::void_t <decltype(T::signature)>>
 		{
 		    static auto build() {
-		        std::vector <std::string> parts = {
+		        return std::vector <std::string> {
 		            "(",
 		            std::string {T::signature},
 		            ")"
@@ -536,22 +538,28 @@ namespace DBusMock
 	    };
 
 		template <typename Key, typename Value, typename... Params>
-		struct complex_detect <std::map <Key, Value, Params...>>
+		struct complex_detect <std::map <Key, Value, Params...>, void>
 		{
 			static auto build() {
 				std::vector <std::string> parts = {
 				    "{",
-				    type_detect <Key>::value,
-				    argument_signature_factory <Value>::build(),
-				    "}"
+				    type_detect <Key>::value
 				};
+				auto nest = argument_signature_factory <Value>::build();
+				parts.insert
+				(
+				    std::end(parts),
+				    std::make_move_iterator(std::begin(nest)),
+				    std::make_move_iterator(std::end(nest))
+				);
+				parts.push_back("}");
 				return parts;
 			}
 		};
 
 		template <typename Key, typename Value, typename... Params>
-		struct complex_detect <std::unordered_map <Key, Value, Params...>>
-		    : public complex_detect <std::map <Key, Value, Params...>>
+		struct complex_detect <std::unordered_map <Key, Value, Params...>, void>
+		    : public complex_detect <std::map <Key, Value>, void>
 		{
 		};
 

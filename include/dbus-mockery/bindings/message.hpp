@@ -704,6 +704,45 @@ namespace DBusMock
 		}
 	};
 
+	template <template <typename...> typename MapT, typename... Remain>
+	struct message::append_proxy <variant_dictionary <MapT, Remain...>>
+	{
+		static int write(message& msg, variant_dictionary <MapT, Remain...> const& value)
+		{
+			using namespace std::string_literals;
+			sd_bus_message* smsg = static_cast <sd_bus_message*> (msg);
+
+			auto r = sd_bus_message_open_container(smsg, SD_BUS_TYPE_ARRAY, "{sv}");
+			if (r < 0)
+				throw std::runtime_error("could not open array for dictionary: "s + strerror(-r));
+
+			r = 1;
+			for(auto begin = std::begin(value), end = std::end(value); begin != end; ++begin)
+			{
+				r = sd_bus_message_open_container(smsg, SD_BUS_TYPE_DICT_ENTRY, "sv");
+				if (r < 0)
+					throw std::runtime_error("could not open array of dictionary: "s + strerror(-r));
+
+				r = sd_bus_message_append_basic(smsg, 's', begin->first.c_str());
+				if (r < 0)
+					throw std::runtime_error("could not read name in dictionary: "s + strerror(-r));
+
+				r = msg.append(begin->second);
+				if (r < 0)
+					throw std::runtime_error("could not read variant from message: "s + strerror(-r));
+
+				r = sd_bus_message_close_container(smsg);
+				if (r < 0)
+					throw std::runtime_error("could not close array for dictionary: "s + strerror(-r));
+			}
+
+			r = sd_bus_message_close_container(smsg);
+			if (r < 0)
+				throw std::runtime_error("could not exit dictionary: "s + strerror(-r));
+
+			return r;
+		}
+	};
 
 	template <template <typename, typename...> typename ContainerT, template <typename> typename AllocatorT, typename ValueT>
 	struct message::append_proxy <ContainerT <ValueT, AllocatorT <ValueT>>, void>
