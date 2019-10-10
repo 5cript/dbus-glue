@@ -4,6 +4,7 @@
 #include "sdbus_core.hpp"
 #include "detail/table_entry.hpp"
 #include "basic_exposable_interface.hpp"
+#include "bus.hpp"
 
 #include "exposables/basic_exposable_method.hpp"
 #include "exposables/basic_exposable_property.hpp"
@@ -23,6 +24,7 @@ namespace DBusMock
 		 */
 		exposable_interface()
 		    : slot_{nullptr}
+		    , bus_{nullptr}
 		    , methods_{}
 		    , vtable_{}
 		{
@@ -59,6 +61,8 @@ namespace DBusMock
 		int expose(BusT& bus)
 		{
 			vtable_.clear();
+
+			bus_ = bus.handle();
 
 			// Start
 			vtable_ = {SD_BUS_VTABLE_START(SD_BUS_VTABLE_UNPRIVILEGED)};
@@ -117,8 +121,14 @@ namespace DBusMock
 			return r;
 		}
 
+		sd_bus* bus()
+		{
+			return bus_;
+		}
+
 	private:
 		sd_bus_slot* slot_;
+		sd_bus* bus_;
 		std::vector <std::unique_ptr <basic_exposable_method>> methods_;
 		std::vector <std::unique_ptr <basic_exposable_property>> properties_;
 		std::vector <std::unique_ptr <basic_exposable_signal>> signals_;

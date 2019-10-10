@@ -41,7 +41,7 @@ namespace DBusMock
 	class exposable_method : public basic_exposable_method
 	{
 	public:
-		using owner_type = typename detail::method_dissect <FunctionT>::interface_type;
+		using owner_type = typename detail::function_dissect <FunctionT>::interface_type;
 
 	private:
 		// will be generated, but must be stored to survive interface registration.
@@ -95,11 +95,11 @@ namespace DBusMock
 			signature_.clear();
 
 			signature_ = detail::vector_flatten(detail::tuple_apply <
-			    typename detail::method_dissect <FunctionT>::parameters,
+			    typename detail::function_dissect <FunctionT>::parameters,
 			    detail::argument_signature_factory
 			>::build());
 			result_signature_ = detail::vector_flatten(detail::tuple_apply <
-			    std::tuple <typename detail::method_dissect <FunctionT>::return_type>,
+			    std::tuple <typename detail::function_dissect <FunctionT>::return_type>,
 			    detail::argument_signature_factory
 			>::build());
 
@@ -108,7 +108,7 @@ namespace DBusMock
 				io_name_combined_ += i;
 				io_name_combined_.push_back('\0');
 			}
-			if constexpr (!std::is_same_v <typename detail::method_dissect <FunctionT>::return_type, void>)
+			if constexpr (!std::is_same_v <typename detail::function_dissect <FunctionT>::return_type, void>)
 			{
 				io_name_combined_ += out_name;
 				io_name_combined_.push_back('\0');
@@ -119,12 +119,12 @@ namespace DBusMock
 		int call(message& msg) override
 		{
 			using tuple_type = typename detail::tuple_parameter_decay <
-			    typename detail::method_dissect <FunctionT>::parameters
+			    typename detail::function_dissect <FunctionT>::parameters
 			>::type;
 
 			auto res_tuple = detail::message_tuple_reader <tuple_type>::exec(msg);
 
-			if constexpr (!std::is_same_v <typename detail::method_dissect <FunctionT>::return_type, void>)
+			if constexpr (!std::is_same_v <typename detail::function_dissect <FunctionT>::return_type, void>)
 			{
 				return sd_bus_reply_method_return
 				(

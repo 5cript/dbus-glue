@@ -5,6 +5,7 @@
 #include "bindings/exposables/exposable_method.hpp"
 #include "bindings/exposables/exposable_property.hpp"
 #include "bindings/exposables/exposable_signal.hpp"
+#include "bindings/emitable.hpp"
 
 #include <string>
 #include <map>
@@ -90,17 +91,12 @@ namespace DBusMock
 		template <typename T>
 		struct as_t
 		{
-			T ptr;
+			T mem;
 		};
 		template <typename T>
 		as_t<T> as(T f)
 		{
 			return {f};
-		}
-		template <typename T>
-		as_t<T> as()
-		{
-			return {nullptr};
 		}
 		struct flags_t
 		{
@@ -159,6 +155,7 @@ namespace DBusMock
 			template <typename InterfaceT>
 			static void add(InterfaceT* iface, std::unique_ptr <exposable_signal<T>>&& signal)
 			{
+				signal->signal_name = (iface->*(signal->ptr)).name();
 				//signal->set_owner(iface);
 				iface->add_signal(std::move(signal));
 			}
@@ -171,7 +168,19 @@ namespace DBusMock
 		return lhs;
 	}
 
+	exposable_property_factory& operator<<(exposable_property_factory& lhs, ExposeHelpers::member_name_t&& name)
+	{
+		lhs.name = name.name;
+		return lhs;
+	}
+
 	exposable_property_factory& operator<<(exposable_property_factory& lhs, ExposeHelpers::flags_t&& flags)
+	{
+		lhs.change_behaviour = static_cast <property_change_behaviour> (flags.flags);
+		return lhs;
+	}
+
+	exposable_property_factory& operator<<(exposable_property_factory&& lhs, ExposeHelpers::flags_t&& flags)
 	{
 		lhs.change_behaviour = static_cast <property_change_behaviour> (flags.flags);
 		return lhs;
@@ -183,7 +192,19 @@ namespace DBusMock
 		return lhs;
 	}
 
+	exposable_property_factory& operator<<(exposable_property_factory&& lhs, ExposeHelpers::writeable_t&& writeable)
+	{
+		lhs.writeable = writeable.writeable;
+		return lhs;
+	}
+
 	exposable_method_factory& operator<<(exposable_method_factory&& lhs, ExposeHelpers::member_name_t&& name)
+	{
+		lhs.name = name.name;
+		return lhs;
+	}
+
+	exposable_method_factory& operator<<(exposable_method_factory& lhs, ExposeHelpers::member_name_t&& name)
 	{
 		lhs.name = name.name;
 		return lhs;
@@ -195,7 +216,19 @@ namespace DBusMock
 		return lhs;
 	}
 
+	exposable_method_factory& operator<<(exposable_method_factory&& lhs, ExposeHelpers::result_name_t&& name)
+	{
+		lhs.result_name = name.name;
+		return lhs;
+	}
+
 	exposable_method_factory& operator<<(exposable_method_factory& lhs, ExposeHelpers::flags_t&& flags)
+	{
+		lhs.flags = flags.flags;
+		return lhs;
+	}
+
+	exposable_method_factory& operator<<(exposable_method_factory&& lhs, ExposeHelpers::flags_t&& flags)
 	{
 		lhs.flags = flags.flags;
 		return lhs;
@@ -210,9 +243,12 @@ namespace DBusMock
 		return lhs;
 	}
 
-	exposable_signal_factory& operator<<(exposable_signal_factory&& lhs, ExposeHelpers::member_name_t&& name)
+	exposable_method_factory& operator<<(exposable_method_factory&& lhs, ExposeHelpers::parameter_name_t&& name)
 	{
-		lhs.name = name.name;
+		if (name.which == -1)
+			lhs.in_names[name.which] = name.name;
+		else
+			lhs.in_names[lhs.nextParm()] = name.name;
 		return lhs;
 	}
 
@@ -222,12 +258,27 @@ namespace DBusMock
 		return lhs;
 	}
 
-	exposable_signal_factory& operator<<(exposable_signal_factory& lhs, ExposeHelpers::parameter_name_t&& name)
+	exposable_signal_factory& operator<<(exposable_signal_factory&& lhs, ExposeHelpers::flags_t&& flags)
 	{
-		if (name.which == -1)
-			lhs.in_names[name.which] = name.name;
+		lhs.flags = flags.flags;
+		return lhs;
+	}
+
+	exposable_signal_factory& operator<<(exposable_signal_factory& lhs, ExposeHelpers::parameter_name_t&& param)
+	{
+		if (param.which == -1)
+			lhs.in_names[param.which] = param.name;
 		else
-			lhs.in_names[lhs.nextParm()] = name.name;
+			lhs.in_names[lhs.nextParm()] = param.name;
+		return lhs;
+	}
+
+	exposable_signal_factory& operator<<(exposable_signal_factory&& lhs, ExposeHelpers::parameter_name_t&& param)
+	{
+		if (param.which == -1)
+			lhs.in_names[param.which] = param.name;
+		else
+			lhs.in_names[lhs.nextParm()] = param.name;
 		return lhs;
 	}
 
@@ -239,7 +290,7 @@ namespace DBusMock
 		method->out_name = std::move(lhs.result_name);
 		for (auto const& [k, v] : lhs.in_names)
 			method->in_names.emplace_back(std::move(v));
-		method->func = as.ptr;
+		method->func = as.mem;
 		method->flags = std::move(lhs.flags);
 		return method;
 	}
@@ -249,17 +300,18 @@ namespace DBusMock
 	{
 		auto prop = std::make_unique <exposable_property <T>>();
 		prop->name = std::move(lhs.name);
-		prop->property = as.ptr;
+		prop->property = as.mem;
 		prop->change_behaviour = std::move(lhs.change_behaviour);
 		prop->writeable = lhs.writeable;
 		return prop;
 	}
 
 	template <typename T>
-	std::unique_ptr <exposable_signal<T>> operator<<(exposable_signal_factory& lhs, ExposeHelpers::as_t<T>&&)
+	std::unique_ptr <exposable_signal<T>> operator<<(exposable_signal_factory& lhs, ExposeHelpers::as_t<T>&& as)
 	{
 		auto signal = std::make_unique <exposable_signal <T>>();
-		signal->signal_name = std::move(lhs.name);
+		//signal->signal_name = std::move(lhs.name);
+		signal->ptr = as.mem;
 		for (auto const& [k, v] : lhs.in_names)
 			signal->in_names.emplace_back(std::move(v));
 		signal->flags = std::move(lhs.flags);
@@ -267,11 +319,16 @@ namespace DBusMock
 	}
 
 	template <typename InterfaceT, typename... List>
+	void construct_interface(InterfaceT* iface, List&&... list)
+	{
+		(detail::decide_add_method <List>::add(iface, std::move(list)), ...);
+	}
+
+	template <typename InterfaceT, typename... List>
 	std::shared_ptr <InterfaceT> make_interface(List&&... list)
 	{
 		auto shared = std::make_shared <InterfaceT>();
-		(detail::decide_add_method <List>::add(shared.get(), std::move(list)), ...);
-
+		construct_interface(shared.get(), std::forward <List&&>(list)...);
 		return shared;
 	}
 }

@@ -233,6 +233,14 @@ namespace DBusMock
 		}
 
 		/**
+		 * @brief Returns the internal held handle.
+		 */
+		sd_bus* handle()
+		{
+			return bus_;
+		}
+
+		/**
 		 * @brief read_property Retrieves a single property
 		 * @param service The service name.
 		 * @param path The path in the service.

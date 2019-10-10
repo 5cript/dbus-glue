@@ -44,7 +44,8 @@ public: // Properties
     int IsThisCool;
 
 public: // Signals
-    auto FireMe(int) -> void;
+    emitable <void(*)(int)> FireMe{this, "FireMe"};
+    //using FireMe = void(*)(int);
 };
 
 int main()
@@ -58,7 +59,7 @@ int main()
     int r = 0;
     bool anyErr = false;
 
-    r = bus.expose_interface(make_interface <MyInterface> (
+    auto exposed = make_interface <MyInterface> (
         DBusMock::exposable_method_factory{} <<
             name("Multiply") <<
             result("Product") <<
@@ -76,10 +77,11 @@ int main()
             writeable(true) <<
             as(&MyInterface::IsThisCool),
         DBusMock::exposable_signal_factory{} <<
-            name("FireMe") <<
             parameter("integral") <<
-            as <decltype(&MyInterface::FireMe)>()
-    ));
+            as(&MyInterface::FireMe)
+    );
+
+    r = bus.expose_interface(exposed);
     anyErr = r < 0;
     if (r < 0)
         std::cout << "Could not expose interface: " << strerror(-r) << "\n";
@@ -99,6 +101,8 @@ int main()
         std::cout << msg << std::endl;
         return true;
     });
+
+    exposed->FireMe.emit(5);
 
     //while(true){std::this_thread::sleep_for(10ms);}
     std::cout << "exposition complete!" << std::endl;

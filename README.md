@@ -327,7 +327,8 @@ public: // Properties
     bool IsThisCool;
 
 public: // Signals
-    auto FireMe(int) -> void;
+    // this is called emitable, not signal as in adapted interfaces.
+    emitable <void(*)(int)> FireMe{this, "FireMe"};
 };
 ```
 
@@ -367,10 +368,10 @@ int main()
 
         // FireMe Signal
         DBusMock::exposable_signal_factory{} <<
-            name("FireMe") <<
+            // name is in emitable constructor, not needed here.
             // d-feet does not show signal parameter names
             parameter("integral") <<
-            as <decltype(&MyInterface::FireMe)>()        
+            as(&MyInterface::FireMe)   
     );
 
     // The bus takes a share to hold the interface and exposes it on the bus.
@@ -395,6 +396,9 @@ int main()
         std::cerr << msg << std::endl;
         return true;
     });
+
+    // emit signal
+    exposed->FireMe.emit(5);
 
     // prevent immediate exit here however you like.
     std::cin.get();

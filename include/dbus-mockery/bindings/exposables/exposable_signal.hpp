@@ -15,11 +15,12 @@
 
 namespace DBusMock
 {
-    template <typename FunctionT>
+    template <typename EmitableMemberT>
     class exposable_signal : public basic_exposable_signal
 	{
 	public:
-		using owner_type = typename detail::method_dissect <FunctionT>::interface_type;
+		using emitable_type = typename detail::member_dissect <EmitableMemberT>::member_type;
+		using function_type = typename emitable_type::function_type;
 
 	private:
 		// will be generated, but must be stored to survive interface registration.
@@ -31,6 +32,7 @@ namespace DBusMock
 		std::string signal_name;
 		std::vector <std::string> in_names;
 		uint64_t flags;
+		EmitableMemberT ptr;
 
 	private:
 		void prepare_for_expose() const
@@ -39,7 +41,7 @@ namespace DBusMock
 			signature_.clear();
 
 			signature_ = detail::vector_flatten(detail::tuple_apply <
-			    typename detail::method_dissect <FunctionT>::parameters,
+			    typename detail::function_dissect <function_type>::parameters,
 			    detail::argument_signature_factory
 			>::build());
 

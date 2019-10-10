@@ -16,9 +16,13 @@ namespace DBusMock
 
 	constexpr static auto release_slot = release_slot_t{true};
 
+	/**
+	 *	@brief This class is only for external interfaces that get adapted. Should probably called slot.
+	 */
 	template <typename... Args>
-	struct signal <void(Args...)>
+	class signal <void(Args...)>
 	{
+	public:
 		auto* listen
 		(
 		    std::function <void(Args const&...)> cb,
@@ -40,7 +44,7 @@ namespace DBusMock
 		{
 		}
 
-		private:
+	private:
 		Mocks::interface_mock_base* base_;
 		char const* name_;
 	};
