@@ -236,7 +236,7 @@ namespace DBusMock
 
 	exposable_method_factory& operator<<(exposable_method_factory& lhs, ExposeHelpers::parameter_name_t&& name)
 	{
-		if (name.which == -1)
+		if (name.which != -1)
 			lhs.in_names[name.which] = name.name;
 		else
 			lhs.in_names[lhs.nextParm()] = name.name;
@@ -245,7 +245,7 @@ namespace DBusMock
 
 	exposable_method_factory& operator<<(exposable_method_factory&& lhs, ExposeHelpers::parameter_name_t&& name)
 	{
-		if (name.which == -1)
+		if (name.which != -1)
 			lhs.in_names[name.which] = name.name;
 		else
 			lhs.in_names[lhs.nextParm()] = name.name;

@@ -542,7 +542,7 @@ namespace DBusMock
 		{
 			static auto build() {
 				std::vector <std::string> parts = {
-				    "{",
+				    "a{",
 				    type_detect <Key>::value
 				};
 				auto nest = argument_signature_factory <Value>::build();
