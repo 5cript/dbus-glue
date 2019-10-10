@@ -251,7 +251,7 @@ namespace DBusMock::Mocks
 		    ParametersDeduced&&... params
 		)
 		{
-			params_ = {std::forward <ParametersDeduced&&> (params)...};
+			params_ = std::tuple <std::decay_t <ParametersDeduced>...> {std::forward <ParametersDeduced&&> (params)...};
 			return *this;
 		}
 
@@ -266,7 +266,7 @@ namespace DBusMock::Mocks
 		}
 
 		private:
-		std::tuple <ParametersT...> params_;
+		std::tuple <std::decay_t <ParametersT>...> params_;
     };
 
     template <typename R, typename... ParametersT>

@@ -21,45 +21,48 @@ using namespace DBusMock;
 using namespace std::chrono_literals;
 using namespace std::string_literals;
 
-class Profile : public DBusMock::exposable_interface
+using type = variant_dictionary <std::unordered_map>;
+//using type = int;
+
+class Alubber
 {
 public:
-    Profile(std::string serviceName, std::string path);
+    virtual auto Blub(type const& dict) -> void;
+};
 
+class AlubberExpose : public DBusMock::exposable_interface
+{
+public:
+    // these members determine the path and service name
+    // for registration, do not need to be const literals.
     std::string path() const override
     {
-        return path_;
+        return "/asdf";
     }
     std::string service() const override
     {
-        return serviceName_;
+        return "com.bla.my";
     }
 
-    void Release();
-    void NewConnection(DBusMock::object_path const& device, DBusMock::variant_dictionary <std::unordered_map> const& fd_properties);
-    void RequestDisconnection(DBusMock::object_path const& device);
+public: // Methods
+    auto Blub(type dict) -> void
+    {
+        std::cout << "roflcopter\n";
 
-private:
-    std::string serviceName_;
-    std::string path_;
+        std::cout << dict.size() << std::endl;
+        int32_t f;
+        variant_load (dict["param1"], f);
+        std::cout << f << std::endl;
+    }
 };
-Profile::Profile(std::string serviceName, std::string path)
-    : serviceName_{std::move(serviceName)}
-    , path_{std::move(path)}
-{
-}
-void Profile::Release()
-{
-    std::cout << "I was released\n";
-}
-void Profile::NewConnection(DBusMock::object_path const& device, DBusMock::variant_dictionary <std::unordered_map> const& fd_properties)
-{
-    std::cout << "a new connection: " << device.c_str() << "\n";
-}
-void Profile::RequestDisconnection(DBusMock::object_path const& device)
-{
-    std::cout << "request disconection: " << device.c_str() << "\n";
-}
+
+DBUS_MOCK
+(
+    Alubber,
+    DBUS_MOCK_METHODS(Blub),
+    DBUS_MOCK_NO_PROPERTIES,
+    DBUS_MOCK_NO_SIGNALS
+)
 
 int main()
 {
@@ -68,55 +71,47 @@ int main()
     using namespace DBusMock;
     using namespace ExposeHelpers;
 
-    std::cout << "exposing!\n";
-    int r = 0;
+    auto shared_ptr_to_interface = make_interface <AlubberExpose>(
+        DBusMock::exposable_method_factory{} <<
+            name("Blub") <<
+            parameter("dict") <<
+            as(&AlubberExpose::Blub)
+    );
+    bus.expose_interface(shared_ptr_to_interface);
 
-    std::shared_ptr <Profile> profile;
+    auto result = sd_bus_request_name(bus.handle(), "com.bla.my", 0);
 
-    profile.reset(new Profile("de.iwsmesstechnik.ela", "/bluetooth"));
+    if (result < 0)
+    {
+        std::cerr << strerror(-result);
+        return 1;
+    }
 
-    DBusMock::construct_interface <Profile> (
-        profile.get(),
-        exposable_method_factory{} <<
-            name("Release") <<
-            as(&Profile::Release),
-        exposable_method_factory{} <<
-            name("NewConnection") <<
-            parameter("device") <<
-            parameter("fd_properties") <<
-            as(&Profile::NewConnection),
-        exposable_method_factory{} <<
-            name("RequestDisconnection") <<
-            parameter("device") <<
-            as(&Profile::RequestDisconnection)
+    auto dbusInterface = create_interface <Alubber>(
+        bus,
+        "com.bla.my",
+        "/asdf",
+        "com.bla.my"
     );
 
-    int res = 0;
-    res = bus.expose_interface(profile);
-    if (res < 0)
-        throw std::runtime_error("could not register interface: "s + strerror(-res));
+    type params;
+    variant_store(bus, params["param1"], static_cast <int32_t>(7));
 
-    res = sd_bus_request_name(static_cast <sd_bus*> (bus), "de.iwsmesstechnik.ela", 0);
-    if (res < 0)
-        throw std::runtime_error("could not find interface after register: "s + strerror(-res));
 
     make_busy_loop(&bus, 200ms);
-    bus.loop <busy_loop>()->error_callback([](int r, std::string const& msg){
-        std::cout << msg << std::endl;
-        return true;
-    });
 
-    //while(true){std::this_thread::sleep_for(10ms);}
-    std::cout << "exposition complete!" << std::endl;
+    dbusInterface.Blub(async_flag, params)
+        .then([](){std::cout << "called";})
+        .error([](auto&, auto const& errorMessage)
+        {
+            // first parameter is the result message,
+            // It probably does not contain anything useful.
+
+            std::cerr << errorMessage << "\n";
+        })
+        .timeout(3s)
+    ;
+
     std::cin.get();
-
-    /**
-     * std::shared_ptr <MyInterface> iface;
-     * bus->registerInterface(iface, "de.iwsmesstechnik.ela", "/ela/server");
-     *
-     *
-     */
-    // bus->registerInterface()
-
     return 0;
 }
