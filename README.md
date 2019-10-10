@@ -47,7 +47,7 @@ With your own registered interface you can:
 - [x] Expose a method
 - [x] Expose a property (read, read/write)
 - [x] Expose a signal
-- [ ] Make exposed signal emittable
+- [x] Make exposed signal emittable
 
 ## Build
 This project uses cmake.
