@@ -15,7 +15,7 @@
 #include <iostream>
 
 extern "C" {
-    int dbus_mock_exposed_method_handler(sd_bus_message *m, void *userdata, [[maybe_unused]] sd_bus_error *error);
+    int dbus_mock_exposed_method_handler(sd_bus_message *m, void *userdata, sd_bus_error *);
 }
 
 namespace DBusMock

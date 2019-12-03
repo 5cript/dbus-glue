@@ -59,6 +59,11 @@ namespace DBusMock
 		{
 			return data_.c_str();
 		}
+
+		bool empty()
+		{
+			return data_.empty();
+		}
 	};
 
 	struct object_path_hasher

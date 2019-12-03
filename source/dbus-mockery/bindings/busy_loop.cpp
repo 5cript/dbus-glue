@@ -33,6 +33,7 @@ namespace DBusMock
             sd_bus_message* m = nullptr;
             for (;running_.load();)
             {
+                r = 0;
                 m = nullptr;
                 {
                     std::scoped_lock guard{bus->mutex()};
