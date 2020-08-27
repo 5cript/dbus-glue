@@ -1,4 +1,6 @@
-# DBus Mockery
+# DBus Glue
+
+(renaming in progress, "mockery" is too misleading, since this is not for testing purposes but does the real thing)
 
 ## Table of Contents
 * [Summary](#Summary)
