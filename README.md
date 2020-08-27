@@ -1,6 +1,7 @@
 # DBus Glue
 
-(renaming in progress, "mockery" is too misleading, since this is not for testing purposes but does the real thing)
+(renaming in progress, "mockery" is too misleading, since this is not for testing purposes but does the real thing.
+But for a brief time, you will still read "dbus-mockery" everywhere.)
 
 ## Table of Contents
 * [Summary](#Summary)
