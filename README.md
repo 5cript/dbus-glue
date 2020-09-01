@@ -137,7 +137,6 @@ int main()
 
     // -> org.freedesktop.DBus
     //    org.freedesktop.Accounts
-    //    org.bluez
     //    ...
 
     return 0;
