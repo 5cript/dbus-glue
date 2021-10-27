@@ -1,6 +1,6 @@
 #pragma once
 
-namespace DBusMock
+namespace DBusGlue
 {
     class basic_exposable_interface
 	{

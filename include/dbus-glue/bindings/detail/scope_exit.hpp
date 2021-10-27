@@ -2,7 +2,7 @@
 
 #include <functional>
 
-namespace DBusMock::detail
+namespace DBusGlue::detail
 {
     struct on_scope_exit
 	{

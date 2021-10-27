@@ -1,0 +1,5 @@
+<map id="DBusGlue::event_loop" name="DBusGlue::event_loop">
+<area shape="rect" id="node1" title="The event_loop interface has to be implemented by a custom event loop system, so it can be passed to ..." alt="" coords="5,199,159,225"/>
+<area shape="rect" id="node2" href="$classDBusGlue_1_1dbus.html" title=" " alt="" coords="23,109,141,136"/>
+<area shape="rect" id="node3" href="$classDBusGlue_1_1detail_1_1slot__holder.html" title="The slot_holder class holds slots for at least as long as the bus lives, but allows for releasing slo..." alt="" coords="7,5,157,47"/>
+</map>

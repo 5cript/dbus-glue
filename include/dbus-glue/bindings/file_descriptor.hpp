@@ -1,6 +1,6 @@
 #pragma once
 
-namespace DBusMock
+namespace DBusGlue
 {
     class file_descriptor
     {

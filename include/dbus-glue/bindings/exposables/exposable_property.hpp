@@ -28,7 +28,7 @@ extern "C" {
 	);
 }
 
-namespace DBusMock
+namespace DBusGlue
 {
     template <typename T>
     class exposable_property : public basic_exposable_property

@@ -12,24 +12,24 @@ namespace BlueZ::org::bluez::hci
 
 	public: // Methods
 	public: // Properties
-		DBusMock::readable <std::string> Name;
-		DBusMock::read_writeable <std::string> Alias;
+		DBusGlue::readable <std::string> Name;
+		DBusGlue::read_writeable <std::string> Alias;
 	public: // Signals
 	};
 }
 
-DBUS_MOCK_NAMESPACE
+DBUS_DECLARE_NAMESPACE
 (
     (BlueZ)(org)(bluez)(hci),
     Adapter,
-    DBUS_MOCK_NO_METHODS,
-    DBUS_MOCK_PROPERTIES(Name, Alias),
-    DBUS_MOCK_NO_SIGNALS
+    DBUS_DECLARE_NO_METHODS,
+    DBUS_DECLARE_PROPERTIES(Name, Alias),
+    DBUS_DECLARE_NO_SIGNALS
 )
 
 int main()
 {
-	using namespace DBusMock;
+	using namespace DBusGlue;
 	using namespace std::chrono_literals;
 
 	auto bus = open_system_bus();

@@ -4,7 +4,7 @@
 
 #include <mutex>
 
-namespace DBusMock
+namespace DBusGlue
 {
 //#####################################################################################################################
     busy_loop::busy_loop(dbus* bus_object, std::chrono::microseconds idle_wait_delay)

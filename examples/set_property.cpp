@@ -8,7 +8,7 @@
 
 int main()
 {
-	using namespace DBusMock;
+	using namespace DBusGlue;
 
 	auto bus = open_system_bus();
 

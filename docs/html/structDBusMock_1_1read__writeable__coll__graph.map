@@ -1,4 +1,4 @@
-<map id="DBusMock::read_writeable&lt; T &gt;" name="DBusMock::read_writeable&lt; T &gt;">
+<map id="DBusGlue::read_writeable&lt; T &gt;" name="DBusGlue::read_writeable&lt; T &gt;">
 <area shape="rect" id="node1" title=" " alt="" coords="85,455,295,481"/>
 <area shape="rect" id="node2" href="$classDBusMock_1_1readable.html" title=" " alt="" coords="5,379,180,405"/>
 <area shape="rect" id="node3" href="$structDBusMock_1_1property.html" title=" " alt="" coords="103,303,277,329"/>

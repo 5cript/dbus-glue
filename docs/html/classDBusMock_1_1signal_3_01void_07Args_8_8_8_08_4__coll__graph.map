@@ -1,4 +1,4 @@
-<map id="DBusMock::signal&lt; void(Args...)&gt;" name="DBusMock::signal&lt; void(Args...)&gt;">
+<map id="DBusGlue::signal&lt; void(Args...)&gt;" name="DBusGlue::signal&lt; void(Args...)&gt;">
 <area shape="rect" id="node1" title="This class is only for external interfaces that get adapted." alt="" coords="20,303,183,344"/>
 <area shape="rect" id="node2" href="$classDBusMock_1_1Mocks_1_1interface__mock__base.html" title=" " alt="" coords="5,199,197,240"/>
 <area shape="rect" id="node3" href="$classDBusMock_1_1dbus.html" title=" " alt="" coords="40,109,163,136"/>

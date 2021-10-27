@@ -2,7 +2,7 @@
 
 #include <tuple>
 
-namespace DBusMock::detail
+namespace DBusGlue::detail
 {
     template <typename>
     struct function_dissect

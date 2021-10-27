@@ -14,12 +14,12 @@ using namespace std::string_literals;
 //#####################################################################################################################
 int dbus_mock_signal_callback(sd_bus_message *m, void *userdata, sd_bus_error *ret_error)
 {
-    using namespace DBusMock;
+    using namespace DBusGlue;
 
     auto* base = reinterpret_cast<slot_base*>(userdata);
     message msg{m};
 
-    DBusMock::detail::on_scope_exit lifetime_bound([&](){
+    DBusGlue::detail::on_scope_exit lifetime_bound([&](){
         msg.release();
     });
 
@@ -48,7 +48,7 @@ int dbus_mock_signal_callback(sd_bus_message *m, void *userdata, sd_bus_error *r
 
 int dbus_mock_async_callback(sd_bus_message *m, void *userdata, sd_bus_error *ret_error)
 {
-    using namespace DBusMock;
+    using namespace DBusGlue;
 
     auto* async_context = reinterpret_cast<async_context_base*>(userdata);
     message msg{m};
@@ -81,7 +81,7 @@ int dbus_mock_async_callback(sd_bus_message *m, void *userdata, sd_bus_error *re
 }
 //#####################################################################################################################
 
-namespace DBusMock
+namespace DBusGlue
 {
 //#####################################################################################################################
     dbus open_system_bus()

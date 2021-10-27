@@ -6,7 +6,7 @@
 
 using namespace std::string_literals;
 
-namespace DBusMock
+namespace DBusGlue
 {
 //#####################################################################################################################
     message::message(sd_bus_message* messagePointer, bool view)

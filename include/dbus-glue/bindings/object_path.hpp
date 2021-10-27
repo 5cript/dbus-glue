@@ -6,7 +6,7 @@
 // TODO:
 // Implement restriction checking: https://dbus.freedesktop.org/doc/dbus-specification.html#message-protocol-marshaling-object-path
 
-namespace DBusMock
+namespace DBusGlue
 {
     class object_path
 	{
@@ -77,13 +77,13 @@ namespace DBusMock
 	std::ostream& operator<<(std::ostream& stream, object_path const& opath);
 }
 
-#ifndef DBUS_MOCK_NO_STD_HASH_SPECIALIZATION
+#ifndef DBUS_DECLARE_NO_STD_HASH_SPECIALIZATION
 namespace std
 {
     template <>
-    struct hash <DBusMock::object_path>
+    struct hash <DBusGlue::object_path>
 	{
-		std::size_t operator()(DBusMock::object_path const& op) const
+		std::size_t operator()(DBusGlue::object_path const& op) const
 		{
 			return std::hash <std::string>()(op.string());
 		}

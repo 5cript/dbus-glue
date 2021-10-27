@@ -15,19 +15,19 @@ namespace org::freedesktop
 	};
 }
 
-// Mock the interface (i know the term is not really correct, but the idea comes from mocking frameworks).
-DBUS_MOCK_NAMESPACE
+// Make the interface
+DBUS_DECLARE_NAMESPACE
 (
     (org)(freedesktop),
     IDBus,
-    DBUS_MOCK_METHODS(ListNames),
-    DBUS_MOCK_NO_PROPERTIES,
-    DBUS_MOCK_NO_SIGNALS
+    DBUS_DECLARE_METHODS(ListNames),
+    DBUS_DECLARE_NO_PROPERTIES,
+    DBUS_DECLARE_NO_SIGNALS
 )
 
 int main()
 {
-	using namespace DBusMock;
+	using namespace DBusGlue;
 	using namespace std::chrono_literals;
 
 	auto bus = open_system_bus();
@@ -42,7 +42,7 @@ int main()
 
 	auto names = dbusInterface.ListNames();
 
-	dbusInterface.ListNames(DBusMock::async_flag)
+	dbusInterface.ListNames(DBusGlue::async_flag)
 	    .then([](auto const& names){
 		    for (auto const& i : names)
 			{

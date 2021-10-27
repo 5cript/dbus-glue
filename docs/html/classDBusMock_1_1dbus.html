@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.16"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>DBus Mockery: DBusMock::dbus Class Reference</title>
+<title>DBus Mockery: DBusGlue::dbus Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -61,7 +61,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="namespaceDBusMock.html">DBusMock</a></li><li class="navelem"><a class="el" href="classDBusMock_1_1dbus.html">dbus</a></li>  </ul>
+<li class="navelem"><a class="el" href="namespaceDBusMock.html">DBusGlue</a></li><li class="navelem"><a class="el" href="classDBusMock_1_1dbus.html">dbus</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -72,13 +72,13 @@ $(function() {
 <a href="#friends">Friends</a> &#124;
 <a href="classDBusMock_1_1dbus-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">DBusMock::dbus Class Reference</div>  </div>
+<div class="title">DBusGlue::dbus Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
 <p><code>#include &lt;<a class="el" href="bus_8hpp_source.html">bus.hpp</a>&gt;</code></p>
 <div class="dynheader">
-Collaboration diagram for DBusMock::dbus:</div>
+Collaboration diagram for DBusGlue::dbus:</div>
 <div class="dyncontent">
 <div class="center"><img src="classDBusMock_1_1dbus__coll__graph.jpg" border="0" usemap="#DBusMock_1_1dbus_coll__map" alt="Collaboration graph"/></div>
 <map name="DBusMock_1_1dbus_coll__map" id="DBusMock_1_1dbus_coll__map">
@@ -210,7 +210,7 @@ Friends</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">DBusMock::dbus::~dbus </td>
+          <td class="memname">DBusGlue::dbus::~dbus </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -232,7 +232,7 @@ Friends</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">DBusMock::dbus::dbus </td>
+          <td class="memname">DBusGlue::dbus::dbus </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classDBusMock_1_1dbus.html">dbus</a> const &amp;&#160;</td>
           <td class="paramname"></td><td>)</td>
@@ -260,7 +260,7 @@ Friends</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">DBusMock::dbus::dbus </td>
+          <td class="memname">DBusGlue::dbus::dbus </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classDBusMock_1_1dbus.html">dbus</a> &amp;&amp;&#160;</td>
           <td class="paramname"></td><td>)</td>
@@ -288,7 +288,7 @@ Friends</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">DBusMock::dbus::dbus </td>
+          <td class="memname">DBusGlue::dbus::dbus </td>
           <td>(</td>
           <td class="paramtype">sd_bus *&#160;</td>
           <td class="paramname"><em>bus_</em></td><td>)</td>
@@ -320,7 +320,7 @@ Friends</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void DBusMock::dbus::busy_loop </td>
+          <td class="memname">void DBusGlue::dbus::busy_loop </td>
           <td>(</td>
           <td class="paramtype">std::atomic&lt; bool &gt; *&#160;</td>
           <td class="paramname"><em>running</em></td><td>)</td>
@@ -346,7 +346,7 @@ template&lt;typename... ParametersT&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classDBusMock_1_1message.html">message</a> DBusMock::dbus::call_method </td>
+          <td class="memname"><a class="el" href="classDBusMock_1_1message.html">message</a> DBusGlue::dbus::call_method </td>
           <td>(</td>
           <td class="paramtype">std::string_view&#160;</td>
           <td class="paramname"><em>service</em>, </td>
@@ -414,7 +414,7 @@ template&lt;typename CallbackSignature , typename... ParametersT&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void DBusMock::dbus::call_method_async </td>
+          <td class="memname">void DBusGlue::dbus::call_method_async </td>
           <td>(</td>
           <td class="paramtype">std::string_view&#160;</td>
           <td class="paramname"><em>service</em>, </td>
@@ -499,7 +499,7 @@ template&lt;typename CallbackSignature , typename... ParametersT&gt; </div>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int DBusMock::dbus::expose_interface </td>
+          <td class="memname">int DBusGlue::dbus::expose_interface </td>
           <td>(</td>
           <td class="paramtype">std::shared_ptr&lt; <a class="el" href="classDBusMock_1_1basic__exposable__interface.html">basic_exposable_interface</a> &gt;&#160;</td>
           <td class="paramname"><em>exposable</em></td><td>)</td>
@@ -517,7 +517,7 @@ template&lt;typename CallbackSignature , typename... ParametersT&gt; </div>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void DBusMock::dbus::flush </td>
+          <td class="memname">void DBusGlue::dbus::flush </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -539,7 +539,7 @@ template&lt;typename CallbackSignature , typename... ParametersT&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void DBusMock::dbus::free_async_context </td>
+          <td class="memname">void DBusGlue::dbus::free_async_context </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classDBusMock_1_1async__context__base.html">async_context_base</a> *&#160;</td>
           <td class="paramname"><em>ac</em></td><td>)</td>
@@ -573,7 +573,7 @@ template&lt;typename CallbackSignature , typename... ParametersT&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">sd_bus* DBusMock::dbus::handle </td>
+          <td class="memname">sd_bus* DBusGlue::dbus::handle </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -597,7 +597,7 @@ template&lt;typename CallbackSignature , typename... ParametersT&gt; </div>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void DBusMock::dbus::install_event_loop </td>
+          <td class="memname">void DBusGlue::dbus::install_event_loop </td>
           <td>(</td>
           <td class="paramtype">std::unique_ptr&lt; <a class="el" href="classDBusMock_1_1event__loop.html">event_loop</a> &gt;&#160;</td>
           <td class="paramname"><em>esys</em></td><td>)</td>
@@ -628,7 +628,7 @@ template&lt;typename FunctionT &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classDBusMock_1_1slot.html">slot</a>&lt;FunctionT&gt;* DBusMock::dbus::install_signal_listener </td>
+          <td class="memname"><a class="el" href="classDBusMock_1_1slot.html">slot</a>&lt;FunctionT&gt;* DBusGlue::dbus::install_signal_listener </td>
           <td>(</td>
           <td class="paramtype">std::string_view&#160;</td>
           <td class="paramname"><em>service</em>, </td>
@@ -705,7 +705,7 @@ template&lt;typename FunctionT &gt; </div>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">DBusMock::dbus::int ::<a class="el" href="bus_8hpp.html#ac491a1fc6b5ef93911f1e2db6397e3fe">dbus_mock_async_callback</a> </td>
+          <td class="memname">DBusGlue::dbus::int ::<a class="el" href="bus_8hpp.html#ac491a1fc6b5ef93911f1e2db6397e3fe">dbus_mock_async_callback</a> </td>
           <td>(</td>
           <td class="paramtype">sd_bus_message *&#160;</td>
           <td class="paramname"><em>m</em>, </td>
@@ -744,7 +744,7 @@ template&lt;typename LoopType &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">LoopType* DBusMock::dbus::loop </td>
+          <td class="memname">LoopType* DBusGlue::dbus::loop </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -769,7 +769,7 @@ template&lt;typename LoopType &gt; </div>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::recursive_mutex &amp; DBusMock::dbus::mutex </td>
+          <td class="memname">std::recursive_mutex &amp; DBusGlue::dbus::mutex </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -792,7 +792,7 @@ template&lt;typename LoopType &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">DBusMock::dbus::operator sd_bus * </td>
+          <td class="memname">DBusGlue::dbus::operator sd_bus * </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -819,7 +819,7 @@ template&lt;typename LoopType &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classDBusMock_1_1dbus.html">dbus</a>&amp; DBusMock::dbus::operator= </td>
+          <td class="memname"><a class="el" href="classDBusMock_1_1dbus.html">dbus</a>&amp; DBusGlue::dbus::operator= </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classDBusMock_1_1dbus.html">dbus</a> &amp;&amp;&#160;</td>
           <td class="paramname"></td><td>)</td>
@@ -847,7 +847,7 @@ template&lt;typename LoopType &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classDBusMock_1_1dbus.html">dbus</a>&amp; DBusMock::dbus::operator= </td>
+          <td class="memname"><a class="el" href="classDBusMock_1_1dbus.html">dbus</a>&amp; DBusGlue::dbus::operator= </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classDBusMock_1_1dbus.html">dbus</a> const &amp;&#160;</td>
           <td class="paramname"></td><td>)</td>
@@ -877,7 +877,7 @@ template&lt;template&lt; typename... &gt; typename MapType, typename... Remain&g
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void DBusMock::dbus::read_properties </td>
+          <td class="memname">void DBusGlue::dbus::read_properties </td>
           <td>(</td>
           <td class="paramtype">std::string_view&#160;</td>
           <td class="paramname"><em>service</em>, </td>
@@ -939,7 +939,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void DBusMock::dbus::read_property </td>
+          <td class="memname">void DBusGlue::dbus::read_property </td>
           <td>(</td>
           <td class="paramtype">std::string_view&#160;</td>
           <td class="paramname"><em>service</em>, </td>
@@ -1008,7 +1008,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void DBusMock::dbus::read_property_async </td>
+          <td class="memname">void DBusGlue::dbus::read_property_async </td>
           <td>(</td>
           <td class="paramtype">std::string_view&#160;</td>
           <td class="paramname"><em>service</em>, </td>
@@ -1079,7 +1079,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void DBusMock::dbus::write_property </td>
+          <td class="memname">void DBusGlue::dbus::write_property </td>
           <td>(</td>
           <td class="paramtype">std::string_view&#160;</td>
           <td class="paramname"><em>service</em>, </td>
@@ -1148,7 +1148,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void DBusMock::dbus::write_property_async </td>
+          <td class="memname">void DBusGlue::dbus::write_property_async </td>
           <td>(</td>
           <td class="paramtype">std::string_view&#160;</td>
           <td class="paramname"><em>service</em>, </td>
@@ -1363,7 +1363,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classDBusMock_1_1detail_1_1slot__holder.html">detail::slot_holder</a> DBusMock::dbus::async_slots_</td>
+          <td class="memname"><a class="el" href="classDBusMock_1_1detail_1_1slot__holder.html">detail::slot_holder</a> DBusGlue::dbus::async_slots_</td>
         </tr>
       </table>
   </td>
@@ -1385,7 +1385,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">sd_bus* DBusMock::dbus::bus_</td>
+          <td class="memname">sd_bus* DBusGlue::dbus::bus_</td>
         </tr>
       </table>
   </td>
@@ -1407,7 +1407,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::unique_ptr&lt;<a class="el" href="classDBusMock_1_1event__loop.html">event_loop</a>&gt; DBusMock::dbus::event_loop_</td>
+          <td class="memname">std::unique_ptr&lt;<a class="el" href="classDBusMock_1_1event__loop.html">event_loop</a>&gt; DBusGlue::dbus::event_loop_</td>
         </tr>
       </table>
   </td>
@@ -1429,7 +1429,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt;std::shared_ptr &lt;<a class="el" href="classDBusMock_1_1basic__exposable__interface.html">basic_exposable_interface</a>&gt; &gt; DBusMock::dbus::exposed_interfaces_</td>
+          <td class="memname">std::vector&lt;std::shared_ptr &lt;<a class="el" href="classDBusMock_1_1basic__exposable__interface.html">basic_exposable_interface</a>&gt; &gt; DBusGlue::dbus::exposed_interfaces_</td>
         </tr>
       </table>
   </td>
@@ -1451,7 +1451,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::recursive_mutex DBusMock::dbus::sdbus_lock_</td>
+          <td class="memname">std::recursive_mutex DBusGlue::dbus::sdbus_lock_</td>
         </tr>
       </table>
   </td>
@@ -1473,7 +1473,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt;std::unique_ptr &lt;<a class="el" href="classDBusMock_1_1slot__base.html">slot_base</a>&gt; &gt; DBusMock::dbus::unnamed_slots_</td>
+          <td class="memname">std::vector&lt;std::unique_ptr &lt;<a class="el" href="classDBusMock_1_1slot__base.html">slot_base</a>&gt; &gt; DBusGlue::dbus::unnamed_slots_</td>
         </tr>
       </table>
   </td>

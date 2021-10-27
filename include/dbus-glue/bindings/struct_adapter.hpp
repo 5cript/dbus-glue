@@ -10,7 +10,7 @@
 #include <tuple>
 #include <unordered_map>
 
-namespace DBusMock::AdaptedStructs
+namespace DBusGlue::AdaptedStructs
 {
     template <typename T>
     struct struct_as_tuple
@@ -29,7 +29,7 @@ namespace DBusMock::AdaptedStructs
     std::get <i> (tup) = n.elem;
 
 #define MAKE_DBUS_STRUCT_IMPL(Name, SEQ) \
-namespace DBusMock::AdaptedStructs \
+namespace DBusGlue::AdaptedStructs \
 { \
     template <> \
     struct struct_as_tuple <Name> \

@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['base_5f_927',['base_',['../classDBusMock_1_1Mocks_1_1interface__async__base.html#ae85d5aa5232751b83678ee8b0ee45ffe',1,'DBusMock::Mocks::interface_async_base::base_()'],['../classDBusMock_1_1signal_3_01void_07Args_8_8_8_08_4.html#a48565d3c1fb7424a844553c1730935f8',1,'DBusMock::signal&lt; void(Args...)&gt;::base_()']]],
-  ['base_5fparams_5f_928',['base_params_',['../classDBusMock_1_1Mocks_1_1interface__async__base.html#a0ba795325e0b7adb3e46904ea80d3e8c',1,'DBusMock::Mocks::interface_async_base']]],
-  ['bus_929',['bus',['../classDBusMock_1_1event__loop.html#afbe87a0028839a1ce9dd0408544ef81f',1,'DBusMock::event_loop::bus()'],['../classDBusMock_1_1Mocks_1_1interface__mock__base.html#aa380c40e75c2b1efa7cbbd92292b590e',1,'DBusMock::Mocks::interface_mock_base::bus()']]],
-  ['bus_5f_930',['bus_',['../classDBusMock_1_1dbus.html#a2141d4385a7887aab3e4f7f1df0eb6cb',1,'DBusMock::dbus::bus_()'],['../classDBusMock_1_1exposable__interface.html#afe9b876199959ca712b7e775b824a075',1,'DBusMock::exposable_interface::bus_()']]]
+  ['base_5f_0',['base_',['../classDBusGlue_1_1Mocks_1_1interface__async__base.html#a2054ea2b2883a56c4ad339d338159219',1,'DBusGlue::Mocks::interface_async_base::base_()'],['../classDBusGlue_1_1signal_3_01void_07Args_8_8_8_08_4.html#a63016433b6a27b1d5687db50b2595810',1,'DBusGlue::signal&lt; void(Args...)&gt;::base_()']]],
+  ['base_5fparams_5f_1',['base_params_',['../classDBusGlue_1_1Mocks_1_1interface__async__base.html#a17c0370ba648edfb06957f694eca375c',1,'DBusGlue::Mocks::interface_async_base']]],
+  ['bus_2',['bus',['../classDBusGlue_1_1event__loop.html#aa2df38e51b0c813b85233049f2ef25a1',1,'DBusGlue::event_loop::bus()'],['../classDBusGlue_1_1Mocks_1_1interface__mock__base.html#a8d3179490d113147621be52d912d43f6',1,'DBusGlue::Mocks::interface_mock_base::bus()']]],
+  ['bus_5f_3',['bus_',['../classDBusGlue_1_1dbus.html#ad831f0cd97951703d85d376637a470bf',1,'DBusGlue::dbus::bus_()'],['../classDBusGlue_1_1exposable__interface.html#a119f74625b1a2116e828f3442ad25157',1,'DBusGlue::exposable_interface::bus_()']]]
 ];

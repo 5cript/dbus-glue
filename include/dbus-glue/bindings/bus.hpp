@@ -24,7 +24,7 @@ extern "C" {
 	int dbus_mock_async_callback(sd_bus_message *m, void *userdata, sd_bus_error *ret_error);
 }
 
-namespace DBusMock
+namespace DBusGlue
 {
     class dbus
 	{

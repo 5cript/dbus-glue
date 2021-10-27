@@ -1,7 +1,7 @@
 #include <dbus-glue/bindings/signature.hpp>
 #include <iostream>
 
-namespace DBusMock
+namespace DBusGlue
 {
     std::ostream& operator<<(std::ostream& stream, signature const& sign)
     {

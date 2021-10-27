@@ -11,7 +11,7 @@
 #include <utility>
 #include <iostream>
 
-namespace DBusMock
+namespace DBusGlue
 {
     class message
 	{

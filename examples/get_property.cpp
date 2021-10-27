@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 
-using namespace DBusMock;
+using namespace DBusGlue;
 
 int main()
 {

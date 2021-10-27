@@ -2,7 +2,7 @@
 
 #include <systemd/sd-bus.h>
 
-namespace DBusMock
+namespace DBusGlue
 {
     class message;
 

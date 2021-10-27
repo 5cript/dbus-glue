@@ -3,7 +3,7 @@
 #include <iostream>
 #include <map>
 
-using namespace DBusMock;
+using namespace DBusGlue;
 
 int main()
 {

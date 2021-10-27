@@ -13,7 +13,7 @@ int dbus_mock_exposed_method_handler
     sd_bus_error*
 )
 {
-	using namespace DBusMock;
+	using namespace DBusGlue;
 
 	[[maybe_unused]] auto* entry = reinterpret_cast <detail::table_entry*>(userdata);
 	int ret = 0;

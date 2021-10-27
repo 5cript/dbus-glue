@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 
-using namespace DBusMock;
+using namespace DBusGlue;
 
 /**
  * @brief The IAccounts interface. Its the provided interface (org.freedesktop.Accounts) as a C++ class.
@@ -28,22 +28,22 @@ public: // Properties
 	readable <std::string> DaemonVersion;
 
 public: // signals
-	DBusMock::signal <void(object_path)> UserAdded;
-	DBusMock::signal <void(object_path)> UserDeleted;
+	DBusGlue::signal <void(object_path)> UserAdded;
+	DBusGlue::signal <void(object_path)> UserDeleted;
 };
 
 //----------------------------------------------------------------------------------------
 
 // This step is necessary to enable interface auto-implementation.
 // There is a limit to how many properterties and methods are possible. (currently either 64 or 255 each, haven't tried, assume 64)
-// This limit can be circumvented by DBUS_MOCK_N. Which allows to mock the same interface more than once.
-// A successory call to DBUS_MOCK_ZIP merges them all together.
-DBUS_MOCK
+// This limit can be circumvented by DBUS_DECLARE_N. Which allows to mock the same interface more than once.
+// A successory call to DBUS_DECLARE_ZIP merges them all together.
+DBUS_DECLARE
 (
     IAccounts,
-    DBUS_MOCK_METHODS(CacheUser, CreateUser, DeleteUser, FindUserById, ListCachedUsers, UncacheUser),
-    DBUS_MOCK_PROPERTIES(AutomaticLoginUsers, HasMultipleUsers, HasNoUsers, DaemonVersion),
-    DBUS_MOCK_SIGNALS(UserAdded, UserDeleted)
+    DBUS_DECLARE_METHODS(CacheUser, CreateUser, DeleteUser, FindUserById, ListCachedUsers, UncacheUser),
+    DBUS_DECLARE_PROPERTIES(AutomaticLoginUsers, HasMultipleUsers, HasNoUsers, DaemonVersion),
+    DBUS_DECLARE_SIGNALS(UserAdded, UserDeleted)
 )
 
 //----------------------------------------------------------------------------------------

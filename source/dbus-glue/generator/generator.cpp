@@ -8,7 +8,7 @@
 #include <iostream>
 #include <regex>
 
-namespace DBusMock::detail
+namespace DBusGlue::detail
 {
     class IIntrospectable
 	{
@@ -24,16 +24,16 @@ namespace DBusMock::detail
 	};
 }
 
-DBUS_MOCK_NAMESPACE
+DBUS_DECLARE_NAMESPACE
 (
-    (DBusMock)(detail),
+    (DBusGlue)(detail),
     IIntrospectable,
-    DBUS_MOCK_METHODS(Introspect),
-    DBUS_MOCK_NO_PROPERTIES,
-    DBUS_MOCK_NO_SIGNALS
+    DBUS_DECLARE_METHODS(Introspect),
+    DBUS_DECLARE_NO_PROPERTIES,
+    DBUS_DECLARE_NO_SIGNALS
 )
 
-namespace DBusMock
+namespace DBusGlue
 {
 //#####################################################################################################################
 	void interface_generator::generate_interface_from(
@@ -64,7 +64,7 @@ namespace DBusMock
 	    std::string const& path
 	)
 	{
-		auto interface = create_interface <DBusMock::detail::IIntrospectable>
+		auto interface = create_interface <DBusGlue::detail::IIntrospectable>
 		(
 		    bus,
 		    service,

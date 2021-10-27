@@ -1,6 +1,6 @@
 #include <dbus-glue/bindings/detail/slot_holder.hpp>
 
-namespace DBusMock::detail
+namespace DBusGlue::detail
 {
 //#####################################################################################################################
     slot_holder::async_context* slot_holder::insert(std::unique_ptr <async_context> ac)

@@ -7,7 +7,7 @@
 #include <string>
 #include <map>
 
-using namespace DBusMock;
+using namespace DBusGlue;
 
 struct Session
 {

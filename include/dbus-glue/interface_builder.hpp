@@ -13,7 +13,7 @@
 #include <memory>
 #include <string_view>
 
-namespace DBusMock
+namespace DBusGlue
 {
     struct factory_for_parameterized_members
 	{

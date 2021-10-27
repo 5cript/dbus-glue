@@ -14,7 +14,7 @@
 #include <variant>
 #include <iomanip>
 
-namespace DBusMock
+namespace DBusGlue
 {
     class exposable_interface : public basic_exposable_interface
 	{

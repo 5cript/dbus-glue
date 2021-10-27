@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['name_827',['name',['../classDBusMock_1_1emitable_3_01R_07_5_08_07Parameters_8_8_8_08_4.html#a0a59708395521b2f355a188e55e1dfd6',1,'DBusMock::emitable&lt; R(*)(Parameters...)&gt;::name()'],['../namespaceDBusMock_1_1ExposeHelpers.html#a35f85341fcdfcffdd74b529b29a2c4f9',1,'DBusMock::ExposeHelpers::name()']]],
-  ['nextparm_828',['nextParm',['../structDBusMock_1_1factory__for__parameterized__members.html#a24a6cb70fde074a9c617ab2ff3f1e31a',1,'DBusMock::factory_for_parameterized_members']]]
+  ['name_0',['name',['../classDBusGlue_1_1emitable_3_01R_07_5_08_07Parameters_8_8_8_08_4.html#a9f23867643f8baec7a571eb3b38ff57e',1,'DBusGlue::emitable&lt; R(*)(Parameters...)&gt;::name()'],['../namespaceDBusGlue_1_1ExposeHelpers.html#a766664f6c0c14e288cf3fbd677accf86',1,'DBusGlue::ExposeHelpers::name()']]],
+  ['nextparm_1',['nextParm',['../structDBusGlue_1_1factory__for__parameterized__members.html#a125afc4d3fed85ac8a1008dd52e1acf9',1,'DBusGlue::factory_for_parameterized_members']]]
 ];

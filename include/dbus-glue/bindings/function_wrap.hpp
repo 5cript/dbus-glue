@@ -7,7 +7,7 @@
 #include <tuple>
 #include <type_traits>
 
-namespace DBusMock
+namespace DBusGlue
 {
     template <typename FunctionT>
     class function_wrapper

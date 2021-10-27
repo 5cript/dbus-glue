@@ -1,4 +1,4 @@
-<map id="DBusMock::event_loop" name="DBusMock::event_loop">
+<map id="DBusGlue::event_loop" name="DBusGlue::event_loop">
 <area shape="rect" id="node1" title="The event_loop interface has to be implemented by a custom event loop system, so it can be passed to ..." alt="" coords="5,199,161,225"/>
 <area shape="rect" id="node2" href="$classDBusMock_1_1dbus.html" title=" " alt="" coords="22,109,145,136"/>
 <area shape="rect" id="node3" href="$classDBusMock_1_1detail_1_1slot__holder.html" title="The slot_holder class holds slots for at least as long as the bus lives, but allows for releasing slo..." alt="" coords="6,5,161,47"/>

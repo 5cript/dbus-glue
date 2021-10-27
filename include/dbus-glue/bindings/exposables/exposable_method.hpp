@@ -18,7 +18,7 @@ extern "C" {
     int dbus_mock_exposed_method_handler(sd_bus_message *m, void *userdata, sd_bus_error *);
 }
 
-namespace DBusMock
+namespace DBusGlue
 {
     namespace detail
 	{

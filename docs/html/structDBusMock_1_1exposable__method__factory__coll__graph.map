@@ -1,4 +1,4 @@
-<map id="DBusMock::exposable_method_factory" name="DBusMock::exposable_method_factory">
+<map id="DBusGlue::exposable_method_factory" name="DBusGlue::exposable_method_factory">
 <area shape="rect" id="node1" title=" " alt="" coords="15,95,168,136"/>
 <area shape="rect" id="node2" href="$structDBusMock_1_1factory__for__parameterized__members.html" title=" " alt="" coords="5,5,177,47"/>
 </map>

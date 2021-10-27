@@ -9,7 +9,7 @@
 #include "bindings/bus.hpp"
 #include "bindings/message.hpp"
 
-namespace DBusMock::Mocks
+namespace DBusGlue::Mocks
 {
     namespace detail
 	{
@@ -329,7 +329,7 @@ namespace DBusMock::Mocks
 		};
 }
 
-namespace DBusMock
+namespace DBusGlue
 {
     /// Dummy for overloading
     struct async_flag_t{};

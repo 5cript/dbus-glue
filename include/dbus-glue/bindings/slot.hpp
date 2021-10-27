@@ -17,7 +17,7 @@
 #   define SIGNAL_PARAM_MAX_COUNT 1
 #endif
 
-namespace DBusMock
+namespace DBusGlue
 {
     template <typename SignatureT>
     class slot;

@@ -8,7 +8,7 @@
 #include <optional>
 #include <iostream>
 
-namespace DBusMock::Introspect
+namespace DBusGlue::Introspect
 {
     struct argument
 	{

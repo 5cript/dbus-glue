@@ -1,6 +1,6 @@
 #pragma once
 
-namespace DBusMock
+namespace DBusGlue
 {
    template <typename>
    struct method{};

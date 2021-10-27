@@ -2,7 +2,7 @@
 
 #include "dbus_interface_base.hpp"
 
-namespace DBusMock
+namespace DBusGlue
 {
     template <typename Signature>
     struct signal

@@ -6,7 +6,7 @@
 
 #include <functional>
 
-namespace DBusMock
+namespace DBusGlue
 {
     class async_context_base
 	{

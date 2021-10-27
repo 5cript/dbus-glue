@@ -5,7 +5,7 @@
 #include <functional>
 #include <regex>
 
-namespace DBusMock::Introspect
+namespace DBusGlue::Introspect
 {
     using namespace std::string_literals;
 //#####################################################################################################################
@@ -126,22 +126,22 @@ namespace DBusMock::Introspect
         case('o'):
         {
             append_ref = true;
-            return "DBusMock::object_path"s;
+            return "DBusGlue::object_path"s;
         }
         case('g'):
         {
             append_ref = true;
-            return "DBusMock::signature"s;
+            return "DBusGlue::signature"s;
         }
         case('h'):
         {
             append_ref = true;
-            return "DBusMock::file_descriptor"s;
+            return "DBusGlue::file_descriptor"s;
         }
         case('v'):
         {
             append_ref = true;
-            return "DBusMock::variant";
+            return "DBusGlue::variant";
         }
         default: return std::nullopt;
         }
@@ -344,11 +344,11 @@ namespace DBusMock::Introspect
             {
                 stream << "\t\t";
                 if (prop.access == "read")
-                    stream << "DBusMock::readable";
+                    stream << "DBusGlue::readable";
                 else if (prop.access == "write")
-                    stream << "DBusMock::writeable";
+                    stream << "DBusGlue::writeable";
                 else if (prop.access == "readwrite")
-                    stream << "DBusMock::read_writeable";
+                    stream << "DBusGlue::read_writeable";
                 else
                     throw std::runtime_error("unknown access type"s + prop.access);
 
@@ -379,7 +379,7 @@ namespace DBusMock::Introspect
         stream << "\n\n\n";
         for (auto const& face : faces)
         {
-            stream << "DBUS_MOCK_NAMESPACE\n";
+            stream << "DBUS_DECLARE_NAMESPACE\n";
             stream << "(\n";
             std::string modded_namespace = "(";
             for (auto n = std::begin(nspace); n != std::end(nspace); ++n)
@@ -401,10 +401,10 @@ namespace DBusMock::Introspect
 
             // Methods
             if (face.methods.empty())
-                stream << "\tDBUS_MOCK_NO_METHODS,\n";
+                stream << "\tDBUS_DECLARE_NO_METHODS,\n";
             else
             {
-                stream << "\tDBUS_MOCK_METHODS(";
+                stream << "\tDBUS_DECLARE_METHODS(";
                 auto end = std::end(face.methods);
                 for (auto m = std::begin(face.methods); m != end; ++m)
                 {
@@ -417,10 +417,10 @@ namespace DBusMock::Introspect
 
             // Properties
             if (face.properties.empty())
-                stream << "\tDBUS_MOCK_NO_PROPERTIES,\n";
+                stream << "\tDBUS_DECLARE_NO_PROPERTIES,\n";
             else
             {
-                stream << "\tDBUS_MOCK_PROPERTIES(";
+                stream << "\tDBUS_DECLARE_PROPERTIES(";
                 auto end = std::end(face.properties);
                 for (auto p = std::begin(face.properties); p != end; ++p)
                 {
@@ -433,10 +433,10 @@ namespace DBusMock::Introspect
 
             // Signals
             if (face.signals.empty())
-                stream << "\tDBUS_MOCK_NO_SIGNALS\n";
+                stream << "\tDBUS_DECLARE_NO_SIGNALS\n";
             else
             {
-                stream << "\tDBUS_MOCK_SIGNALS(";
+                stream << "\tDBUS_DECLARE_SIGNALS(";
                 auto end = std::end(face.signals);
                 for (auto s = std::begin(face.signals); s != end; ++s)
                 {

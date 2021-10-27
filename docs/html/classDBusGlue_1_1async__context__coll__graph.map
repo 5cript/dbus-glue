@@ -1,0 +1,6 @@
+<map id="DBusGlue::async_context&lt; CallbackSignatureT, ErrorCallbackSignatureT &gt;" name="DBusGlue::async_context&lt; CallbackSignatureT, ErrorCallbackSignatureT &gt;">
+<area shape="rect" id="node1" title="The async_context class is used to manage asynchronous callbacks and their lifetimes." alt="" coords="78,199,258,255"/>
+<area shape="rect" id="node2" href="$classDBusGlue_1_1async__context__base.html" title=" " alt="" coords="5,109,216,136"/>
+<area shape="rect" id="node3" href="$classDBusGlue_1_1dbus.html" title=" " alt="" coords="239,109,358,136"/>
+<area shape="rect" id="node4" href="$classDBusGlue_1_1detail_1_1slot__holder.html" title="The slot_holder class holds slots for at least as long as the bus lives, but allows for releasing slo..." alt="" coords="223,5,374,47"/>
+</map>

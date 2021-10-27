@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['handle_953',['handle',['../classDBusMock_1_1basic__handle__wrapper.html#af02143c2afd5926730bdcf87f34790d7',1,'DBusMock::basic_handle_wrapper']]]
+  ['handle_0',['handle',['../classDBusGlue_1_1basic__handle__wrapper.html#aa7b82c6b00c6668b3df362736a84dd26',1,'DBusGlue::basic_handle_wrapper']]]
 ];

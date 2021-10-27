@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.16"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>DBus Mockery: DBusMock Namespace Reference</title>
+<title>DBus Mockery: DBusGlue Namespace Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -69,7 +69,7 @@ $(function() {
 <a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
   <div class="headertitle">
-<div class="title">DBusMock Namespace Reference</div>  </div>
+<div class="title">DBusGlue Namespace Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 <table class="memberdecls">
@@ -292,7 +292,7 @@ Functions</h2></td></tr>
 <tr class="memitem:af90584f8debf72c72568c9a14a4d886b"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="structDBusMock_1_1resolvable__variant.html">resolvable_variant</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceDBusMock.html#af90584f8debf72c72568c9a14a4d886b">make_resolvable_variant</a> (T const &amp;val)</td></tr>
 <tr class="separator:af90584f8debf72c72568c9a14a4d886b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a23d978641e4a32dd75d55b260c82a30d"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a23d978641e4a32dd75d55b260c82a30d"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="structDBusMock_1_1message__variant.html">message_variant</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceDBusMock.html#a23d978641e4a32dd75d55b260c82a30d">make_variant</a> (<a class="el" href="classDBusMock_1_1dbus.html">DBusMock::dbus</a> &amp;bus, T &amp;&amp;val)</td></tr>
+<tr class="memitem:a23d978641e4a32dd75d55b260c82a30d"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="structDBusMock_1_1message__variant.html">message_variant</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceDBusMock.html#a23d978641e4a32dd75d55b260c82a30d">make_variant</a> (<a class="el" href="classDBusMock_1_1dbus.html">DBusGlue::dbus</a> &amp;bus, T &amp;&amp;val)</td></tr>
 <tr class="separator:a23d978641e4a32dd75d55b260c82a30d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac8bcddc4d2369af3f4717126acfeb4f8"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:ac8bcddc4d2369af3f4717126acfeb4f8"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceDBusMock.html#ac8bcddc4d2369af3f4717126acfeb4f8">resolve</a> (<a class="el" href="structDBusMock_1_1resolvable__variant.html">resolvable_variant</a> var, T &amp;val)</td></tr>
@@ -393,7 +393,7 @@ Variables</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="namespaceDBusMock.html#a51a4d63d0ad560850179902daf6a6a83">DBusMock::basic_message_handle</a> = typedef <a class="el" href="classDBusMock_1_1basic__handle__wrapper.html">basic_handle_wrapper</a> &lt; sd_bus_message, decltype(&amp;sd_bus_message_ref) &gt;</td>
+          <td class="memname">using <a class="el" href="namespaceDBusMock.html#a51a4d63d0ad560850179902daf6a6a83">DBusGlue::basic_message_handle</a> = typedef <a class="el" href="classDBusMock_1_1basic__handle__wrapper.html">basic_handle_wrapper</a> &lt; sd_bus_message, decltype(&amp;sd_bus_message_ref) &gt;</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -407,7 +407,7 @@ Variables</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="namespaceDBusMock.html#a739d1de52527e87c294858acd758a9ab">DBusMock::variant</a> = typedef <a class="el" href="structDBusMock_1_1message__variant.html">message_variant</a></td>
+          <td class="memname">using <a class="el" href="namespaceDBusMock.html#a739d1de52527e87c294858acd758a9ab">DBusGlue::variant</a> = typedef <a class="el" href="structDBusMock_1_1message__variant.html">message_variant</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -423,7 +423,7 @@ Variables</h2></td></tr>
 template&lt;template&lt; typename... &gt; typename MapT, typename... Remain&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="namespaceDBusMock.html#aa1f3841fbc3548f2d1c4b7edc1315781">DBusMock::variant_dictionary</a> = typedef MapT &lt;std::string, <a class="el" href="namespaceDBusMock.html#a739d1de52527e87c294858acd758a9ab">variant</a>, Remain...&gt;</td>
+          <td class="memname">using <a class="el" href="namespaceDBusMock.html#aa1f3841fbc3548f2d1c4b7edc1315781">DBusGlue::variant_dictionary</a> = typedef MapT &lt;std::string, <a class="el" href="namespaceDBusMock.html#a739d1de52527e87c294858acd758a9ab">variant</a>, Remain...&gt;</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -441,7 +441,7 @@ template&lt;template&lt; typename... &gt; typename MapT, typename... Remain&gt; 
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="namespaceDBusMock.html#a75227dc950426189960628d6f549ff2f">DBusMock::property_change_behaviour</a></td>
+          <td class="memname">enum <a class="el" href="namespaceDBusMock.html#a75227dc950426189960628d6f549ff2f">DBusGlue::property_change_behaviour</a></td>
         </tr>
       </table>
   </td>
@@ -469,7 +469,7 @@ template&lt;template&lt; typename... &gt; typename MapT, typename... Remain&gt; 
 template&lt;typename InterfaceT , typename... List&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">void DBusMock::construct_interface </td>
+          <td class="memname">void DBusGlue::construct_interface </td>
           <td>(</td>
           <td class="paramtype">InterfaceT *&#160;</td>
           <td class="paramname"><em>iface</em>, </td>
@@ -499,7 +499,7 @@ template&lt;typename InterfaceT , typename... List&gt; </div>
 template&lt;typename T &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">auto DBusMock::create_interface </td>
+          <td class="memname">auto DBusGlue::create_interface </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classDBusMock_1_1dbus.html">dbus</a> &amp;&#160;</td>
           <td class="paramname"><em>bus</em>, </td>
@@ -541,7 +541,7 @@ template&lt;typename T &gt; </div>
 template&lt;typename T &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">auto DBusMock::create_interface </td>
+          <td class="memname">auto DBusGlue::create_interface </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classDBusMock_1_1dbus.html">dbus</a> &amp;&#160;</td>
           <td class="paramname"><em>bus</em>, </td>
@@ -583,7 +583,7 @@ template&lt;typename T &gt; </div>
 template&lt;typename FunctionT &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">void DBusMock::for_signature_do </td>
+          <td class="memname">void DBusGlue::for_signature_do </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structDBusMock_1_1type__descriptor.html">type_descriptor</a>&#160;</td>
           <td class="paramname"><em>descr</em>, </td>
@@ -613,7 +613,7 @@ template&lt;typename FunctionT &gt; </div>
 template&lt;typename FunctionT &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">bool DBusMock::for_signature_do_noexcept </td>
+          <td class="memname">bool DBusGlue::for_signature_do_noexcept </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structDBusMock_1_1type__descriptor.html">type_descriptor</a>&#160;</td>
           <td class="paramname"><em>descr</em>, </td>
@@ -644,7 +644,7 @@ template&lt;typename FunctionT &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr bool DBusMock::is_possible_key </td>
+          <td class="memname">constexpr bool DBusGlue::is_possible_key </td>
           <td>(</td>
           <td class="paramtype">char&#160;</td>
           <td class="paramname"><em>c</em></td><td>)</td>
@@ -670,7 +670,7 @@ template&lt;typename FunctionT &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespaceDBusMock.html#a51a4d63d0ad560850179902daf6a6a83">basic_message_handle</a> DBusMock::make_basic_message_handle </td>
+          <td class="memname"><a class="el" href="namespaceDBusMock.html#a51a4d63d0ad560850179902daf6a6a83">basic_message_handle</a> DBusGlue::make_basic_message_handle </td>
           <td>(</td>
           <td class="paramtype">sd_bus_message *&#160;</td>
           <td class="paramname"><em>msg</em></td><td>)</td>
@@ -693,7 +693,7 @@ template&lt;typename FunctionT &gt; </div>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void DBusMock::make_busy_loop </td>
+          <td class="memname">void DBusGlue::make_busy_loop </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classDBusMock_1_1dbus.html">dbus</a> *&#160;</td>
           <td class="paramname"><em>bus_object</em>, </td>
@@ -723,7 +723,7 @@ template&lt;typename FunctionT &gt; </div>
 template&lt;typename InterfaceT , typename... List&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">std::shared_ptr&lt;InterfaceT&gt; DBusMock::make_interface </td>
+          <td class="memname">std::shared_ptr&lt;InterfaceT&gt; DBusGlue::make_interface </td>
           <td>(</td>
           <td class="paramtype">List &amp;&amp;...&#160;</td>
           <td class="paramname"><em>list</em></td><td>)</td>
@@ -743,7 +743,7 @@ template&lt;typename InterfaceT , typename... List&gt; </div>
 template&lt;typename T &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structDBusMock_1_1resolvable__variant.html">resolvable_variant</a> DBusMock::make_resolvable_variant </td>
+          <td class="memname"><a class="el" href="structDBusMock_1_1resolvable__variant.html">resolvable_variant</a> DBusGlue::make_resolvable_variant </td>
           <td>(</td>
           <td class="paramtype">T const &amp;&#160;</td>
           <td class="paramname"><em>val</em></td><td>)</td>
@@ -763,9 +763,9 @@ template&lt;typename T &gt; </div>
 template&lt;typename T &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structDBusMock_1_1message__variant.html">message_variant</a> DBusMock::make_variant </td>
+          <td class="memname"><a class="el" href="structDBusMock_1_1message__variant.html">message_variant</a> DBusGlue::make_variant </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classDBusMock_1_1dbus.html">DBusMock::dbus</a> &amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="classDBusMock_1_1dbus.html">DBusGlue::dbus</a> &amp;&#160;</td>
           <td class="paramname"><em>bus</em>, </td>
         </tr>
         <tr>
@@ -791,7 +791,7 @@ template&lt;typename T &gt; </div>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classDBusMock_1_1dbus.html">dbus</a> DBusMock::open_system_bus </td>
+          <td class="memname"><a class="el" href="classDBusMock_1_1dbus.html">dbus</a> DBusGlue::open_system_bus </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -809,7 +809,7 @@ template&lt;typename T &gt; </div>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classDBusMock_1_1dbus.html">dbus</a> DBusMock::open_system_bus </td>
+          <td class="memname"><a class="el" href="classDBusMock_1_1dbus.html">dbus</a> DBusGlue::open_system_bus </td>
           <td>(</td>
           <td class="paramtype">std::string const &amp;&#160;</td>
           <td class="paramname"><em>host</em></td><td>)</td>
@@ -834,7 +834,7 @@ template&lt;typename T &gt; </div>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classDBusMock_1_1dbus.html">dbus</a> DBusMock::open_system_bus_machine </td>
+          <td class="memname"><a class="el" href="classDBusMock_1_1dbus.html">dbus</a> DBusGlue::open_system_bus_machine </td>
           <td>(</td>
           <td class="paramtype">std::string const &amp;&#160;</td>
           <td class="paramname"><em>machine</em></td><td>)</td>
@@ -859,7 +859,7 @@ template&lt;typename T &gt; </div>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classDBusMock_1_1dbus.html">dbus</a> DBusMock::open_user_bus </td>
+          <td class="memname"><a class="el" href="classDBusMock_1_1dbus.html">dbus</a> DBusGlue::open_user_bus </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -877,7 +877,7 @@ template&lt;typename T &gt; </div>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structDBusMock_1_1exposable__method__factory.html">exposable_method_factory</a>&amp; DBusMock::operator&lt;&lt; </td>
+          <td class="memname"><a class="el" href="structDBusMock_1_1exposable__method__factory.html">exposable_method_factory</a>&amp; DBusGlue::operator&lt;&lt; </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structDBusMock_1_1exposable__method__factory.html">exposable_method_factory</a> &amp;&amp;&#160;</td>
           <td class="paramname"><em>lhs</em>, </td>
@@ -905,7 +905,7 @@ template&lt;typename T &gt; </div>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structDBusMock_1_1exposable__method__factory.html">exposable_method_factory</a>&amp; DBusMock::operator&lt;&lt; </td>
+          <td class="memname"><a class="el" href="structDBusMock_1_1exposable__method__factory.html">exposable_method_factory</a>&amp; DBusGlue::operator&lt;&lt; </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structDBusMock_1_1exposable__method__factory.html">exposable_method_factory</a> &amp;&amp;&#160;</td>
           <td class="paramname"><em>lhs</em>, </td>
@@ -933,7 +933,7 @@ template&lt;typename T &gt; </div>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structDBusMock_1_1exposable__method__factory.html">exposable_method_factory</a>&amp; DBusMock::operator&lt;&lt; </td>
+          <td class="memname"><a class="el" href="structDBusMock_1_1exposable__method__factory.html">exposable_method_factory</a>&amp; DBusGlue::operator&lt;&lt; </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structDBusMock_1_1exposable__method__factory.html">exposable_method_factory</a> &amp;&amp;&#160;</td>
           <td class="paramname"><em>lhs</em>, </td>
@@ -961,7 +961,7 @@ template&lt;typename T &gt; </div>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structDBusMock_1_1exposable__method__factory.html">exposable_method_factory</a>&amp; DBusMock::operator&lt;&lt; </td>
+          <td class="memname"><a class="el" href="structDBusMock_1_1exposable__method__factory.html">exposable_method_factory</a>&amp; DBusGlue::operator&lt;&lt; </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structDBusMock_1_1exposable__method__factory.html">exposable_method_factory</a> &amp;&amp;&#160;</td>
           <td class="paramname"><em>lhs</em>, </td>
@@ -991,7 +991,7 @@ template&lt;typename T &gt; </div>
 template&lt;typename T &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">std::unique_ptr&lt;<a class="el" href="classDBusMock_1_1exposable__method.html">exposable_method</a>&lt;T&gt; &gt; DBusMock::operator&lt;&lt; </td>
+          <td class="memname">std::unique_ptr&lt;<a class="el" href="classDBusMock_1_1exposable__method.html">exposable_method</a>&lt;T&gt; &gt; DBusGlue::operator&lt;&lt; </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structDBusMock_1_1exposable__method__factory.html">exposable_method_factory</a> &amp;&#160;</td>
           <td class="paramname"><em>lhs</em>, </td>
@@ -1019,7 +1019,7 @@ template&lt;typename T &gt; </div>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structDBusMock_1_1exposable__method__factory.html">exposable_method_factory</a>&amp; DBusMock::operator&lt;&lt; </td>
+          <td class="memname"><a class="el" href="structDBusMock_1_1exposable__method__factory.html">exposable_method_factory</a>&amp; DBusGlue::operator&lt;&lt; </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structDBusMock_1_1exposable__method__factory.html">exposable_method_factory</a> &amp;&#160;</td>
           <td class="paramname"><em>lhs</em>, </td>
@@ -1047,7 +1047,7 @@ template&lt;typename T &gt; </div>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structDBusMock_1_1exposable__method__factory.html">exposable_method_factory</a>&amp; DBusMock::operator&lt;&lt; </td>
+          <td class="memname"><a class="el" href="structDBusMock_1_1exposable__method__factory.html">exposable_method_factory</a>&amp; DBusGlue::operator&lt;&lt; </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structDBusMock_1_1exposable__method__factory.html">exposable_method_factory</a> &amp;&#160;</td>
           <td class="paramname"><em>lhs</em>, </td>
@@ -1075,7 +1075,7 @@ template&lt;typename T &gt; </div>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structDBusMock_1_1exposable__method__factory.html">exposable_method_factory</a>&amp; DBusMock::operator&lt;&lt; </td>
+          <td class="memname"><a class="el" href="structDBusMock_1_1exposable__method__factory.html">exposable_method_factory</a>&amp; DBusGlue::operator&lt;&lt; </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structDBusMock_1_1exposable__method__factory.html">exposable_method_factory</a> &amp;&#160;</td>
           <td class="paramname"><em>lhs</em>, </td>
@@ -1103,7 +1103,7 @@ template&lt;typename T &gt; </div>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structDBusMock_1_1exposable__method__factory.html">exposable_method_factory</a>&amp; DBusMock::operator&lt;&lt; </td>
+          <td class="memname"><a class="el" href="structDBusMock_1_1exposable__method__factory.html">exposable_method_factory</a>&amp; DBusGlue::operator&lt;&lt; </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structDBusMock_1_1exposable__method__factory.html">exposable_method_factory</a> &amp;&#160;</td>
           <td class="paramname"><em>lhs</em>, </td>
@@ -1131,7 +1131,7 @@ template&lt;typename T &gt; </div>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structDBusMock_1_1exposable__property__factory.html">exposable_property_factory</a>&amp; DBusMock::operator&lt;&lt; </td>
+          <td class="memname"><a class="el" href="structDBusMock_1_1exposable__property__factory.html">exposable_property_factory</a>&amp; DBusGlue::operator&lt;&lt; </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structDBusMock_1_1exposable__property__factory.html">exposable_property_factory</a> &amp;&amp;&#160;</td>
           <td class="paramname"><em>lhs</em>, </td>
@@ -1159,7 +1159,7 @@ template&lt;typename T &gt; </div>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structDBusMock_1_1exposable__property__factory.html">exposable_property_factory</a>&amp; DBusMock::operator&lt;&lt; </td>
+          <td class="memname"><a class="el" href="structDBusMock_1_1exposable__property__factory.html">exposable_property_factory</a>&amp; DBusGlue::operator&lt;&lt; </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structDBusMock_1_1exposable__property__factory.html">exposable_property_factory</a> &amp;&amp;&#160;</td>
           <td class="paramname"><em>lhs</em>, </td>
@@ -1187,7 +1187,7 @@ template&lt;typename T &gt; </div>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structDBusMock_1_1exposable__property__factory.html">exposable_property_factory</a>&amp; DBusMock::operator&lt;&lt; </td>
+          <td class="memname"><a class="el" href="structDBusMock_1_1exposable__property__factory.html">exposable_property_factory</a>&amp; DBusGlue::operator&lt;&lt; </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structDBusMock_1_1exposable__property__factory.html">exposable_property_factory</a> &amp;&amp;&#160;</td>
           <td class="paramname"><em>lhs</em>, </td>
@@ -1217,7 +1217,7 @@ template&lt;typename T &gt; </div>
 template&lt;typename T &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">std::unique_ptr&lt;<a class="el" href="classDBusMock_1_1exposable__property.html">exposable_property</a>&lt;T&gt; &gt; DBusMock::operator&lt;&lt; </td>
+          <td class="memname">std::unique_ptr&lt;<a class="el" href="classDBusMock_1_1exposable__property.html">exposable_property</a>&lt;T&gt; &gt; DBusGlue::operator&lt;&lt; </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structDBusMock_1_1exposable__property__factory.html">exposable_property_factory</a> &amp;&#160;</td>
           <td class="paramname"><em>lhs</em>, </td>
@@ -1245,7 +1245,7 @@ template&lt;typename T &gt; </div>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structDBusMock_1_1exposable__property__factory.html">exposable_property_factory</a>&amp; DBusMock::operator&lt;&lt; </td>
+          <td class="memname"><a class="el" href="structDBusMock_1_1exposable__property__factory.html">exposable_property_factory</a>&amp; DBusGlue::operator&lt;&lt; </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structDBusMock_1_1exposable__property__factory.html">exposable_property_factory</a> &amp;&#160;</td>
           <td class="paramname"><em>lhs</em>, </td>
@@ -1273,7 +1273,7 @@ template&lt;typename T &gt; </div>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structDBusMock_1_1exposable__property__factory.html">exposable_property_factory</a>&amp; DBusMock::operator&lt;&lt; </td>
+          <td class="memname"><a class="el" href="structDBusMock_1_1exposable__property__factory.html">exposable_property_factory</a>&amp; DBusGlue::operator&lt;&lt; </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structDBusMock_1_1exposable__property__factory.html">exposable_property_factory</a> &amp;&#160;</td>
           <td class="paramname"><em>lhs</em>, </td>
@@ -1301,7 +1301,7 @@ template&lt;typename T &gt; </div>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structDBusMock_1_1exposable__property__factory.html">exposable_property_factory</a>&amp; DBusMock::operator&lt;&lt; </td>
+          <td class="memname"><a class="el" href="structDBusMock_1_1exposable__property__factory.html">exposable_property_factory</a>&amp; DBusGlue::operator&lt;&lt; </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structDBusMock_1_1exposable__property__factory.html">exposable_property_factory</a> &amp;&#160;</td>
           <td class="paramname"><em>lhs</em>, </td>
@@ -1329,7 +1329,7 @@ template&lt;typename T &gt; </div>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structDBusMock_1_1exposable__signal__factory.html">exposable_signal_factory</a>&amp; DBusMock::operator&lt;&lt; </td>
+          <td class="memname"><a class="el" href="structDBusMock_1_1exposable__signal__factory.html">exposable_signal_factory</a>&amp; DBusGlue::operator&lt;&lt; </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structDBusMock_1_1exposable__signal__factory.html">exposable_signal_factory</a> &amp;&amp;&#160;</td>
           <td class="paramname"><em>lhs</em>, </td>
@@ -1357,7 +1357,7 @@ template&lt;typename T &gt; </div>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structDBusMock_1_1exposable__signal__factory.html">exposable_signal_factory</a>&amp; DBusMock::operator&lt;&lt; </td>
+          <td class="memname"><a class="el" href="structDBusMock_1_1exposable__signal__factory.html">exposable_signal_factory</a>&amp; DBusGlue::operator&lt;&lt; </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structDBusMock_1_1exposable__signal__factory.html">exposable_signal_factory</a> &amp;&amp;&#160;</td>
           <td class="paramname"><em>lhs</em>, </td>
@@ -1387,7 +1387,7 @@ template&lt;typename T &gt; </div>
 template&lt;typename T &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">std::unique_ptr&lt;<a class="el" href="classDBusMock_1_1exposable__signal.html">exposable_signal</a>&lt;T&gt; &gt; DBusMock::operator&lt;&lt; </td>
+          <td class="memname">std::unique_ptr&lt;<a class="el" href="classDBusMock_1_1exposable__signal.html">exposable_signal</a>&lt;T&gt; &gt; DBusGlue::operator&lt;&lt; </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structDBusMock_1_1exposable__signal__factory.html">exposable_signal_factory</a> &amp;&#160;</td>
           <td class="paramname"><em>lhs</em>, </td>
@@ -1415,7 +1415,7 @@ template&lt;typename T &gt; </div>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structDBusMock_1_1exposable__signal__factory.html">exposable_signal_factory</a>&amp; DBusMock::operator&lt;&lt; </td>
+          <td class="memname"><a class="el" href="structDBusMock_1_1exposable__signal__factory.html">exposable_signal_factory</a>&amp; DBusGlue::operator&lt;&lt; </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structDBusMock_1_1exposable__signal__factory.html">exposable_signal_factory</a> &amp;&#160;</td>
           <td class="paramname"><em>lhs</em>, </td>
@@ -1443,7 +1443,7 @@ template&lt;typename T &gt; </div>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structDBusMock_1_1exposable__signal__factory.html">exposable_signal_factory</a>&amp; DBusMock::operator&lt;&lt; </td>
+          <td class="memname"><a class="el" href="structDBusMock_1_1exposable__signal__factory.html">exposable_signal_factory</a>&amp; DBusGlue::operator&lt;&lt; </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structDBusMock_1_1exposable__signal__factory.html">exposable_signal_factory</a> &amp;&#160;</td>
           <td class="paramname"><em>lhs</em>, </td>
@@ -1471,7 +1471,7 @@ template&lt;typename T &gt; </div>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::ostream &amp; DBusMock::operator&lt;&lt; </td>
+          <td class="memname">std::ostream &amp; DBusGlue::operator&lt;&lt; </td>
           <td>(</td>
           <td class="paramtype">std::ostream &amp;&#160;</td>
           <td class="paramname"><em>stream</em>, </td>
@@ -1501,7 +1501,7 @@ template&lt;typename T &gt; </div>
 template&lt;typename U , class  = decltype(std::declval&lt;std::ostream&amp;&gt;() &lt;&lt; std::declval&lt;U&gt;())&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">std::ostream&amp; DBusMock::operator&lt;&lt; </td>
+          <td class="memname">std::ostream&amp; DBusGlue::operator&lt;&lt; </td>
           <td>(</td>
           <td class="paramtype">std::ostream &amp;&#160;</td>
           <td class="paramname"><em>stream</em>, </td>
@@ -1531,7 +1531,7 @@ template&lt;typename U , class  = decltype(std::declval&lt;std::ostream&amp;&gt;
 template&lt;typename U , class  = decltype(std::declval&lt;std::ostream&amp;&gt;() &lt;&lt; std::declval&lt;U&gt;())&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">std::ostream&amp; DBusMock::operator&lt;&lt; </td>
+          <td class="memname">std::ostream&amp; DBusGlue::operator&lt;&lt; </td>
           <td>(</td>
           <td class="paramtype">std::ostream &amp;&#160;</td>
           <td class="paramname"><em>stream</em>, </td>
@@ -1559,7 +1559,7 @@ template&lt;typename U , class  = decltype(std::declval&lt;std::ostream&amp;&gt;
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::ostream &amp; DBusMock::operator&lt;&lt; </td>
+          <td class="memname">std::ostream &amp; DBusGlue::operator&lt;&lt; </td>
           <td>(</td>
           <td class="paramtype">std::ostream &amp;&#160;</td>
           <td class="paramname"><em>stream</em>, </td>
@@ -1589,7 +1589,7 @@ template&lt;typename U , class  = decltype(std::declval&lt;std::ostream&amp;&gt;
 template&lt;typename U , class  = decltype(std::declval&lt;std::ostream&amp;&gt;() &gt;&gt; std::declval&lt;U&gt;())&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">std::istream&amp; DBusMock::operator&gt;&gt; </td>
+          <td class="memname">std::istream&amp; DBusGlue::operator&gt;&gt; </td>
           <td>(</td>
           <td class="paramtype">std::istream &amp;&#160;</td>
           <td class="paramname"><em>stream</em>, </td>
@@ -1619,7 +1619,7 @@ template&lt;typename U , class  = decltype(std::declval&lt;std::ostream&amp;&gt;
 template&lt;typename U , class  = decltype(std::declval&lt;std::ostream&amp;&gt;() &gt;&gt; std::declval&lt;U&gt;())&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">std::istream&amp; DBusMock::operator&gt;&gt; </td>
+          <td class="memname">std::istream&amp; DBusGlue::operator&gt;&gt; </td>
           <td>(</td>
           <td class="paramtype">std::istream &amp;&#160;</td>
           <td class="paramname"><em>stream</em>, </td>
@@ -1649,7 +1649,7 @@ template&lt;typename U , class  = decltype(std::declval&lt;std::ostream&amp;&gt;
 template&lt;typename Tuple , std::size_t... Is&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">int DBusMock::read_tuple_impl </td>
+          <td class="memname">int DBusGlue::read_tuple_impl </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classDBusMock_1_1message.html">message</a> &amp;&#160;</td>
           <td class="paramname"><em>msg</em>, </td>
@@ -1685,7 +1685,7 @@ template&lt;typename Tuple , std::size_t... Is&gt; </div>
 template&lt;typename T &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">void DBusMock::resolve </td>
+          <td class="memname">void DBusGlue::resolve </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structDBusMock_1_1message__variant.html">message_variant</a> &amp;&#160;</td>
           <td class="paramname"><em>var</em>, </td>
@@ -1721,7 +1721,7 @@ template&lt;typename T &gt; </div>
 template&lt;typename T &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">void DBusMock::resolve </td>
+          <td class="memname">void DBusGlue::resolve </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structDBusMock_1_1resolvable__variant.html">resolvable_variant</a>&#160;</td>
           <td class="paramname"><em>var</em>, </td>
@@ -1749,7 +1749,7 @@ template&lt;typename T &gt; </div>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::string DBusMock::typeToComprehensible </td>
+          <td class="memname">std::string DBusGlue::typeToComprehensible </td>
           <td>(</td>
           <td class="paramtype">char&#160;</td>
           <td class="paramname"><em>type</em></td><td>)</td>
@@ -1776,7 +1776,7 @@ template&lt;typename T &gt; </div>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::string DBusMock::typeToCpp </td>
+          <td class="memname">std::string DBusGlue::typeToCpp </td>
           <td>(</td>
           <td class="paramtype">char&#160;</td>
           <td class="paramname"><em>type</em></td><td>)</td>
@@ -1805,7 +1805,7 @@ template&lt;typename T &gt; </div>
 template&lt;typename T &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">void DBusMock::variant_load </td>
+          <td class="memname">void DBusGlue::variant_load </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structDBusMock_1_1message__variant.html">message_variant</a> &amp;&#160;</td>
           <td class="paramname"><em>var</em>, </td>
@@ -1841,7 +1841,7 @@ template&lt;typename T &gt; </div>
 template&lt;typename T &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">void DBusMock::variant_store </td>
+          <td class="memname">void DBusGlue::variant_store </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classDBusMock_1_1dbus.html">dbus</a> &amp;&#160;</td>
           <td class="paramname"><em>bus</em>, </td>
@@ -1875,7 +1875,7 @@ template&lt;typename T &gt; </div>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structDBusMock_1_1type__descriptor.html">type_descriptor</a> DBusMock::variant_type </td>
+          <td class="memname"><a class="el" href="structDBusMock_1_1type__descriptor.html">type_descriptor</a> DBusGlue::variant_type </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structDBusMock_1_1message__variant.html">message_variant</a> &amp;&#160;</td>
           <td class="paramname"><em>var</em></td><td>)</td>
@@ -1897,7 +1897,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr <a class="el" href="structDBusMock_1_1async__flag__t.html">async_flag_t</a> DBusMock::async_flag</td>
+          <td class="memname">constexpr <a class="el" href="structDBusMock_1_1async__flag__t.html">async_flag_t</a> DBusGlue::async_flag</td>
         </tr>
       </table>
   </td>
@@ -1919,7 +1919,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr static auto DBusMock::release_slot = <a class="el" href="structDBusMock_1_1release__slot__t.html">release_slot_t</a>{true}</td>
+          <td class="memname">constexpr static auto DBusGlue::release_slot = <a class="el" href="structDBusMock_1_1release__slot__t.html">release_slot_t</a>{true}</td>
         </tr>
       </table>
   </td>

@@ -8,7 +8,7 @@
 
 #include <tuple>
 
-namespace DBusMock
+namespace DBusGlue
 {
     /**
 	 * @brief The emitable struct

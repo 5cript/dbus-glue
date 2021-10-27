@@ -1,4 +1,4 @@
-<map id="DBusMock::detail::tuple_apply&lt; std::tuple&lt; List... &gt;, Function &gt;" name="DBusMock::detail::tuple_apply&lt; std::tuple&lt; List... &gt;, Function &gt;">
+<map id="DBusGlue::detail::tuple_apply&lt; std::tuple&lt; List... &gt;, Function &gt;" name="DBusGlue::detail::tuple_apply&lt; std::tuple&lt; List... &gt;, Function &gt;">
 <area shape="rect" id="node1" title=" " alt="" coords="5,80,176,136"/>
 <area shape="rect" id="node2" title=" " alt="" coords="27,5,155,32"/>
 </map>

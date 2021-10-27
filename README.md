@@ -14,10 +14,10 @@ The DBus Glue library wants to make interfacing with a DBus Service / Interface 
 The DBus protocol is almost entirely hidden from the user. 
 This library only enables interfacing with existant DBus APIs. Creating one yourself with this library **is** ~~not~~ possible!
 
-Example interfaces / Predefined interfaces can be found in my repository [dbus-mockery-system]("https://github.com/5cript/dbus-mockery-system").
+Example interfaces / Predefined interfaces can be found in my repository [dbus-glue-system]("https://github.com/5cript/dbus-glue-system").
 
 ## Documentation (Doxygen)
-https://5cript.github.io/dbus-mockery/
+https://5cript.github.io/dbus-glue/
 
 ## Roadmap / Features
 Here is a checkbox list of all the tings to come and all that are done so far.
@@ -51,7 +51,7 @@ With your own registered interface you can:
 
 ## Build
 This project uses cmake.
-* cd dbus-mockery
+* cd dbus-glue
 * mkdir -p build
 * cmake ..
 * make -j4 (or more/less cores)
@@ -70,7 +70,7 @@ This is a short tutorial for declaring external interfaces, attaching to them an
 
 #### Hello World
 A very simple program to start off with.
-First the includes required for basic mocking:
+First the includes required for basics:
 ```C++
 #include <dbus-glue/dbus_interface.hpp>
 ```
@@ -93,17 +93,17 @@ namespace org::freedesktop
 }
 ```
 
-Mock the interface (i know the term is not really correct, but the idea comes from mocking frameworks).
+Mirror the dbus interface in C++ code.
 When you dont provide any Methods, Properties or Signals, a
-special placeholder macro has to be used called "DBUS_MOCK_NO_*"
+special placeholder macro has to be used called "DBUS_DECLARE_NO_*"
 ```C++
-DBUS_MOCK_NAMESPACE
+DBUS_DECLARE_NAMESPACE
 (
     (org)(freedesktop),
     IDBus,
-    DBUS_MOCK_METHODS(ListNames),
-    DBUS_MOCK_NO_PROPERTIES,
-    DBUS_MOCK_NO_SIGNALS
+    DBUS_DECLARE_METHODS(ListNames),
+    DBUS_DECLARE_NO_PROPERTIES,
+    DBUS_DECLARE_NO_SIGNALS
 )
 ```
 
@@ -111,7 +111,7 @@ This shows how to use our set up interface:
 ```C++
 int main()
 {
-    using namespace DBusMock;
+    using namespace DBusGlue;
 
     // open the system bus
     auto bus = open_system_bus();
@@ -155,7 +155,7 @@ Only showing relevant differences to before:
 
 int main()
 {
-    using namespace DBusMock;
+    using namespace DBusGlue;
     using namespace std::chrono_literals;
 
     // open the system bus
@@ -304,7 +304,7 @@ Here we have an interface that we want to expose to the world:
 #include <dbus-glue/bindings/exposable_interface.hpp>
 
 // Your interface to export has to derive from exposable_interface.
-class MyInterface : public DBusMock::exposable_interface
+class MyInterface : public DBusGlue::exposable_interface
 {
 public:
     // these members determine the path and service name
@@ -339,13 +339,13 @@ int main()
 {
     auto bus = open_user_bus();
 
-    using namespace DBusMock;
+    using namespace DBusGlue;
     using namespace ExposeHelpers;    
 
     // creates an instance of MyInterface that can be used.
     auto shared_ptr_to_interface = make_interface <MyInterface>(
         // Multiply Method
-        DBusMock::exposable_method_factory{} <<
+        DBusGlue::exposable_method_factory{} <<
             name("Multiply") << // Method name
             result("Product") << // Name can only be a single word!
             parameter(0, "a") << // Name can only be a single word!
@@ -353,20 +353,20 @@ int main()
             as(&MyInterface::Multiply),
 
         // Display Text Method
-        DBusMock::exposable_method_factory{} <<
+        DBusGlue::exposable_method_factory{} <<
             name("DisplayText") <<
             result("Nothing") <<
             parameter("text") <<
             as(&MyInterface::DisplayText),
 
         // IsThisCool Property
-        DBusMock::exposable_property_factory{} <<
+        DBusGlue::exposable_property_factory{} <<
             name("IsThisCool") <<
             writeable(true) <<
             as(&MyInterface::IsThisCool),
 
         // FireMe Signal
-        DBusMock::exposable_signal_factory{} <<
+        DBusGlue::exposable_signal_factory{} <<
             // name is in emitable constructor, not needed here.
             // d-feet does not show signal parameter names
             parameter("integral") <<
@@ -416,7 +416,7 @@ Here is the first example, to show a basis of what this library wants to do.
 #include <vector>
 #include <string>
 
-using namespace DBusMock;
+using namespace DBusGlue;
 
 /**
  * @brief The IAccounts interface. Its the provided interface (org.freedesktop.Accounts) as a C++ class.
@@ -448,14 +448,14 @@ public: // signals
 
 // This step is necessary to enable interface auto-implementation.
 // There is a limit to how many properterties and methods are possible. (currently either 64 or 255 each, haven't tried, assume 64)
-// This limit can be circumvented by DBUS_MOCK_N. Which allows to mock the same interface more than once.
-// A successory call to DBUS_MOCK_ZIP merges them all together.
-DBUS_MOCK
+// This limit can be circumvented by DBUS_DECLARE_N. Which allows to make the same interface more than once.
+// A successory call to DBUS_DECLARE_ZIP merges them all together.
+DBUS_DECLARE
 (
     IAccounts,
-    DBUS_MOCK_METHODS(CacheUser, CreateUser, DeleteUser, FindUserById, ListCachedUsers, UncacheUser),
-    DBUS_MOCK_PROPERTIES(AutomaticLoginUsers, HasMultipleUsers, HasNoUsers, DaemonVersion),
-    DBUS_MOCK_SIGNALS(UserAdded, UserDeleted)
+    DBUS_DECLARE_METHODS(CacheUser, CreateUser, DeleteUser, FindUserById, ListCachedUsers, UncacheUser),
+    DBUS_DECLARE_PROPERTIES(AutomaticLoginUsers, HasMultipleUsers, HasNoUsers, DaemonVersion),
+    DBUS_DECLARE_SIGNALS(UserAdded, UserDeleted)
 )
 
 //----------------------------------------------------------------------------------------
@@ -509,7 +509,7 @@ Note that signal handling requires an event loop.
 #include <thread>
 #include <chrono>
 
-using namespace DBusMock;
+using namespace DBusGlue;
 using namespace std::chrono_literals;
 
 /**
@@ -525,22 +525,22 @@ public: // Methods
 	virtual auto DeleteUser(int64_t id, bool removeFiles) -> void = 0;
 public: // Properties
 public: // signals
-	DBusMock::signal <void(object_path)> UserAdded;
-	DBusMock::signal <void(object_path)> UserDeleted;
+	DBusGlue::signal <void(object_path)> UserAdded;
+	DBusGlue::signal <void(object_path)> UserDeleted;
 };
 
 //----------------------------------------------------------------------------------------
 
 // This step is necessary to enable interface auto-implementation.
 // There is a limit to how many properterties and methods are possible. (currently either 64 or 255 each, haven't tried, assume 64)
-// This limit can be circumvented by DBUS_MOCK_N. Which allows to mock the same interface more than once.
-// A successory call to DBUS_MOCK_ZIP merges them all together.
-DBUS_MOCK
+// This limit can be circumvented by DBUS_DECLARE_N. Which allows to make the same interface more than once.
+// A successory call to DBUS_DECLARE_ZIP merges them all together.
+DBUS_DECLARE
 (
     IAccounts,
-    DBUS_MOCK_METHODS(CreateUser, DeleteUser),
-    DBUS_MOCK_NO_PROPERTIES,
-    DBUS_MOCK_SIGNALS(UserAdded, UserDeleted)
+    DBUS_DECLARE_METHODS(CreateUser, DeleteUser),
+    DBUS_DECLARE_NO_PROPERTIES,
+    DBUS_DECLARE_SIGNALS(UserAdded, UserDeleted)
 )
 
 int main()
@@ -584,7 +584,7 @@ int main()
 			    // this is called when an error got signaled into our callback.
 			    std::cerr << "oh no something gone wrong: " << str << "\n";
 		    },
-		    DBusMock::release_slot
+		    DBusGlue::release_slot
 			);
 
 			// try to delete a user with id 1001. WARNING, DONT JUST DELETE SOME USER ON YOUR SYSTEM. obviously...

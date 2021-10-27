@@ -5,7 +5,7 @@
 #include <set>
 #include <memory>
 
-namespace DBusMock::detail
+namespace DBusGlue::detail
 {
     /**
 	 * @brief The slot_holder class holds slots for at least as long as the bus lives,

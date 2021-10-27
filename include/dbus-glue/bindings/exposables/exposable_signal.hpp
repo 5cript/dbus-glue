@@ -13,7 +13,7 @@
 #include <vector>
 #include <string>
 
-namespace DBusMock
+namespace DBusGlue
 {
     template <typename EmitableMemberT>
     class exposable_signal : public basic_exposable_signal

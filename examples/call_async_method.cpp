@@ -4,7 +4,7 @@
 
 int main()
 {
-	using namespace DBusMock;
+	using namespace DBusGlue;
 	using namespace std::chrono_literals;
 
 	auto bus = open_system_bus();

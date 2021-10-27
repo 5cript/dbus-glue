@@ -1,4 +1,4 @@
-<map id="DBusMock::Mocks::interface_async_proxy&lt; R(ParametersT...)&gt;" name="DBusMock::Mocks::interface_async_proxy&lt; R(ParametersT...)&gt;">
+<map id="DBusGlue::Mocks::interface_async_proxy&lt; R(ParametersT...)&gt;" name="DBusGlue::Mocks::interface_async_proxy&lt; R(ParametersT...)&gt;">
 <area shape="rect" id="node1" title=" " alt="" coords="5,393,232,435"/>
 <area shape="rect" id="node2" href="$classDBusMock_1_1Mocks_1_1interface__async__base.html" title=" " alt="" coords="23,303,215,344"/>
 <area shape="rect" id="node3" href="$classDBusMock_1_1Mocks_1_1interface__mock__base.html" title=" " alt="" coords="23,199,215,240"/>

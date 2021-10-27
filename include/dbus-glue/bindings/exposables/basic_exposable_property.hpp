@@ -2,7 +2,7 @@
 
 #include "../message.hpp"
 
-namespace DBusMock
+namespace DBusGlue
 {
     enum class property_change_behaviour
 	{

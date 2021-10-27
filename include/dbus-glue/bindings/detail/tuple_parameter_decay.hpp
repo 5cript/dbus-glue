@@ -2,7 +2,7 @@
 
 #include <tuple>
 
-namespace DBusMock::detail
+namespace DBusGlue::detail
 {
     template <typename Tuple>
     struct tuple_parameter_decay

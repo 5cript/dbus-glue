@@ -3,7 +3,7 @@
 #include "../bindings/bus.hpp"
 #include <iosfwd>
 
-namespace DBusMock
+namespace DBusGlue
 {
     class interface_generator
 	{

@@ -8,7 +8,7 @@
 #include <functional>
 #include <atomic>
 
-namespace DBusMock
+namespace DBusGlue
 {
     /**
 	 * @brief The busy_loop class is a basic polling loop that handles queued dbus operations.

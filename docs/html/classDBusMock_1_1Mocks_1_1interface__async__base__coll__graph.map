@@ -1,4 +1,4 @@
-<map id="DBusMock::Mocks::interface_async_base&lt; R &gt;" name="DBusMock::Mocks::interface_async_base&lt; R &gt;">
+<map id="DBusGlue::Mocks::interface_async_base&lt; R &gt;" name="DBusGlue::Mocks::interface_async_base&lt; R &gt;">
 <area shape="rect" id="node1" title=" " alt="" coords="5,303,197,344"/>
 <area shape="rect" id="node2" href="$classDBusMock_1_1Mocks_1_1interface__mock__base.html" title=" " alt="" coords="5,199,197,240"/>
 <area shape="rect" id="node3" href="$classDBusMock_1_1dbus.html" title=" " alt="" coords="40,109,163,136"/>

@@ -15,7 +15,7 @@ int dbus_mock_exposable_property_read
     sd_bus_error* /*error*/
 )
 {
-    using namespace DBusMock;
+    using namespace DBusGlue;
     [[maybe_unused]] auto* entry = reinterpret_cast <detail::table_entry*>(userdata);
 
     int ret = 0;
@@ -52,7 +52,7 @@ int dbus_mock_exposable_property_write
     sd_bus_error* /*error*/
 )
 {
-    using namespace DBusMock;
+    using namespace DBusGlue;
     [[maybe_unused]] auto* entry = reinterpret_cast <detail::table_entry*>(userdata);
 
     int ret = 0;

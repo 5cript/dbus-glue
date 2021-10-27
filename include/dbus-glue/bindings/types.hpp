@@ -38,7 +38,7 @@
 	dictionary ::= "a" "{" basic_type complete_type "}"
 */
 
-namespace DBusMock
+namespace DBusGlue
 {
     /**
 	 *	Converts a C++ type int a dbus char.

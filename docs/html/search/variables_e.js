@@ -1,14 +1,14 @@
 var searchData=
 [
-  ['sdbus_5flock_5f_990',['sdbus_lock_',['../classDBusMock_1_1dbus.html#ac2c432344e51b458895ee67a0dfd2267',1,'DBusMock::dbus']]],
-  ['sent_5fmsg_5f_991',['sent_msg_',['../classDBusMock_1_1async__context.html#a47b41557fab61631d00a17ebcf01c037',1,'DBusMock::async_context']]],
-  ['service_992',['service',['../classDBusMock_1_1Mocks_1_1interface__mock__base.html#a24e62952b776a93815a48028afd8b8d1',1,'DBusMock::Mocks::interface_mock_base']]],
-  ['sign_993',['sign',['../classDBusMock_1_1slot__base.html#a6d87a81129678d0400fc1c756fd69e17',1,'DBusMock::slot_base']]],
-  ['signal_5fname_994',['signal_name',['../classDBusMock_1_1exposable__signal.html#ac70f2bc57224fa09cc280582adbbe1e6',1,'DBusMock::exposable_signal']]],
-  ['signals_995',['signals',['../structDBusMock_1_1Introspect_1_1interface.html#a39174247f67064aba83dc1dd515ff805',1,'DBusMock::Introspect::interface']]],
-  ['signals_5f_996',['signals_',['../classDBusMock_1_1exposable__interface.html#a02f5176c6859ac7fd917c77168beb0f0',1,'DBusMock::exposable_interface']]],
-  ['signature_5f_997',['signature_',['../classDBusMock_1_1exposable__method.html#a2c337decc54c715d2737a9e94c0ba6d3',1,'DBusMock::exposable_method::signature_()'],['../classDBusMock_1_1exposable__property.html#a0829e577fb30c36e68f75951d045d6e1',1,'DBusMock::exposable_property::signature_()'],['../classDBusMock_1_1exposable__signal.html#a503d6e7e443c0decc431bd47179d116b',1,'DBusMock::exposable_signal::signature_()']]],
-  ['slot_5f_998',['slot_',['../classDBusMock_1_1async__context.html#a784296a2164a40bee5d5d3d66b2fd96c',1,'DBusMock::async_context::slot_()'],['../classDBusMock_1_1exposable__interface.html#a330be1f2c32473352c831b31d7992530',1,'DBusMock::exposable_interface::slot_()']]],
-  ['space_5fafter_5fcomma_999',['space_after_comma',['../classDBusMock_1_1Introspect_1_1Introspector.html#aa79f2d04786065edf10989cd02ac3b24',1,'DBusMock::Introspect::Introspector']]],
-  ['space_5fbefore_5ftemplate_1000',['space_before_template',['../classDBusMock_1_1Introspect_1_1Introspector.html#a3069036690f2c0232289e98a365cdd7d',1,'DBusMock::Introspect::Introspector']]]
+  ['sdbus_5flock_5f_0',['sdbus_lock_',['../classDBusGlue_1_1dbus.html#ae15f57224221a333cc67bb5ec89a9dd8',1,'DBusGlue::dbus']]],
+  ['sent_5fmsg_5f_1',['sent_msg_',['../classDBusGlue_1_1async__context.html#ad3a3cb19f08c6a926d9cf6ca780af1c5',1,'DBusGlue::async_context']]],
+  ['service_2',['service',['../classDBusGlue_1_1Mocks_1_1interface__mock__base.html#a2ae77e1ac6771ea24f5efbe4a48d393f',1,'DBusGlue::Mocks::interface_mock_base']]],
+  ['sign_3',['sign',['../classDBusGlue_1_1slot__base.html#a48b2f4b93b09f40de457e1b7d3b1a84b',1,'DBusGlue::slot_base']]],
+  ['signal_5fname_4',['signal_name',['../classDBusGlue_1_1exposable__signal.html#aa41430a39b8bc7651d1face1444793e9',1,'DBusGlue::exposable_signal']]],
+  ['signals_5',['signals',['../structDBusGlue_1_1Introspect_1_1interface.html#a11e2a1797415fb1632ea0dfe7b5957f2',1,'DBusGlue::Introspect::interface']]],
+  ['signals_5f_6',['signals_',['../classDBusGlue_1_1exposable__interface.html#a10e3671d2e77b7ae0e31cf5476ac400e',1,'DBusGlue::exposable_interface']]],
+  ['signature_5f_7',['signature_',['../classDBusGlue_1_1exposable__method.html#adcdf5b81a8a9eae16610dbaf65b99339',1,'DBusGlue::exposable_method::signature_()'],['../classDBusGlue_1_1exposable__property.html#a61dc23bdfc2c6a969f4556092387292c',1,'DBusGlue::exposable_property::signature_()'],['../classDBusGlue_1_1exposable__signal.html#a176a5b72c87e12e7fcc82f8c429098d0',1,'DBusGlue::exposable_signal::signature_()']]],
+  ['slot_5f_8',['slot_',['../classDBusGlue_1_1async__context.html#a8b6a4e9dd7652c9c6f6606729dcb09fd',1,'DBusGlue::async_context::slot_()'],['../classDBusGlue_1_1exposable__interface.html#ad85abd72d5aa00a014a20b5a5fe05137',1,'DBusGlue::exposable_interface::slot_()']]],
+  ['space_5fafter_5fcomma_9',['space_after_comma',['../classDBusGlue_1_1Introspect_1_1Introspector.html#abbe3033653ea8bae602b3b3b5e9cdd2e',1,'DBusGlue::Introspect::Introspector']]],
+  ['space_5fbefore_5ftemplate_10',['space_before_template',['../classDBusGlue_1_1Introspect_1_1Introspector.html#a8d7f5beb3d1a08d86c9ef79e18a456a8',1,'DBusGlue::Introspect::Introspector']]]
 ];

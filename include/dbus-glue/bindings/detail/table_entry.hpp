@@ -5,7 +5,7 @@
 #include "../exposables/basic_exposable_property.hpp"
 #include "../exposables/basic_exposable_signal.hpp"
 
-namespace DBusMock::detail
+namespace DBusGlue::detail
 {
     struct table_entry
 	{

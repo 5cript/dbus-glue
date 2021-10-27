@@ -1,4 +1,4 @@
-<map id="DBusMock::emitable&lt; R(*)(Parameters...)&gt;" name="DBusMock::emitable&lt; R(*)(Parameters...)&gt;">
+<map id="DBusGlue::emitable&lt; R(*)(Parameters...)&gt;" name="DBusGlue::emitable&lt; R(*)(Parameters...)&gt;">
 <area shape="rect" id="node1" title=" " alt="" coords="24,200,177,241"/>
 <area shape="rect" id="node2" href="$classDBusMock_1_1exposable__interface.html" title=" " alt="" coords="24,96,177,137"/>
 <area shape="rect" id="node3" href="$classDBusMock_1_1basic__exposable__interface.html" title=" " alt="" coords="5,5,196,47"/>

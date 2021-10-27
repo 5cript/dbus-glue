@@ -1,4 +1,4 @@
-<map id="DBusMock::Mocks::interface_mock_base" name="DBusMock::Mocks::interface_mock_base">
+<map id="DBusGlue::Mocks::interface_mock_base" name="DBusGlue::Mocks::interface_mock_base">
 <area shape="rect" id="node1" title=" " alt="" coords="5,199,197,240"/>
 <area shape="rect" id="node2" href="$classDBusMock_1_1dbus.html" title=" " alt="" coords="40,109,163,136"/>
 <area shape="rect" id="node3" href="$classDBusMock_1_1detail_1_1slot__holder.html" title="The slot_holder class holds slots for at least as long as the bus lives, but allows for releasing slo..." alt="" coords="24,5,179,47"/>

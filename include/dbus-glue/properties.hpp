@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-namespace DBusMock
+namespace DBusGlue
 {
     template <typename...>
     struct properties

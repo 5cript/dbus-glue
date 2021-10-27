@@ -10,7 +10,7 @@ using namespace std::string_literals;
 	    return name;\
 	}
 
-namespace DBusMock
+namespace DBusGlue
 {
 //#####################################################################################################################
     message_variant::message_variant(class message& msg)

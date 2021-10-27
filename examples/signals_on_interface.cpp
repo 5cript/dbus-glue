@@ -9,7 +9,7 @@
 #include <thread>
 #include <chrono>
 
-using namespace DBusMock;
+using namespace DBusGlue;
 using namespace std::chrono_literals;
 
 /**
@@ -25,22 +25,22 @@ public: // Methods
 	virtual auto DeleteUser(int64_t id, bool removeFiles) -> void = 0;
 public: // Properties
 public: // signals
-	DBusMock::signal <void(object_path)> UserAdded;
-	DBusMock::signal <void(object_path)> UserDeleted;
+	DBusGlue::signal <void(object_path)> UserAdded;
+	DBusGlue::signal <void(object_path)> UserDeleted;
 };
 
 //----------------------------------------------------------------------------------------
 
 // This step is necessary to enable interface auto-implementation.
 // There is a limit to how many properterties and methods are possible. (currently either 64 or 255 each, haven't tried, assume 64)
-// This limit can be circumvented by DBUS_MOCK_N. Which allows to mock the same interface more than once.
-// A successory call to DBUS_MOCK_ZIP merges them all together.
-DBUS_MOCK
+// This limit can be circumvented by DBUS_DECLARE_N. Which allows to make the same interface more than once.
+// A successory call to DBUS_DECLARE_ZIP merges them all together.
+DBUS_DECLARE
 (
     IAccounts,
-    DBUS_MOCK_METHODS(CreateUser, DeleteUser),
-    DBUS_MOCK_NO_PROPERTIES,
-    DBUS_MOCK_SIGNALS(UserAdded, UserDeleted)
+    DBUS_DECLARE_METHODS(CreateUser, DeleteUser),
+    DBUS_DECLARE_NO_PROPERTIES,
+    DBUS_DECLARE_SIGNALS(UserAdded, UserDeleted)
 )
 
 int main()
@@ -84,7 +84,7 @@ int main()
 			    // this is called when an error got signaled into our callback.
 			    std::cerr << "oh no something gone wrong: " << str << "\n";
 		    },
-		    DBusMock::release_slot
+		    DBusGlue::release_slot
 			);
 
 			// try to delete a user with id 1001. WARNING, DONT JUST DELETE SOME USER ON YOUR SYSTEM. obviously...

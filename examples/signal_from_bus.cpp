@@ -11,7 +11,7 @@
 #include <thread>
 #include <chrono>
 
-using namespace DBusMock;
+using namespace DBusGlue;
 using namespace std::chrono_literals;
 
 int main()
