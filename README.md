@@ -1,4 +1,4 @@
-# DBus Glue (Formerly DBus Glue)
+# DBus Glue (Formerly DBus Mock)
 
 ## Table of Contents
 * [Summary](#Summary)
