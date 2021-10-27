@@ -1,4 +1,4 @@
-# DBus Glue (Formerly DBus Mockery)
+# DBus Glue (Formerly DBus Glue)
 
 ## Table of Contents
 * [Summary](#Summary)
@@ -10,7 +10,7 @@
 * [Examples](#Examples)
 
 ## Summary
-The DBus Mockery library wants to make interfacing with a DBus Service / Interface almost as simple as defining a C++ interface.
+The DBus Glue library wants to make interfacing with a DBus Service / Interface almost as simple as defining a C++ interface.
 The DBus protocol is almost entirely hidden from the user. 
 This library only enables interfacing with existant DBus APIs. Creating one yourself with this library **is** ~~not~~ possible!
 
