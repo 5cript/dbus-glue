@@ -1,6 +1,6 @@
-#include <dbus-mockery/bindings/exposables/exposable_property.hpp>
-#include <dbus-mockery/bindings/detail/table_entry.hpp>
-#include <dbus-mockery/bindings/detail/lambda_overload.hpp>
+#include <dbus-glue/bindings/exposables/exposable_property.hpp>
+#include <dbus-glue/bindings/detail/table_entry.hpp>
+#include <dbus-glue/bindings/detail/lambda_overload.hpp>
 
 #include <iostream>
 

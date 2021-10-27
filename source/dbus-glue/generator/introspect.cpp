@@ -1,4 +1,4 @@
-#include <dbus-mockery/generator/introspect.hpp>
+#include <dbus-glue/generator/introspect.hpp>
 
 #include <iostream>
 #include <stdexcept>

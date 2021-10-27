@@ -1,6 +1,6 @@
-#include <dbus-mockery/bindings/types.hpp>
+#include <dbus-glue/bindings/types.hpp>
 
-#include <dbus-mockery/bindings/message.hpp>
+#include <dbus-glue/bindings/message.hpp>
 
 using namespace std::string_literals;
 

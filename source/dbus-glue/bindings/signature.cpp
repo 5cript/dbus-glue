@@ -1,4 +1,4 @@
-#include <dbus-mockery/bindings/signature.hpp>
+#include <dbus-glue/bindings/signature.hpp>
 #include <iostream>
 
 namespace DBusMock

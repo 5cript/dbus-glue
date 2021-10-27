@@ -1,4 +1,4 @@
-#include <dbus-mockery/dbus_interface.hpp>
+#include <dbus-glue/dbus_interface.hpp>
 
 #include <iostream>
 #include <vector>

@@ -1,4 +1,4 @@
-#include <dbus-mockery/generator/generator.hpp>
+#include <dbus-glue/generator/generator.hpp>
 
 #include <iostream>
 #include <fstream>

@@ -2,39 +2,38 @@ cmake_minimum_required(VERSION 3.8)
 
 # C++ Standard
 if(NOT "${CMAKE_CXX_STANDARD}")
-	set(CMAKE_CXX_STANDARD 17)
+  set(CMAKE_CXX_STANDARD 17)
 endif()
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Release Build
-if (NOT EXISTS ${CMAKE_BINARY_DIR}/CMakeCache.txt)
-   if (NOT CMAKE_BUILD_TYPE)
-	  set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "" FORCE)
-   endif()
+if(NOT EXISTS ${CMAKE_BINARY_DIR}/CMakeCache.txt)
+  if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE
+        "Debug"
+        CACHE STRING "" FORCE)
+  endif()
 endif()
 
 # Project
-project(dbus-mockery)
+project(dbus-glue)
 
 # Add Executable
-add_library(${PROJECT_NAME} STATIC
-   "source/dbus-mockery/bindings/message.cpp"
-   "source/dbus-mockery/bindings/types.cpp"
-   "source/dbus-mockery/bindings/bus.cpp"
-   "source/dbus-mockery/bindings/object_path.cpp"
-   "source/dbus-mockery/bindings/signature.cpp"
-   "source/dbus-mockery/generator/generator.cpp"
-   "source/dbus-mockery/generator/introspect.cpp"
-   "source/dbus-mockery/bindings/slot.cpp"
-   "source/dbus-mockery/bindings/event_loop.cpp"
-   "source/dbus-mockery/bindings/busy_loop.cpp"
-   "source/dbus-mockery/bindings/detail/slot_holder.cpp"
-   "source/dbus-mockery/bindings/exposables/exposable_method.cpp"
-   "source/dbus-mockery/bindings/exposables/exposable_property.cpp"
-)
-
-# Include Dirs
-target_include_directories(${PROJECT_NAME} PUBLIC "include" "../dbus-mockery-system/include")
+add_library(
+  dbus-glue STATIC
+  "source/dbus-glue/bindings/message.cpp"
+  "source/dbus-glue/bindings/types.cpp"
+  "source/dbus-glue/bindings/bus.cpp"
+  "source/dbus-glue/bindings/object_path.cpp"
+  "source/dbus-glue/bindings/signature.cpp"
+  "source/dbus-glue/generator/generator.cpp"
+  "source/dbus-glue/generator/introspect.cpp"
+  "source/dbus-glue/bindings/slot.cpp"
+  "source/dbus-glue/bindings/event_loop.cpp"
+  "source/dbus-glue/bindings/busy_loop.cpp"
+  "source/dbus-glue/bindings/detail/slot_holder.cpp"
+  "source/dbus-glue/bindings/exposables/exposable_method.cpp"
+  "source/dbus-glue/bindings/exposables/exposable_property.cpp")
 
 include(FindPkgConfig)
 
@@ -42,17 +41,21 @@ pkg_check_modules(SYSTEMD "libsystemd")
 
 message(STATUS "${SYSTEMD}")
 
-target_link_libraries(${PROJECT_NAME} PUBLIC
-   ${SYSTEMD_LIBRARIES}
-   -lpthread
-)
+target_link_libraries(dbus-glue PUBLIC ${SYSTEMD_LIBRARIES} -lpthread)
+target_include_directories(dbus-glue
+                           PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
 # Compiler Options
 set(DEBUG_OPTIONS -fexceptions -g -Wall -pedantic-errors -pedantic)
-set(RELEASE_OPTIONS -fexceptions -O3 -Wall -pedantic-errors -pedantic)
-target_compile_options(${PROJECT_NAME} PUBLIC "$<$<CONFIG:DEBUG>:${DEBUG_OPTIONS}>")
-target_compile_options(${PROJECT_NAME} PUBLIC "$<$<CONFIG:RELEASE>:${RELEASE_OPTIONS}>")
+set(RELEASE_OPTIONS -fexceptions -O3)
+target_compile_options(dbus-glue PUBLIC "$<$<CONFIG:DEBUG>:${DEBUG_OPTIONS}>")
+target_compile_options(dbus-glue
+                       PUBLIC "$<$<CONFIG:RELEASE>:${RELEASE_OPTIONS}>")
 
 # Install
-install(TARGETS dbus-mockery DESTINATION lib)
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/ DESTINATION include FILES_MATCHING PATTERN "*.h*")
+install(TARGETS dbus-glue DESTINATION lib)
+install(
+  DIRECTORY ${CMAKE_SOURCE_DIR}/include/
+  DESTINATION include
+  FILES_MATCHING
+  PATTERN "*.h*")

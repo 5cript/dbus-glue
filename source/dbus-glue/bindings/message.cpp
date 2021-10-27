@@ -1,6 +1,6 @@
-#include <dbus-mockery/bindings/message.hpp>
-#include <dbus-mockery/bindings/types.hpp>
-#include <dbus-mockery/bindings/sdbus_core.hpp>
+#include <dbus-glue/bindings/message.hpp>
+#include <dbus-glue/bindings/types.hpp>
+#include <dbus-glue/bindings/sdbus_core.hpp>
 
 #include <stdexcept>
 

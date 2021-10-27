@@ -1,7 +1,4 @@
-# DBus Glue
-
-(renaming in progress, "mockery" is too misleading, since this is not for testing purposes but does the real thing.
-But for a brief time, you will still read "dbus-mockery" everywhere.)
+# DBus Glue (Formerly DBus Mockery)
 
 ## Table of Contents
 * [Summary](#Summary)
@@ -75,7 +72,7 @@ This is a short tutorial for declaring external interfaces, attaching to them an
 A very simple program to start off with.
 First the includes required for basic mocking:
 ```C++
-#include <dbus-mockery/dbus_interface.hpp>
+#include <dbus-glue/dbus_interface.hpp>
 ```
 
 Here we see a very basic interface. You can use d-feet to
@@ -154,7 +151,7 @@ Properties can also be read and written asynchronously, by calling get/set on th
 Only showing relevant differences to before:
 ```C++
 // new required header for the event loop
-#include <dbus-mockery/bindings/busy_loop.hpp>
+#include <dbus-glue/bindings/busy_loop.hpp>
 
 int main()
 {
@@ -233,8 +230,8 @@ This would look like follows:
 ```C++
 // Example for reading a variant.
 
-#include <dbus-mockery/dbus_interface.hpp>
-#include <dbus-mockery/bindings/variant_helpers.hpp>
+#include <dbus-glue/dbus_interface.hpp>
+#include <dbus-glue/bindings/variant_helpers.hpp>
 #include <iostream>
 
 int main()
@@ -271,8 +268,8 @@ int main()
 ```C++
 // Example for writing to a variant.
 
-#include <dbus-mockery/dbus_interface.hpp>
-#include <dbus-mockery/bindings/variant_helpers.hpp>
+#include <dbus-glue/dbus_interface.hpp>
+#include <dbus-glue/bindings/variant_helpers.hpp>
 #include <iostream>
 
 using namespace std::string_literals;
@@ -304,7 +301,7 @@ the parameter and return value names on top of method names etc. would be very v
 #### Declaring an interface
 Here we have an interface that we want to expose to the world:
 ```C++
-#include <dbus-mockery/bindings/exposable_interface.hpp>
+#include <dbus-glue/bindings/exposable_interface.hpp>
 
 // Your interface to export has to derive from exposable_interface.
 class MyInterface : public DBusMock::exposable_interface
@@ -336,7 +333,7 @@ public: // Signals
 
 #### Exposing / Registering the interface on the bus
 ```C++
-#include <dbus-mockery/interface_builder.hpp>
+#include <dbus-glue/interface_builder.hpp>
 
 int main()
 {
@@ -413,7 +410,7 @@ More examples are in the example directory
 ### Introductory example (User Accounts)
 Here is the first example, to show a basis of what this library wants to do.
 ```C++
-#include <dbus-mockery/dbus_interface.hpp>
+#include <dbus-glue/dbus_interface.hpp>
 
 #include <iostream>
 #include <vector>
@@ -502,9 +499,9 @@ Here is an example on how to listen to emitted signals.
 Note that signal handling requires an event loop.
 
 ```C++
-#include <dbus-mockery/dbus_interface.hpp>
-#include <dbus-mockery/bindings/bus.hpp>
-#include <dbus-mockery/bindings/busy_loop.hpp>
+#include <dbus-glue/dbus_interface.hpp>
+#include <dbus-glue/bindings/bus.hpp>
+#include <dbus-glue/bindings/busy_loop.hpp>
 
 #include <iostream>
 #include <string>

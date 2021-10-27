@@ -1,8 +1,8 @@
-#include <dbus-mockery/bindings/bus.hpp>
-#include <dbus-mockery/bindings/message.hpp>
+#include <dbus-glue/bindings/bus.hpp>
+#include <dbus-glue/bindings/message.hpp>
 
-#include <dbus-mockery/bindings/detail/scope_exit.hpp>
-#include <dbus-mockery/bindings/exposable_interface.hpp>
+#include <dbus-glue/bindings/detail/scope_exit.hpp>
+#include <dbus-glue/bindings/exposable_interface.hpp>
 
 #include <stdexcept>
 #include <string>

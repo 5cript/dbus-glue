@@ -1,5 +1,5 @@
-#include <dbus-mockery/dbus_interface.hpp>
-#include <dbus-mockery/bindings/busy_loop.hpp>
+#include <dbus-glue/dbus_interface.hpp>
+#include <dbus-glue/bindings/busy_loop.hpp>
 #include <iostream>
 
 namespace org::freedesktop

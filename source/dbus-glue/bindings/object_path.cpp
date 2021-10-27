@@ -1,4 +1,4 @@
-#include <dbus-mockery/bindings/object_path.hpp>
+#include <dbus-glue/bindings/object_path.hpp>
 #include <iostream>
 
 namespace DBusMock

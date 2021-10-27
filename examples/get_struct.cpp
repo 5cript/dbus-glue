@@ -1,5 +1,5 @@
-#include <dbus-mockery/bindings/message.hpp>
-#include <dbus-mockery/bindings/bus.hpp>
+#include <dbus-glue/bindings/message.hpp>
+#include <dbus-glue/bindings/bus.hpp>
 
 #include <iostream>
 #include <utility>

@@ -1,6 +1,6 @@
-#include <dbus-mockery/generator/generator.hpp>
-#include <dbus-mockery/dbus_interface.hpp>
-#include <dbus-mockery/generator/introspect.hpp>
+#include <dbus-glue/generator/generator.hpp>
+#include <dbus-glue/dbus_interface.hpp>
+#include <dbus-glue/generator/introspect.hpp>
 
 #include <boost/property_tree/xml_parser.hpp>
 

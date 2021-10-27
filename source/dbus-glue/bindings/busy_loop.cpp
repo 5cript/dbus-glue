@@ -1,6 +1,6 @@
-#include <dbus-mockery/bindings/busy_loop.hpp>
-#include <dbus-mockery/bindings/sdbus_core.hpp>
-#include <dbus-mockery/bindings/bus.hpp>
+#include <dbus-glue/bindings/busy_loop.hpp>
+#include <dbus-glue/bindings/sdbus_core.hpp>
+#include <dbus-glue/bindings/bus.hpp>
 
 #include <mutex>
 

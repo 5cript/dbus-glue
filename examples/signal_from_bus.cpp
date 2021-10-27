@@ -1,8 +1,8 @@
-#include <dbus-mockery/dbus_interface.hpp>
-#include <dbus-mockery/bindings/bus.hpp>
-#include <dbus-mockery/bindings/busy_loop.hpp>
+#include <dbus-glue/dbus_interface.hpp>
+#include <dbus-glue/bindings/bus.hpp>
+#include <dbus-glue/bindings/busy_loop.hpp>
 
-#include <dbus-mockery-system/accounts/accounts.hpp>
+#include <dbus-glue-system/accounts/accounts.hpp>
 
 #include <iostream>
 #include <fstream>
