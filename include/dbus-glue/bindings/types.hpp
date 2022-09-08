@@ -272,7 +272,7 @@ namespace DBusGlue
   using variant = message_variant;
 
   template <template <typename...> typename MapT, typename... Remain>
-  using variant_dictionary = MapT<std::string, variant, Remain...>;
+  using variant_dictionary = MapT<std::string, typename MapT<std::string, variant>::mapped_type, Remain...>;
 
   /**
    *	Creates a type string for the given type list
