@@ -1,20 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
 
-# C++ Standard
-if(NOT "${CMAKE_CXX_STANDARD}")
-  set(CMAKE_CXX_STANDARD 17)
-endif()
-set(CMAKE_CXX_EXTENSIONS OFF)
-
-# Release Build
-if(NOT EXISTS ${CMAKE_BINARY_DIR}/CMakeCache.txt)
-  if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE
-        "Debug"
-        CACHE STRING "" FORCE)
-  endif()
-endif()
-
 # Project
 project(dbus-glue)
 
@@ -32,6 +17,7 @@ add_library(
   "source/dbus-glue/bindings/event_loop.cpp"
   "source/dbus-glue/bindings/busy_loop.cpp"
   "source/dbus-glue/bindings/detail/slot_holder.cpp"
+  "source/dbus-glue/bindings/detail/bus_error.c"
   "source/dbus-glue/bindings/exposables/exposable_method.cpp"
   "source/dbus-glue/bindings/exposables/exposable_property.cpp")
 
@@ -51,6 +37,7 @@ set(RELEASE_OPTIONS -fexceptions -O3)
 target_compile_options(dbus-glue PUBLIC "$<$<CONFIG:DEBUG>:${DEBUG_OPTIONS}>")
 target_compile_options(dbus-glue
                        PUBLIC "$<$<CONFIG:RELEASE>:${RELEASE_OPTIONS}>")
+set_target_properties(dbus-glue PROPERTIES CXX_STANDARD 20)
 
 # Install
 install(TARGETS dbus-glue DESTINATION lib)

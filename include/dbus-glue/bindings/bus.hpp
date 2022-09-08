@@ -9,6 +9,7 @@
 #include "async_context.hpp"
 #include "basic_exposable_interface.hpp"
 #include "detail/slot_holder.hpp"
+#include "detail/bus_error.h"
 
 #include <string_view>
 #include <string>
@@ -103,7 +104,7 @@ namespace DBusGlue
 			(sendable.append(parameters), ...);
 
 			// sd_bus_call passables
-			auto error = SD_BUS_ERROR_NULL;
+			auto error = dbus_glue_sdbus_error_null();
 			sd_bus_message* reply_handle;
 
 			// set expect reply (always, since it can error out)
@@ -311,7 +312,7 @@ namespace DBusGlue
 			msg.append(property_name.data());
 			msg.append_variant(prop);
 
-			auto error = SD_BUS_ERROR_NULL;
+			auto error = dbus_glue_sdbus_error_null();
 			sd_bus_message* reply{};
 
 			// frees handle on scope exit
