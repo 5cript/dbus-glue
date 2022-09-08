@@ -11,7 +11,7 @@
 
 ## Summary
 The DBus Glue library wants to make interfacing with a DBus Service / Interface almost as simple as defining a C++ interface.
-The DBus protocol is almost entirely hidden from the user. 
+The DBus protocol is almost entirely hidden from the user.
 This library only enables interfacing with existant DBus APIs. Creating one yourself with this library **is** ~~not~~ possible!
 
 Example interfaces / Predefined interfaces can be found in my repository [dbus-glue-system]("https://github.com/5cript/dbus-glue-system").
@@ -340,7 +340,7 @@ int main()
     auto bus = open_user_bus();
 
     using namespace DBusGlue;
-    using namespace ExposeHelpers;    
+    using namespace ExposeHelpers;
 
     // creates an instance of MyInterface that can be used.
     auto shared_ptr_to_interface = make_interface <MyInterface>(
@@ -349,7 +349,7 @@ int main()
             name("Multiply") << // Method name
             result("Product") << // Name can only be a single word!
             parameter(0, "a") << // Name can only be a single word!
-            parameter(1, "b") << // Parameter number is optional, but if supplied, all should have it supplied. 
+            parameter(1, "b") << // Parameter number is optional, but if supplied, all should have it supplied.
             as(&MyInterface::Multiply),
 
         // Display Text Method
@@ -370,7 +370,7 @@ int main()
             // name is in emitable constructor, not needed here.
             // d-feet does not show signal parameter names
             parameter("integral") <<
-            as(&MyInterface::FireMe)   
+            as(&MyInterface::FireMe)
     );
 
     // The bus takes a share to hold the interface and exposes it on the bus.
@@ -440,8 +440,8 @@ public: // Properties
     readable <std::string> DaemonVersion;
 
 public: // signals
-    using UserAdded = void(object_path);
-    using UserDeleted = void(object_path);
+	DBusGlue::signal <void(object_path)> UserAdded;
+	DBusGlue::signal <void(object_path)> UserDeleted;
 };
 
 //----------------------------------------------------------------------------------------
