@@ -4,9 +4,26 @@
 
 namespace DBusGlue
 {
+    namespace Detail
+    {
+        template <typename T>
+        struct signature_format_is_correct
+        {
+            constexpr static bool value = false;
+        };
+        template <typename... Args>
+        struct signature_format_is_correct <void(Args...)>
+        {
+            constexpr static bool value = true;
+        };
+    }
+
     template <typename Signature>
     struct signal
 	{
+        static_assert(
+            Detail::signature_format_is_correct<Signature>::value, "The signature of your signal is unexpected, expected signal<void(Ts...)>"
+        );
 	};
 
 	struct release_slot_t
