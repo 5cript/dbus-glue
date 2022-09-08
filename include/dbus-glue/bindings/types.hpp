@@ -197,8 +197,7 @@ namespace DBusGlue
   /**
    * @brief The message_variant struct is a variant that can only be read by hand and cannot be
    *autoresolved like the resolvable variant, which automagically reads the contained type into a
-   *variable. This class was neccessary after I realized that the autoresolve mechanic will
-   *instantiate every possible type in the universe for non trivial types, so this class was made.
+   *variable.
    */
   struct message_variant
   {
