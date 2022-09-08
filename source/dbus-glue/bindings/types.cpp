@@ -51,17 +51,24 @@ namespace DBusGlue
 
 		auto* handle = msg.msg;
 
-		r = sd_bus_message_enter_container(handle, SD_BUS_TYPE_VARIANT, msg.type().contained.data());
-		if (r < 0)
-			throw std::runtime_error("could not enter variant");
+        bool isTrueVariant = (msg.type().type == 'v');
+        if (isTrueVariant)
+        {
+            r = sd_bus_message_enter_container(handle, SD_BUS_TYPE_VARIANT, msg.type().contained.data());
+            if (r < 0)
+                throw std::runtime_error("could not enter variant");
+        }
 
 		message_.reset(new message(msg.bus(), 2));
 		msg.copy_into(*message_.get(), false);
 		message_->seal();
 
-		r = sd_bus_message_exit_container(handle);
-		if (r < 0)
-			throw std::runtime_error("could copy exit variant");
+        if (isTrueVariant)
+        {
+            r = sd_bus_message_exit_container(handle);
+            if (r < 0)
+                throw std::runtime_error("could copy exit variant");
+        }
 
 		return r;
 	}

@@ -535,6 +535,15 @@ namespace DBusGlue
 		}
 	};
 
+    template <>
+	struct message::read_proxy <message_variant, void>
+	{
+		static int read(message& msg, message_variant& object)
+		{
+			return msg.read_variant(object);
+		}
+	};
+
 	//-----------------------------------------------------------------------------------------------------------------
 	// append_proxy
 	//-----------------------------------------------------------------------------------------------------------------
