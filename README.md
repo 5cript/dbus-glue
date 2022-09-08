@@ -440,8 +440,8 @@ public: // Properties
     readable <std::string> DaemonVersion;
 
 public: // signals
-	DBusGlue::signal <void(object_path)> UserAdded;
-	DBusGlue::signal <void(object_path)> UserDeleted;
+    DBusGlue::signal <void(object_path)> UserAdded;
+    DBusGlue::signal <void(object_path)> UserDeleted;
 };
 
 //----------------------------------------------------------------------------------------
