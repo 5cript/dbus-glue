@@ -5,6 +5,7 @@
 #include <functional>
 #include <chrono>
 #include <tuple>
+#include <memory>
 
 #include "bindings/bus.hpp"
 #include "bindings/message.hpp"
@@ -33,7 +34,7 @@ namespace DBusGlue::Mocks
     class interface_async_property_proxy
     {};
 
-    class interface_mock_base
+    class interface_mock_base : public std::enable_shared_from_this<interface_mock_base>
     {
       public:
         template <typename>
@@ -42,47 +43,47 @@ namespace DBusGlue::Mocks
         friend class interface_async_property_proxy;
 
       private:
-        dbus& bus;
-        std::string service;
-        std::string path;
-        std::string interface;
+        dbus& bus_;
+        std::string service_;
+        std::string path_;
+        std::string interface_;
 
       public:
-        interface_mock_base(
-            dbus& bus,
-            std::string const& service,
-            std::string const& path,
-            std::string const& interface)
-            : bus{bus}
-            , service{service}
-            , path{path}
-            , interface {
-            interface
-        }
+        interface_mock_base(dbus& bus, std::string service, std::string path, std::string interface)
+            : bus_{bus}
+            , service_{std::move(service)}
+            , path_{std::move(path)}
+            , interface_{std::move(interface)}
         {}
+
+        template <typename Derived>
+        std::shared_ptr<Derived> shared_from_base()
+        {
+            return std::static_pointer_cast<Derived>(shared_from_this());
+        }
 
         template <typename T>
         void read_property(std::string_view property_name, T& prop) const
         {
-            bus.read_property(service, path, interface, property_name, prop);
+            bus_.read_property(service_, path_, interface_, property_name, prop);
         }
 
         template <typename T>
         void write_property(std::string_view property_name, T const& prop)
         {
-            bus.write_property(service, path, interface, property_name, prop);
+            bus_.write_property(service_, path_, interface_, property_name, prop);
         }
 
         template <typename... ParametersT>
         void call_method_no_reply(std::string_view method_name, ParametersT const&... parameters)
         {
-            bus.call_method(service, path, interface, method_name, parameters...);
+            bus_.call_method(service_, path_, interface_, method_name, parameters...);
         }
 
         template <typename ReturnT, typename... ParametersT>
         ReturnT call_method(std::string_view method_name, ParametersT const&... parameters)
         {
-            auto message = bus.call_method(service, path, interface, method_name, parameters...);
+            auto message = bus_.call_method(service_, path_, interface_, method_name, parameters...);
             ReturnT retVal;
             message.read(retVal);
             return retVal;
@@ -96,8 +97,8 @@ namespace DBusGlue::Mocks
             std::chrono::microseconds timeout,
             ParametersT&&... parameters)
         {
-            bus.call_method_async(
-                service, path, interface, method_name, cb, err, timeout, std::forward<ParametersT&&>(parameters)...);
+            bus_.call_method_async(
+                service_, path_, interface_, method_name, cb, err, timeout, std::forward<ParametersT&&>(parameters)...);
         }
 
         template <typename T>
@@ -107,7 +108,7 @@ namespace DBusGlue::Mocks
             std::function<void(message&, std::string const&)> const& err,
             std::chrono::microseconds timeout) const
         {
-            bus.read_property_async<T>(service, path, interface, property_name, cb, err, timeout);
+            bus_.read_property_async<T>(service_, path_, interface_, property_name, cb, err, timeout);
         }
 
         template <typename T>
@@ -118,7 +119,7 @@ namespace DBusGlue::Mocks
             std::chrono::microseconds timeout,
             T const& prop)
         {
-            bus.write_property_async(service, path, interface, property_name, cb, err, timeout, prop);
+            bus_.write_property_async(service_, path_, interface_, property_name, cb, err, timeout, prop);
         }
 
         template <typename... Args>
@@ -128,7 +129,7 @@ namespace DBusGlue::Mocks
             std::function<void(message&, std::string const&)> const& err,
             bool release)
         {
-            return bus.install_signal_listener(service, path, interface, signal_name, cb, err, release);
+            return bus_.install_signal_listener(service_, path_, interface_, signal_name, cb, err, release);
         }
 
         virtual ~interface_mock_base() = default;
@@ -141,10 +142,10 @@ namespace DBusGlue::Mocks
         virtual ~interface_async_base() = default;
 
         interface_async_base(
-            interface_mock_base& base,
+            std::weak_ptr<interface_mock_base> base,
             std::string_view sview // generic meaning
             )
-            : base_{base}
+            : base_{std::move(base)}
             , base_params_{sview, {}, {}, std::chrono::seconds{10}}
         {}
 
@@ -167,7 +168,7 @@ namespace DBusGlue::Mocks
         }
 
       protected:
-        interface_mock_base& base_;
+        std::weak_ptr<interface_mock_base> base_;
         std::tuple<
             std::string_view,
             typename detail::func_param_devoid<R>::type,
@@ -180,8 +181,8 @@ namespace DBusGlue::Mocks
     class interface_async_proxy<R(ParametersT...)> : public interface_async_base<R>
     {
       public:
-        interface_async_proxy(interface_mock_base& base, std::string_view method_name)
-            : interface_async_base<R>{base, method_name}
+        interface_async_proxy(std::weak_ptr<interface_mock_base> base, std::string_view method_name)
+            : interface_async_base<R>{std::move(base), method_name}
             , params_{}
         {}
 
@@ -202,7 +203,12 @@ namespace DBusGlue::Mocks
             auto catuple = std::tuple_cat(std::move(interface_async_base<R>::base_params_), std::move(params_));
             std::apply(
                 [this](auto&&... parms) {
-                    interface_async_base<R>::base_.call_method_async(std::forward<decltype(parms)&&>(parms)...);
+                    auto base = interface_async_base<R>::base_.lock();
+                    if (!base)
+                    {
+                        // eat the error
+                    }
+                    base->call_method_async(std::forward<decltype(parms)&&>(parms)...);
                 },
                 std::move(catuple));
         }
@@ -215,8 +221,8 @@ namespace DBusGlue::Mocks
     class interface_async_property_proxy<R(ParametersT...)> : public interface_async_base<R>
     {
       public:
-        interface_async_property_proxy(interface_mock_base& base, std::string_view property_name)
-            : interface_async_base<R>{base, property_name}
+        interface_async_property_proxy(std::weak_ptr<interface_mock_base> base, std::string_view property_name)
+            : interface_async_base<R>{std::move(base), property_name}
             , params_{}
         {}
 
@@ -239,7 +245,8 @@ namespace DBusGlue::Mocks
             {
                 std::apply(
                     [this](auto&&... parms) {
-                        interface_async_base<R>::base_.read_property_async(std::forward<decltype(parms)&&>(parms)...);
+                        if (auto base = interface_async_base<R>::base_.lock(); base)
+                            base->read_property_async(std::forward<decltype(parms)&&>(parms)...);
                     },
                     std::move(interface_async_base<R>::base_params_));
             }
@@ -248,7 +255,8 @@ namespace DBusGlue::Mocks
                 auto catuple = std::tuple_cat(std::move(interface_async_base<R>::base_params_), std::move(params_));
                 std::apply(
                     [this](auto&&... parms) {
-                        interface_async_base<R>::base_.write_property_async(std::forward<decltype(parms)&&>(parms)...);
+                        if (auto base = interface_async_base<R>::base_.lock(); base)
+                            base->write_property_async(std::forward<decltype(parms)&&>(parms)...);
                     },
                     std::move(catuple));
             }

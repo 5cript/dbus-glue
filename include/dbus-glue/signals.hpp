@@ -2,6 +2,8 @@
 
 #include "dbus_interface_base.hpp"
 
+#include <memory>
+
 namespace DBusGlue
 {
     namespace Detail
@@ -45,16 +47,23 @@ namespace DBusGlue
             std::function<void(message&, std::string const&)> const& err,
             release_slot_t release = release_slot_t{false})
         {
-            return base_->install_signal_listener(name_, cb, err, release.do_release);
+            if (auto base = base_.lock(); base)
+                return base->install_signal_listener(name_, cb, err, release.do_release);
+            else
+                throw std::runtime_error{"The interface_mock_base has been destroyed"};
         }
 
-        signal(Mocks::interface_mock_base* base, char const* name)
-            : base_{base}
-            , name_{name}
+        signal(char const* name)
+            : name_{name}
         {}
 
+        void set_base(std::weak_ptr<Mocks::interface_mock_base> base)
+        {
+            base_ = std::move(base);
+        }
+
       private:
-        Mocks::interface_mock_base* base_;
+        std::weak_ptr<Mocks::interface_mock_base> base_;
         char const* name_;
     };
 }
