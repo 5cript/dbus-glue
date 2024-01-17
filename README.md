@@ -125,7 +125,7 @@ int main()
     );
 
     // you can now call list names:
-    auto services = dbusInterface.ListNames();
+    auto services = dbusInterface->ListNames();
 
     // print all to console, which aren't stupidly named / numbered, therefore unnamed
     for (auto const& service : services)
@@ -175,7 +175,7 @@ int main()
 
     // call ListNames asynchronously with async_flag overload:
     // (always the first parameter, if there are any)
-    dbusInterface.ListNames(async_flag)
+    dbusInterface->ListNames(async_flag)
         // if you omit the then, you wont get a result / response.
         // Which can be fine, but is usually not intended
         .then([](auto const& services)
@@ -474,7 +474,7 @@ int main()
         //user_control.CreateUser("hello", "hello", 0);
 
         // calling a method and getting the result
-        auto cachedUsers = user_control.ListCachedUsers();
+        auto cachedUsers = user_control->ListCachedUsers();
 
         for (auto const& user : cachedUsers)
         {
@@ -483,7 +483,7 @@ int main()
         }
 
         // reading a property
-        std::cout << user_control.DaemonVersion << "\n";
+        std::cout << user_control->DaemonVersion << "\n";
     }
     catch (std::exception const& exc) // catch all possible exceptions.
     {
@@ -559,7 +559,7 @@ int main()
             "org.freedesktop.Accounts"
         );
 
-        accountControl.UserAdded.listen(
+        accountControl->UserAdded.listen(
             [](object_path const& p) {
                 // success callback
                 std::cout << "callback - create: " << p << std::endl;
@@ -572,13 +572,13 @@ int main()
 
         // WARNING! Passing "release_slot" forces you to manage the slots lifetime yourself!
         // You can use this variation to manage lifetimes of your observed signals.
-        std::unique_ptr<void, void(*)(void*)> slot = accountControl.UserDeleted.listen(
+        std::unique_ptr<void, void(*)(void*)> slot = accountControl->UserDeleted.listen(
             [&](object_path const& p) {
                 // this is called from the dbus system.
                 std::cout << "callback - delete: " << p << std::endl;
 
                 // create a user from here.
-                auto path = accountControl.CreateUser("tempus", "tempus", 0);
+                auto path = accountControl->CreateUser("tempus", "tempus", 0);
             },
             [](message&, std::string const& str) {
                 // this is called when an error got signaled into our callback.
@@ -591,10 +591,10 @@ int main()
         try {
             // commented out in case you just run this example
             // you should get the id from the name first.
-            //accountControl.DeleteUser(1001, false);
+            //accountControl->DeleteUser(1001, false);
         } catch (std::exception const& exc) {
             // Create the user if he doesn't exist
-            accountControl.CreateUser("tempus", "tempus", 0);
+            accountControl->CreateUser("tempus", "tempus", 0);
             std::cout << exc.what() << std::endl;
         }
 
