@@ -12,7 +12,7 @@ namespace DBusGlue
             constexpr static bool value = false;
         };
         template <typename... Args>
-        struct signature_format_is_correct <void(Args...)>
+        struct signature_format_is_correct<void(Args...)>
         {
             constexpr static bool value = true;
         };
@@ -20,49 +20,41 @@ namespace DBusGlue
 
     template <typename Signature>
     struct signal
-	{
+    {
         static_assert(
-            Detail::signature_format_is_correct<Signature>::value, "The signature of your signal is unexpected, expected signal<void(Ts...)>"
-        );
-	};
+            Detail::signature_format_is_correct<Signature>::value,
+            "The signature of your signal is unexpected, expected signal<void(Ts...)>");
+    };
 
-	struct release_slot_t
-	{
-		bool do_release;
-	};
+    struct release_slot_t
+    {
+        bool do_release;
+    };
 
-	constexpr static auto release_slot = release_slot_t{true};
+    constexpr static auto release_slot = release_slot_t{true};
 
-	/**
-	 *	@brief This class is only for external interfaces that get adapted. Should probably called slot.
-	 */
-	template <typename... Args>
-	class signal <void(Args...)>
-	{
-	public:
-		auto* listen
-		(
-		    std::function <void(Args const&...)> cb,
-		    std::function <void(message&, std::string const&)> const& err,
-		    release_slot_t release = release_slot_t{false}
-		)
-		{
-			return base_->install_signal_listener(
-			    name_,
-			    cb,
-			    err,
-			    release.do_release
-			);
-		}
+    /**
+     *	@brief This class is only for external interfaces that get adapted. Should probably called slot.
+     */
+    template <typename... Args>
+    class signal<void(Args...)>
+    {
+      public:
+        auto listen(
+            std::function<void(Args const&...)> cb,
+            std::function<void(message&, std::string const&)> const& err,
+            release_slot_t release = release_slot_t{false})
+        {
+            return base_->install_signal_listener(name_, cb, err, release.do_release);
+        }
 
-		signal(Mocks::interface_mock_base* base, char const* name)
-		    : base_{base}
-		    , name_{name}
-		{
-		}
+        signal(Mocks::interface_mock_base* base, char const* name)
+            : base_{base}
+            , name_{name}
+        {}
 
-	private:
-		Mocks::interface_mock_base* base_;
-		char const* name_;
-	};
+      private:
+        Mocks::interface_mock_base* base_;
+        char const* name_;
+    };
 }

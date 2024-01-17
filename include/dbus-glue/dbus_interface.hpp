@@ -65,7 +65,7 @@ namespace DBusGlue::Mocks
 	    \
 	    template <typename Owner, typename IFace, typename... Parameters> \
 	    struct DBUS_DECLARE_METHOD_HELPER_FORGE(IFace, Method) <Owner, void(IFace::*)(Parameters...)> \
-	        : public virtual interface_mock_base \
+	        : public virtual ::DBusGlue::Mocks::interface_mock_base \
         { \
 	        using interface_mock_base::interface_mock_base;\
 	        \
@@ -74,9 +74,9 @@ namespace DBusGlue::Mocks
 	            call_method_no_reply(BOOST_PP_STRINGIZE(Method), params...); \
 	        } \
 	        template <typename... ParametersDeduced> \
-	        auto Method(DBusGlue::async_flag_t, ParametersDeduced&&... params) \
+	        auto Method(::DBusGlue::async_flag_t, ParametersDeduced&&... params) \
             { \
-	            interface_async_proxy <void(Parameters...)> prox{*this, BOOST_PP_STRINGIZE(Method)}; \
+	            ::DBusGlue::Mocks::interface_async_proxy <void(Parameters...)> prox{*this, BOOST_PP_STRINGIZE(Method)}; \
 	            prox.bind_parameters(std::forward <ParametersDeduced&&> (params)...); \
 	            return prox; \
 	        } \
@@ -84,7 +84,7 @@ namespace DBusGlue::Mocks
 	    \
 	    template <typename Owner, typename R, typename IFace, typename... Parameters> \
 	    struct DBUS_DECLARE_METHOD_HELPER_FORGE(IFace, Method) <Owner, R(IFace::*)(Parameters...)> \
-	        : public virtual interface_mock_base \
+	        : public virtual ::DBusGlue::Mocks::interface_mock_base \
         { \
 	        using interface_mock_base::interface_mock_base;\
 	        \
@@ -93,9 +93,9 @@ namespace DBusGlue::Mocks
 	            return call_method <R, Parameters...> (BOOST_PP_STRINGIZE(Method), params...); \
 	        } \
 	        template <typename... ParametersDeduced> \
-	        auto Method(DBusGlue::async_flag_t, ParametersDeduced&&... params) \
+	        auto Method(::DBusGlue::async_flag_t, ParametersDeduced&&... params) \
             { \
-	            interface_async_proxy <R(Parameters...)> prox{*this, BOOST_PP_STRINGIZE(Method)}; \
+	            ::DBusGlue::Mocks::interface_async_proxy <R(Parameters...)> prox{*this, BOOST_PP_STRINGIZE(Method)}; \
 	            prox.bind_parameters(std::forward <ParametersDeduced&&> (params)...); \
 	            return prox; \
 	        } \
@@ -103,7 +103,7 @@ namespace DBusGlue::Mocks
 	    \
 	    template <typename Owner, typename R, typename IFace, typename... Parameters> \
 	    struct DBUS_DECLARE_METHOD_HELPER_FORGE(IFace, Method) <Owner, R(IFace::*)(Parameters...) const> \
-	        : public virtual interface_mock_base \
+	        : public virtual ::DBusGlue::Mocks::interface_mock_base \
         { \
 	        using interface_mock_base::interface_mock_base;\
 	        \
@@ -112,9 +112,9 @@ namespace DBusGlue::Mocks
 	            return call_method <R, Parameters...> (BOOST_PP_STRINGIZE(Method), params...); \
 	        } \
 	        template <typename... ParametersDeduced> \
-	        auto Method(DBusGlue::async_flag_t, ParametersDeduced&&... params) const \
+	        auto Method(::DBusGlue::async_flag_t, ParametersDeduced&&... params) const \
             { \
-	            interface_async_proxy <R(Parameters...)> prox{*this, BOOST_PP_STRINGIZE(Method)}; \
+	            ::DBusGlue::Mocks::interface_async_proxy <R(Parameters...)> prox{*this, BOOST_PP_STRINGIZE(Method)}; \
 	            prox.bind_parameters(std::forward <ParametersDeduced&&> (params)...); \
 	            return prox; \
 	        } \
@@ -122,7 +122,7 @@ namespace DBusGlue::Mocks
 	    \
 	    template <typename Owner, typename IFace, typename... Parameters> \
 	    struct DBUS_DECLARE_METHOD_HELPER_FORGE(IFace, Method) <Owner, void(IFace::*)(Parameters...) const> \
-	        : public virtual interface_mock_base \
+	        : public virtual ::DBusGlue::Mocks::interface_mock_base \
         { \
 	        using interface_mock_base::interface_mock_base;\
 	        \
@@ -131,9 +131,9 @@ namespace DBusGlue::Mocks
 	            call_method_no_reply(BOOST_PP_STRINGIZE(Method), params...); \
 	        } \
 	        template <typename... ParametersDeduced> \
-	        auto Method(DBusGlue::async_flag_t, ParametersDeduced&&... params) const \
+	        auto Method(::DBusGlue::async_flag_t, ParametersDeduced&&... params) const \
             { \
-	            interface_async_proxy <void(Parameters...)> prox{*this, BOOST_PP_STRINGIZE(Method)}; \
+	            ::DBusGlue::Mocks::interface_async_proxy <void(Parameters...)> prox{*this, BOOST_PP_STRINGIZE(Method)}; \
 	            prox.bind_parameters(std::forward <ParametersDeduced&&> (params)...); \
 	            return prox; \
 	        } \
@@ -181,9 +181,9 @@ namespace DBusGlue::Mocks
     { \
 	    template <> \
 	    struct interface_mock_n <DBUS_DECLARE_EXPAND_NSPACE_RIGHT(NSpace) IFace, NUMERATOR> \
-	        : virtual interface_mock_base \
+	        : virtual ::DBusGlue::Mocks::interface_mock_base \
 	          BOOST_PP_IF(BOOST_PP_SEQ_HEAD(Methods), BOOST_PP_SEQ_FOR_EACH, DBUS_DECLARE_DO_NOTHING)(DBUS_DECLARE_METHOD_DERIVE, (NSpace, IFace, \
-	            interface_mock_n <DBUS_DECLARE_EXPAND_NSPACE_RIGHT(NSpace) IFace, NUMERATOR>), BOOST_PP_SEQ_POP_FRONT(Methods)) \
+	            ::DBusGlue::Mocks::interface_mock_n <DBUS_DECLARE_EXPAND_NSPACE_RIGHT(NSpace) IFace, NUMERATOR>), BOOST_PP_SEQ_POP_FRONT(Methods)) \
         { \
 	    public: \
 	        BOOST_PP_IF(BOOST_PP_SEQ_HEAD(Properties), \
@@ -201,10 +201,10 @@ namespace DBusGlue::Mocks
 	            std::string const& path, \
 	            std::string const& interface \
 	        ) \
-	            : interface_mock_base{bus, service, path, interface} \
+	            : ::DBusGlue::Mocks::interface_mock_base{bus, service, path, interface} \
 	              BOOST_PP_IF(BOOST_PP_SEQ_HEAD(Methods), BOOST_PP_SEQ_FOR_EACH, DBUS_DECLARE_DO_NOTHING)( \
 	                DBUS_DECLARE_METHOD_CTOR, \
-	                (NSpace, IFace, interface_mock_n <DBUS_DECLARE_EXPAND_NSPACE_RIGHT(NSpace) IFace, NUMERATOR>), \
+	                (NSpace, IFace, ::DBusGlue::Mocks::interface_mock_n <DBUS_DECLARE_EXPAND_NSPACE_RIGHT(NSpace) IFace, NUMERATOR>), \
 	                BOOST_PP_SEQ_POP_FRONT(Methods) \
 	              ) \
 	              BOOST_PP_IF(BOOST_PP_SEQ_HEAD(Properties), \
@@ -228,10 +228,10 @@ namespace DBusGlue::Mocks
 	}
 
 #define DBUS_DECLARE_DERIVE_ZIP_SEQ_EACH(r, data, elem) \
-	interface_mock_n <data, elem>,
+	::DBusGlue::Mocks::interface_mock_n <data, elem>,
 
 #define DBUS_DECLARE_CTOR_ZIP_SEQ_EACH(r, data, elem) \
-	interface_mock_n <data, elem>{bus, service, path, interface},
+	::DBusGlue::Mocks::interface_mock_n <data, elem>{bus, service, path, interface},
 
 /**
  * Used to merge all numerated interfaces
@@ -257,7 +257,7 @@ namespace DBusGlue::Mocks \
 	        std::string const& path, \
 	        std::string const& interface \
 	    ) \
-	        : interface_mock_base{bus, service, path, interface} \
+	        : ::DBusGlue::Mocks::interface_mock_base{bus, service, path, interface} \
 	        , BOOST_PP_SEQ_FOR_EACH( \
 	            DBUS_DECLARE_CTOR_ZIP_SEQ_EACH, \
 	            DBUS_DECLARE_EXPAND_NSPACE_RIGHT(NSpace) IFace, \
@@ -265,7 +265,7 @@ namespace DBusGlue::Mocks \
 	        ) interface_mock_n_dummy{} \
         { \
 	    } \
-	    }; \
+	}; \
 }
 
 #define DBUS_DECLARE_ZIP_IMPL_2(NSpace, IFace, SEQ) \
