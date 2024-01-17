@@ -23,20 +23,18 @@ add_library(
 
 include(FindPkgConfig)
 
-pkg_check_modules(SYSTEMD "libsystemd")
+pkg_check_modules(SYSTEMD REQUIRED IMPORTED_TARGET libsystemd)
 
 message(STATUS "${SYSTEMD}")
 
-target_link_libraries(dbus-glue PUBLIC ${SYSTEMD_LIBRARIES} -lpthread)
+target_link_libraries(dbus-glue PUBLIC PkgConfig::SYSTEMD -lpthread)
 target_include_directories(dbus-glue
                            PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
 # Compiler Options
-set(DEBUG_OPTIONS -fexceptions -g -Wall -pedantic-errors -pedantic)
-set(RELEASE_OPTIONS -fexceptions -O3)
-target_compile_options(dbus-glue PRIVATE "$<$<CONFIG:DEBUG>:${DEBUG_OPTIONS}>")
+target_compile_options(dbus-glue PRIVATE "$<$<CONFIG:DEBUG>:-fexceptions;-g;-Wall;-pedantic-errors;-pedantic>")
 target_compile_options(dbus-glue
-                       PRIVATE "$<$<CONFIG:RELEASE>:${RELEASE_OPTIONS}>")
+                       PRIVATE "$<$<CONFIG:RELEASE>:-fexceptions;-O3>")
 set_target_properties(dbus-glue PROPERTIES CXX_STANDARD 20)
 
 # Install
