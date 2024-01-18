@@ -11,9 +11,16 @@
 #include <utility>
 #include <iostream>
 #include <optional>
+#include <functional>
 
 namespace DBusGlue
 {
+    struct custom_value
+    {
+        std::function<int(message&)> read;
+        std::function<int(message&)> write;
+    };
+
     class message
     {
       public:
@@ -256,6 +263,15 @@ namespace DBusGlue
     // read_proxy
     //-----------------------------------------------------------------------------------------------------------------
 
+    template <>
+    struct message::read_proxy<custom_value, void>
+    {
+        static int read(message& msg, custom_value& reader)
+        {
+            return reader.read(msg);
+        }
+    };
+
     template <
         template <typename, typename...>
         typename ContainerT,
@@ -292,6 +308,78 @@ namespace DBusGlue
                 }
                 else if (r > 0)
                     container.push_back(v);
+            }
+
+            r = sd_bus_message_exit_container(smsg);
+            if (r < 0)
+                throw std::runtime_error("could not exit array: "s + strerror(-r));
+
+            return r;
+        }
+    };
+
+    template <
+        template <typename, typename...>
+        typename ContainerOuterT,
+        template <typename>
+        typename AllocatorOuterT,
+        template <typename, typename...>
+        typename ContainerInnerT,
+        template <typename>
+        typename AllocatorInnerT,
+        typename ValueT>
+    struct message::read_proxy<
+        ContainerOuterT<
+            ContainerInnerT<ValueT, AllocatorInnerT<ValueT>>,
+            AllocatorOuterT<ContainerInnerT<ValueT, AllocatorInnerT<ValueT>>>>,
+        void>
+    {
+        using container_inner_type = ContainerInnerT<ValueT, AllocatorInnerT<ValueT>>;
+        using container_type = ContainerOuterT<container_inner_type, AllocatorOuterT<container_inner_type>>;
+        static int read(message& msg, container_type& container)
+        {
+            using namespace std::string_literals;
+
+            sd_bus_message* smsg = static_cast<sd_bus_message*>(msg);
+            auto type = msg.type();
+
+            if (type.type != 'a')
+                throw std::invalid_argument("contained type is not an array ("s + type.string() + ")");
+
+            auto r = sd_bus_message_enter_container(smsg, SD_BUS_TYPE_ARRAY, type.contained.data());
+            if (r < 0)
+                throw std::runtime_error("could not enter array: "s + strerror(-r));
+
+            auto reduced = type.contained.substr(1);
+
+            container.clear();
+            r = 1;
+            int r2 = 1;
+            while (r > 0)
+            {
+                r2 = sd_bus_message_enter_container(smsg, SD_BUS_TYPE_ARRAY, reduced.data());
+                if (r2 <= 0)
+                    break;
+
+                container_inner_type inner{};
+                while (r2 > 0)
+                {
+                    ValueT v;
+                    r2 = msg.read(v);
+                    if (r2 < 0)
+                    {
+                        sd_bus_message_exit_container(smsg);
+                        throw std::runtime_error("could not read from array: "s + strerror(-r));
+                    }
+                    else if (r2 > 0)
+                        inner.push_back(v);
+                }
+
+                r = sd_bus_message_exit_container(smsg);
+                if (r < 0)
+                    throw std::runtime_error("could not exit array: "s + strerror(-r));
+
+                container.push_back(inner);
             }
 
             r = sd_bus_message_exit_container(smsg);
@@ -562,6 +650,15 @@ namespace DBusGlue
     //-----------------------------------------------------------------------------------------------------------------
     // append_proxy
     //-----------------------------------------------------------------------------------------------------------------
+
+    template <>
+    struct message::append_proxy<custom_value, void>
+    {
+        static int write(message& msg, custom_value const& writer)
+        {
+            return writer.write(msg);
+        }
+    };
 
     template <>
     struct message::append_proxy<std::string, void>
