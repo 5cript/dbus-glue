@@ -27,7 +27,9 @@ pkg_check_modules(SYSTEMD REQUIRED IMPORTED_TARGET libsystemd)
 
 message(STATUS "${SYSTEMD}")
 
-target_link_libraries(dbus-glue PUBLIC PkgConfig::SYSTEMD -lpthread)
+find_package(Boost 1.80.0 REQUIRED)
+
+target_link_libraries(dbus-glue PUBLIC PkgConfig::SYSTEMD -lpthread Boost::boost)
 target_include_directories(dbus-glue
                            PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
